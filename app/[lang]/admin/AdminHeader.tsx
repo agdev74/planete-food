@@ -70,7 +70,7 @@ export default function AdminHeader({ lang }: { lang: string }) {
         
         <div className="flex items-center gap-4 md:gap-8">
           <div className="flex items-center gap-4 shrink-0">
-            <div className="w-8 h-8 bg-kabuki-red rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-red-900/20">
+            <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-red-900/20">
               K
             </div>
             <Link 
@@ -88,7 +88,7 @@ export default function AdminHeader({ lang }: { lang: string }) {
                 href={link.path}
                 className={`flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-xl text-[10px] md:text-[11px] font-bold transition-all duration-300 ${
                   isActive(link.path)
-                    ? "bg-kabuki-red text-white shadow-xl shadow-red-900/30"
+                    ? "bg-brand-primary text-white shadow-xl shadow-red-900/30"
                     : "text-gray-400 hover:text-white hover:bg-neutral-800/50"
                 }`}
               >

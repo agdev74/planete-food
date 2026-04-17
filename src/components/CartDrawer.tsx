@@ -242,7 +242,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             {!isSuccess && (
               <div className="flex items-center justify-between p-6 border-b border-neutral-800 bg-black/20">
                 <h2 id="cart-title" className="text-xl font-display font-bold text-white uppercase tracking-widest flex items-center gap-3">
-                  {isPayment ? <><ShieldCheck size={20} className="text-green-500" aria-hidden="true" /> {t.titlePayment}</> : isCheckout ? <><button onClick={() => setIsCheckout(false)} className="hover:text-kabuki-red transition" aria-label={t.back}><ArrowLeft size={20} aria-hidden="true" /></button> {t.titleCheckout}</> : <><ShoppingBag size={20} className="text-kabuki-red" aria-hidden="true" /> {t.titleCart}</>}
+                  {isPayment ? <><ShieldCheck size={20} className="text-green-500" aria-hidden="true" /> {t.titlePayment}</> : isCheckout ? <><button onClick={() => setIsCheckout(false)} className="hover:text-brand-primary transition" aria-label={t.back}><ArrowLeft size={20} aria-hidden="true" /></button> {t.titleCheckout}</> : <><ShoppingBag size={20} className="text-brand-primary" aria-hidden="true" /> {t.titleCart}</>}
                 </h2>
                 <button onClick={onClose} aria-label={t.btnClose} className="p-2 text-gray-400 bg-neutral-800 rounded-full hover:text-white transition"><X size={18} aria-hidden="true" /></button>
               </div>
@@ -257,9 +257,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div className="bg-neutral-800 p-6 rounded-2xl border border-neutral-700 w-full shadow-inner">
                     <p className="text-gray-300 text-sm mb-4">{t.successDesc}</p>
                     <span className="text-[10px] text-gray-400 uppercase font-black tracking-widest">Numéro de commande</span>
-                    <p className="text-3xl font-display font-bold text-kabuki-red tracking-tighter mt-1">#KBK-{orderId}</p>
+                    <p className="text-3xl font-display font-bold text-brand-primary tracking-tighter mt-1">#KBK-{orderId}</p>
                 </div>
-                <button onClick={() => { onClose(); window.location.href = `/${lang}/track?order_id=${orderId}`; }} className="w-full bg-kabuki-red text-white font-bold py-4 rounded-xl uppercase shadow-lg shadow-red-900/30 hover:bg-red-700 transition-all">Suivre ma commande</button>
+                <button onClick={() => { onClose(); window.location.href = `/${lang}/track?order_id=${orderId}`; }} className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase shadow-lg shadow-red-900/30 hover:bg-red-700 transition-all">Suivre ma commande</button>
               </div>
             ) : isPayment && clientSecret && orderId ? (
               <Elements options={{ clientSecret, appearance: { theme: 'night', variables: { colorPrimary: '#dc2626' } } }} stripe={stripePromise}>
@@ -279,14 +279,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             </div>
                             <div className="flex-1">
                               <h3 className="text-white font-bold text-sm uppercase leading-tight">{i.name}</h3>
-                              <div className="text-kabuki-red font-bold text-xs">{(i.price * i.quantity).toFixed(2)} CHF</div>
+                              <div className="text-brand-primary font-bold text-xs">{(i.price * i.quantity).toFixed(2)} CHF</div>
                             </div>
                             <div className="flex items-center gap-3 bg-neutral-800 rounded-full px-2 py-1 shadow-inner border border-neutral-700/50">
-                              <button onClick={() => updateQuantity(i.id, i.quantity - 1)} aria-label={t.decrease} className="text-white hover:text-kabuki-red transition"><Minus size={14} aria-hidden="true" /></button>
+                              <button onClick={() => updateQuantity(i.id, i.quantity - 1)} aria-label={t.decrease} className="text-white hover:text-brand-primary transition"><Minus size={14} aria-hidden="true" /></button>
                               <span className="text-white text-xs font-black w-4 text-center" aria-live="polite">{i.quantity}</span>
-                              <button onClick={() => updateQuantity(i.id, i.quantity + 1)} aria-label={t.increase} className="text-white hover:text-kabuki-red transition"><Plus size={14} aria-hidden="true" /></button>
+                              <button onClick={() => updateQuantity(i.id, i.quantity + 1)} aria-label={t.increase} className="text-white hover:text-brand-primary transition"><Plus size={14} aria-hidden="true" /></button>
                             </div>
-                            <button onClick={() => removeFromCart(i.id)} aria-label={t.remove} className="text-gray-400 hover:text-kabuki-red transition p-1"><Trash2 size={16} aria-hidden="true" /></button>
+                            <button onClick={() => removeFromCart(i.id)} aria-label={t.remove} className="text-gray-400 hover:text-brand-primary transition p-1"><Trash2 size={16} aria-hidden="true" /></button>
                           </div>
                         ))}
 
@@ -299,7 +299,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                               value={couponCode}
                               onChange={(e) => setCouponCode(e.target.value)}
                               placeholder={t.couponPlaceholder}
-                              className="flex-1 bg-black border border-neutral-800 rounded-xl px-4 py-2 text-xs text-white focus:border-kabuki-red outline-none transition uppercase"
+                              className="flex-1 bg-black border border-neutral-800 rounded-xl px-4 py-2 text-xs text-white focus:border-brand-primary outline-none transition uppercase"
                             />
                             <button 
                               onClick={handleApplyCoupon}
@@ -324,32 +324,32 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       <form id="checkout-form" onSubmit={handleFinalSubmit} className="space-y-6">
                         <div className="space-y-1">
                             <label htmlFor="customer_name" className="text-[10px] font-bold text-gray-400 uppercase ml-1">{t.name}</label>
-                            <input id="customer_name" required placeholder={t.namePlaceholder} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-xl px-4 py-3 outline-none focus:border-kabuki-red transition" />
+                            <input id="customer_name" required placeholder={t.namePlaceholder} value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-xl px-4 py-3 outline-none focus:border-brand-primary transition" />
                         </div>
                         <div className="space-y-1">
-                            <label htmlFor="customer_phone" className="text-[10px] font-bold text-kabuki-red uppercase ml-1 tracking-widest">{t.phone}</label>
-                            <input id="customer_phone" required type="tel" placeholder={t.phonePlaceholder} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-xl px-4 py-3 outline-none focus:border-kabuki-red transition font-mono" />
+                            <label htmlFor="customer_phone" className="text-[10px] font-bold text-brand-primary uppercase ml-1 tracking-widest">{t.phone}</label>
+                            <input id="customer_phone" required type="tel" placeholder={t.phonePlaceholder} value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-xl px-4 py-3 outline-none focus:border-brand-primary transition font-mono" />
                         </div>
                         
                         <fieldset className="space-y-2">
-                          <legend className="text-[10px] font-bold text-kabuki-red uppercase flex items-center gap-2 mb-2"><Calendar size={12} aria-hidden="true" /> {t.date}</legend>
+                          <legend className="text-[10px] font-bold text-brand-primary uppercase flex items-center gap-2 mb-2"><Calendar size={12} aria-hidden="true" /> {t.date}</legend>
                           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                             {days.map((d, idx) => (
-                              <button key={idx} type="button" onClick={() => { setSelectedDate(d); setSelectedTime(""); }} aria-pressed={selectedDate?.toDateString() === d.toDateString()} className={`shrink-0 px-4 py-2 rounded-xl border text-xs font-bold transition ${selectedDate?.toDateString() === d.toDateString() ? "bg-kabuki-red border-kabuki-red text-white shadow-lg" : "bg-neutral-800 border-neutral-700 text-gray-400"}`}>{d.toLocaleDateString(lang, { day: 'numeric', month: 'short' })}</button>
+                              <button key={idx} type="button" onClick={() => { setSelectedDate(d); setSelectedTime(""); }} aria-pressed={selectedDate?.toDateString() === d.toDateString()} className={`shrink-0 px-4 py-2 rounded-xl border text-xs font-bold transition ${selectedDate?.toDateString() === d.toDateString() ? "bg-brand-primary border-brand-primary text-white shadow-lg" : "bg-neutral-800 border-neutral-700 text-gray-400"}`}>{d.toLocaleDateString(lang, { day: 'numeric', month: 'short' })}</button>
                             ))}
                           </div>
                         </fieldset>
 
                         <fieldset className="space-y-2">
-                          <legend className="text-[10px] font-bold text-kabuki-red uppercase flex items-center gap-2 mb-2"><Clock size={12} aria-hidden="true" /> {t.time}</legend>
+                          <legend className="text-[10px] font-bold text-brand-primary uppercase flex items-center gap-2 mb-2"><Clock size={12} aria-hidden="true" /> {t.time}</legend>
                           <div className="grid grid-cols-4 gap-2">
-                            {availableSlots.map(s => <button key={s} type="button" onClick={() => setSelectedTime(s)} aria-pressed={selectedTime === s} className={`py-2 rounded-lg border text-xs font-bold transition ${selectedTime === s ? "bg-kabuki-red border-kabuki-red text-white shadow-md" : "bg-neutral-800 border-neutral-700 text-gray-400"}`}>{s}</button>)}
+                            {availableSlots.map(s => <button key={s} type="button" onClick={() => setSelectedTime(s)} aria-pressed={selectedTime === s} className={`py-2 rounded-lg border text-xs font-bold transition ${selectedTime === s ? "bg-brand-primary border-brand-primary text-white shadow-md" : "bg-neutral-800 border-neutral-700 text-gray-400"}`}>{s}</button>)}
                           </div>
                         </fieldset>
 
                         <div role="radiogroup" aria-label={t.pickupMode} className="grid grid-cols-2 gap-3">
-                          <button type="button" role="radio" aria-checked={formData.type !== "Livraison"} onClick={() => setFormData({...formData, type: "Click & Collect"})} className={`py-3 rounded-xl border text-xs font-bold transition ${formData.type !== "Livraison" ? "bg-kabuki-red border-kabuki-red text-white shadow-md" : "bg-black border-neutral-800 text-gray-400"}`}>{t.takeaway}</button>
-                          <button type="button" role="radio" aria-checked={formData.type === "Livraison"} onClick={() => setFormData({...formData, type: "Livraison"})} className={`py-3 rounded-xl border text-xs font-bold transition ${formData.type === "Livraison" ? "bg-kabuki-red border-kabuki-red text-white shadow-md" : "bg-black border-neutral-800 text-gray-400"}`}>{t.delivery}</button>
+                          <button type="button" role="radio" aria-checked={formData.type !== "Livraison"} onClick={() => setFormData({...formData, type: "Click & Collect"})} className={`py-3 rounded-xl border text-xs font-bold transition ${formData.type !== "Livraison" ? "bg-brand-primary border-brand-primary text-white shadow-md" : "bg-black border-neutral-800 text-gray-400"}`}>{t.takeaway}</button>
+                          <button type="button" role="radio" aria-checked={formData.type === "Livraison"} onClick={() => setFormData({...formData, type: "Livraison"})} className={`py-3 rounded-xl border text-xs font-bold transition ${formData.type === "Livraison" ? "bg-brand-primary border-brand-primary text-white shadow-md" : "bg-black border-neutral-800 text-gray-400"}`}>{t.delivery}</button>
                         </div>
 
                         <AnimatePresence>
@@ -361,8 +361,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                 </div>
                               )}
                               <div className="space-y-3 bg-neutral-900/50 p-4 rounded-xl border border-neutral-800 shadow-inner">
-                                <label htmlFor="delivery_address" className="text-[10px] font-bold text-kabuki-red uppercase flex items-center gap-2"><MapPin size={12} aria-hidden="true" /> {t.address}</label>
-                                <input id="delivery_address" required={formData.type === "Livraison"} placeholder={t.addressPlaceholder} value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-lg px-4 py-2 text-sm outline-none focus:border-kabuki-red transition" />
+                                <label htmlFor="delivery_address" className="text-[10px] font-bold text-brand-primary uppercase flex items-center gap-2"><MapPin size={12} aria-hidden="true" /> {t.address}</label>
+                                <input id="delivery_address" required={formData.type === "Livraison"} placeholder={t.addressPlaceholder} value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-lg px-4 py-2 text-sm outline-none focus:border-brand-primary transition" />
                                 
                                 <div className="grid grid-cols-2 gap-3">
                                   <input 
@@ -372,14 +372,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                     value={formData.zip} 
                                     onChange={e => setFormData({...formData, zip: e.target.value})} 
                                     maxLength={4}
-                                    className={`w-full bg-black text-white border rounded-lg px-4 py-2 text-sm outline-none transition ${formData.zip.length === 4 && !isGenevaZip(formData.zip) ? "border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]" : "border-neutral-800 focus:border-kabuki-red"}`} 
+                                    className={`w-full bg-black text-white border rounded-lg px-4 py-2 text-sm outline-none transition ${formData.zip.length === 4 && !isGenevaZip(formData.zip) ? "border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]" : "border-neutral-800 focus:border-brand-primary"}`} 
                                   />
                                   <input 
                                     id="floor_number" 
                                     placeholder={t.floorPlaceholder} 
                                     value={formData.floor} 
                                     onChange={e => setFormData({...formData, floor: e.target.value})} 
-                                    className="w-full bg-black text-white border border-neutral-800 rounded-lg px-4 py-2 text-sm outline-none focus:border-kabuki-red transition" 
+                                    className="w-full bg-black text-white border border-neutral-800 rounded-lg px-4 py-2 text-sm outline-none focus:border-brand-primary transition" 
                                   />
                                 </div>
                                 
@@ -396,7 +396,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                   )}
                                 </AnimatePresence>
 
-                                <input id="door_code" placeholder={t.codePlaceholder} value={formData.doorCode} onChange={e => setFormData({...formData, doorCode: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-lg px-4 py-2 text-sm outline-none focus:border-kabuki-red transition" />
+                                <input id="door_code" placeholder={t.codePlaceholder} value={formData.doorCode} onChange={e => setFormData({...formData, doorCode: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-lg px-4 py-2 text-sm outline-none focus:border-brand-primary transition" />
                               </div>
                             </m.div>
                           )}
@@ -404,7 +404,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                         <div className="space-y-1">
                           <label htmlFor="order_comments" className="text-[10px] font-bold text-gray-400 uppercase flex items-center gap-2"><MessageSquare size={12} aria-hidden="true" /> {t.comments}</label>
-                          <textarea id="order_comments" value={formData.comments} onChange={e => setFormData({...formData, comments: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-xl px-4 py-3 outline-none focus:border-kabuki-red transition h-20 resize-none text-sm" placeholder={t.commentsPlaceholder} />
+                          <textarea id="order_comments" value={formData.comments} onChange={e => setFormData({...formData, comments: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-xl px-4 py-3 outline-none focus:border-brand-primary transition h-20 resize-none text-sm" placeholder={t.commentsPlaceholder} />
                         </div>
                       </form>
                     )
@@ -428,20 +428,20 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                       {/* ✅ NOUVEAU : AFFICHAGE DE LA CAGNOTTE */}
                       {profile && profile.wallet_balance > 0 && (
-                        <div className="py-3 px-4 bg-black/40 border border-kabuki-red/30 rounded-xl my-3">
+                        <div className="py-3 px-4 bg-black/40 border border-brand-primary/30 rounded-xl my-3">
                           <label className="flex items-center justify-between cursor-pointer">
                             <div className="flex items-center gap-2">
                               <input 
                                 type="checkbox" 
                                 checked={useWallet} 
                                 onChange={(e) => setUseWallet(e.target.checked)}
-                                className="accent-kabuki-red w-4 h-4 cursor-pointer"
+                                className="accent-brand-primary w-4 h-4 cursor-pointer"
                               />
                               <span className="text-xs font-bold text-white uppercase tracking-widest">
                                 Utiliser ma cagnotte ({Number(profile.wallet_balance).toFixed(2)} CHF)
                               </span>
                             </div>
-                            {useWallet && <span className="text-kabuki-red font-bold text-xs">-{walletUsed.toFixed(2)} CHF</span>}
+                            {useWallet && <span className="text-brand-primary font-bold text-xs">-{walletUsed.toFixed(2)} CHF</span>}
                           </label>
                         </div>
                       )}
@@ -460,11 +460,11 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     </div>
                     
                     {!isCheckout ? (
-                      <button onClick={() => setIsCheckout(true)} className="w-full bg-kabuki-red text-white font-bold py-4 rounded-xl uppercase flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg shadow-red-900/30">
+                      <button onClick={() => setIsCheckout(true)} className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg shadow-red-900/30">
                         {t.btnValidate} <ArrowRight size={16} aria-hidden="true" />
                       </button>
                     ) : (
-                      <button type="submit" form="checkout-form" disabled={!isFormReady || isSubmitting} className={`w-full font-bold py-4 rounded-xl uppercase flex items-center justify-center gap-2 transition-all ${isFormReady && !isSubmitting ? "bg-kabuki-red text-white hover:bg-red-700 shadow-lg shadow-red-900/30" : "bg-neutral-800 text-neutral-500 cursor-not-allowed"}`}>
+                      <button type="submit" form="checkout-form" disabled={!isFormReady || isSubmitting} className={`w-full font-bold py-4 rounded-xl uppercase flex items-center justify-center gap-2 transition-all ${isFormReady && !isSubmitting ? "bg-brand-primary text-white hover:bg-red-700 shadow-lg shadow-red-900/30" : "bg-neutral-800 text-neutral-500 cursor-not-allowed"}`}>
                         {isSubmitting ? <><Loader2 size={18} className="animate-spin" aria-hidden="true" /> {t.sending}</> : <><ShieldCheck size={18} aria-hidden="true" /> Continuer vers le paiement</>}</button>
                     )}
                   </div>

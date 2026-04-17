@@ -40,7 +40,7 @@ export default function ActiveOrderButton() {
         >
           <Link 
             href={`/${lang}/track`}
-            className="flex items-center gap-3 bg-kabuki-red text-white px-5 py-3 rounded-full font-bold text-xs uppercase tracking-widest shadow-[0_0_20px_rgba(220,38,38,0.5)] hover:scale-105 transition-transform border border-red-400"
+            className="flex items-center gap-3 bg-brand-primary text-white px-5 py-3 rounded-full font-bold text-xs uppercase tracking-widest shadow-[0_0_20px_rgba(220,38,38,0.5)] hover:scale-105 transition-transform border border-red-400"
           >
             <PackageSearch size={18} className="animate-pulse" />
             <span>Suivre ma commande</span>

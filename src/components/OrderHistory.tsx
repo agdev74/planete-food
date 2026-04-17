@@ -62,7 +62,7 @@ export default function OrderHistory() {
         const Icon = status.icon;
 
         return (
-          <div key={order.id} className="bg-black/40 border border-neutral-800 p-4 rounded-xl flex items-center justify-between group hover:border-kabuki-red transition-colors">
+          <div key={order.id} className="bg-black/40 border border-neutral-800 p-4 rounded-xl flex items-center justify-between group hover:border-brand-primary transition-colors">
             <div className="flex items-center gap-4">
               <div className={`p-2 rounded-lg bg-neutral-900 ${status.color}`}>
                 <Icon size={20} />

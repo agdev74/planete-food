@@ -219,25 +219,25 @@ export default function AdminMenu() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
           <div>
-            <h1 className="text-4xl font-display font-bold uppercase tracking-wider text-kabuki-red">Administration</h1>
+            <h1 className="text-4xl font-display font-bold uppercase tracking-wider text-brand-primary">Administration</h1>
             <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 mt-4 text-[11px] font-bold text-gray-400 hover:text-white bg-neutral-900/50 border border-neutral-800 rounded-xl transition-all hover:bg-red-600/10 hover:border-red-600/40 uppercase tracking-[0.2em] shadow-inner">
               <LogOut size={14} /> Se déconnecter
             </button>
           </div>
-          <button onClick={() => { resetForm(); setIsModalOpen(true); }} className="flex items-center gap-2 bg-kabuki-red hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-red-900/20 uppercase text-xs tracking-widest">
+          <button onClick={() => { resetForm(); setIsModalOpen(true); }} className="flex items-center gap-2 bg-brand-primary hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-red-900/20 uppercase text-xs tracking-widest">
              <Plus size={20} /> Nouveau Produit
           </button>
         </div>
 
         <div className="relative mb-8">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
-          <input type="text" placeholder="Rechercher..." className="w-full bg-neutral-900 border border-neutral-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-kabuki-red outline-none shadow-xl transition-all" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+          <input type="text" placeholder="Rechercher..." className="w-full bg-neutral-900 border border-neutral-800 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-brand-primary outline-none shadow-xl transition-all" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
 
         <div className="bg-neutral-900/50 border border-neutral-800 rounded-3xl overflow-hidden backdrop-blur-sm shadow-2xl">
           {loading ? (
             <div className="p-20 text-center flex flex-col items-center gap-4 text-gray-500">
-              <Loader2 className="animate-spin text-kabuki-red" size={40} />
+              <Loader2 className="animate-spin text-brand-primary" size={40} />
               <p className="italic uppercase text-[10px] tracking-widest">Chargement...</p>
             </div>
           ) : (
@@ -271,7 +271,7 @@ export default function AdminMenu() {
                           {updatingId === item.id ? <RefreshCw size={12} className="animate-spin" /> : item.is_available ? <><Power size={12} /> Actif</> : <><PowerOff size={12} /> Épuisé</>}
                         </button>
                       </td>
-                      <td className="p-5 text-center font-mono text-kabuki-red font-bold">{Number(item.price || 0).toFixed(2)} CHF</td>
+                      <td className="p-5 text-center font-mono text-brand-primary font-bold">{Number(item.price || 0).toFixed(2)} CHF</td>
                       <td className="p-5 text-right">
                         <div className="flex justify-end gap-3">
                           <button onClick={() => openEditModal(item)} className="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg transition"><Edit2 size={16} /></button>
@@ -304,16 +304,16 @@ export default function AdminMenu() {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Nom (FR)</label><input className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-kabuki-red transition text-white" value={form.name_fr} onChange={e => setForm({...form, name_fr: e.target.value})} required /></div>
-                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Nom (EN)</label><input className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-kabuki-red transition text-white" value={form.name_en} onChange={e => setForm({...form, name_en: e.target.value})} /></div>
-                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Nom (ES)</label><input className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-kabuki-red transition text-white" value={form.name_es} onChange={e => setForm({...form, name_es: e.target.value})} /></div>
+                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Nom (FR)</label><input className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white" value={form.name_fr} onChange={e => setForm({...form, name_fr: e.target.value})} required /></div>
+                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Nom (EN)</label><input className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white" value={form.name_en} onChange={e => setForm({...form, name_en: e.target.value})} /></div>
+                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Nom (ES)</label><input className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white" value={form.name_es} onChange={e => setForm({...form, name_es: e.target.value})} /></div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
-                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Prix (CHF)</label><input type="text" inputMode="decimal" className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-kabuki-red transition text-white" value={form.price} onChange={e => setForm({...form, price: e.target.value})} required /></div>
+                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Prix (CHF)</label><input type="text" inputMode="decimal" className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white" value={form.price} onChange={e => setForm({...form, price: e.target.value})} required /></div>
                   <div>
                     <label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Catégorie</label>
-                    <select className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-kabuki-red transition text-white" value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
+                    <select className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white" value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
                       <option value="Makis">Makis</option>
                       <option value="Sushis">Sushis</option>
                       <option value="Les Signatures (Créations Kabuki)">Signatures</option>
@@ -327,12 +327,12 @@ export default function AdminMenu() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Desc (FR)</label><textarea className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-kabuki-red h-24 transition text-white" value={form.description_fr} onChange={e => setForm({...form, description_fr: e.target.value})} /></div>
-                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Desc (EN)</label><textarea className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-kabuki-red h-24 transition text-white" value={form.description_en} onChange={e => setForm({...form, description_en: e.target.value})} /></div>
-                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Desc (ES)</label><textarea className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-kabuki-red h-24 transition text-white" value={form.description_es} onChange={e => setForm({...form, description_es: e.target.value})} /></div>
+                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Desc (FR)</label><textarea className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary h-24 transition text-white" value={form.description_fr} onChange={e => setForm({...form, description_fr: e.target.value})} /></div>
+                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Desc (EN)</label><textarea className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary h-24 transition text-white" value={form.description_en} onChange={e => setForm({...form, description_en: e.target.value})} /></div>
+                  <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Desc (ES)</label><textarea className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary h-24 transition text-white" value={form.description_es} onChange={e => setForm({...form, description_es: e.target.value})} /></div>
                 </div>
 
-                <div className="border-2 border-dashed border-neutral-800 p-6 rounded-2xl text-center hover:border-kabuki-red transition-colors group relative">
+                <div className="border-2 border-dashed border-neutral-800 p-6 rounded-2xl text-center hover:border-brand-primary transition-colors group relative">
                   {form.image_url ? (
                     <div className="relative inline-block">
                       <Image src={form.image_url} alt="Aperçu" width={150} height={128} className="rounded-lg object-cover shadow-xl" />
@@ -340,7 +340,7 @@ export default function AdminMenu() {
                     </div>
                   ) : (
                     <>
-                      <Upload className="mx-auto mb-2 text-gray-600 group-hover:text-kabuki-red transition-colors" />
+                      <Upload className="mx-auto mb-2 text-gray-600 group-hover:text-brand-primary transition-colors" />
                       <label htmlFor="image-upload-admin" className="cursor-pointer text-sm font-bold text-gray-400 group-hover:text-white transition-colors">
                         {uploading ? "Envoi..." : "Upload photo"}
                       </label>
@@ -349,7 +349,7 @@ export default function AdminMenu() {
                   )}
                 </div>
 
-                <button type="submit" disabled={actionLoading || uploading || isTranslating} className="w-full bg-kabuki-red text-white py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50">
+                <button type="submit" disabled={actionLoading || uploading || isTranslating} className="w-full bg-brand-primary text-white py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50">
                   {actionLoading ? <Loader2 className="animate-spin" size={20} /> : (editingId ? "Sauvegarder" : "Ajouter")}
                 </button>
               </form>

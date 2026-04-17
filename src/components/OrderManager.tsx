@@ -81,13 +81,13 @@ export default function OrderManager() {
     }
   };
 
-  if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-kabuki-red" size={40} /></div>;
+  if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-brand-primary" size={40} /></div>;
 
   return (
     <div className="p-6 max-w-6xl mx-auto min-h-screen">
       <header className="flex justify-between items-center mb-10 border-b border-neutral-800 pb-6">
         <h2 className="text-2xl font-display font-bold text-white uppercase tracking-widest">
-          Cuisine <span className="text-kabuki-red">Live</span>
+          Cuisine <span className="text-brand-primary">Live</span>
         </h2>
         <div className="flex items-center gap-2 bg-neutral-900 px-4 py-2 rounded-full border border-neutral-800">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -120,7 +120,7 @@ export default function OrderManager() {
                     </div>
                     <h3 className="text-xl font-bold text-white uppercase tracking-tight">{order.customer_name}</h3>
                     <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest">
-                       <span className="flex items-center gap-1.5 text-kabuki-red"><Clock size={14} /> {order.pickup_time}</span>
+                       <span className="flex items-center gap-1.5 text-brand-primary"><Clock size={14} /> {order.pickup_time}</span>
                        <span className="text-gray-500 px-2 py-0.5 border border-neutral-800 rounded">{order.order_type}</span>
                     </div>
                   </div>
@@ -130,7 +130,7 @@ export default function OrderManager() {
                       {order.items.map((item, idx) => (
                         <li key={idx} className="flex justify-between text-sm">
                           <span className="text-gray-300 font-medium">
-                            <span className="text-kabuki-red font-bold mr-2">{item.quantity}x</span> {item.name}
+                            <span className="text-brand-primary font-bold mr-2">{item.quantity}x</span> {item.name}
                           </span>
                         </li>
                       ))}
@@ -145,7 +145,7 @@ export default function OrderManager() {
                     {config.next && (
                       <button
                         onClick={() => updateStatus(order.id, config.next!)}
-                        className="w-full flex items-center justify-center gap-2 bg-white text-black hover:bg-kabuki-red hover:text-white transition-all px-4 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px]"
+                        className="w-full flex items-center justify-center gap-2 bg-white text-black hover:bg-brand-primary hover:text-white transition-all px-4 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px]"
                       >
                         {config.icon}
                         {config.label}

@@ -133,7 +133,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-2 md:p-4 bg-black/95 backdrop-blur-xl"
+      className="fixed inset-0 z-100 flex items-center justify-center p-2 md:p-4 bg-black/95 backdrop-blur-xl"
       role="dialog"
       aria-modal="true"
     >
@@ -144,17 +144,17 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
         style={{ willChange: "transform, opacity" }}
-        className="bg-neutral-950 border border-neutral-800 rounded-[2rem] md:rounded-[3rem] overflow-hidden max-w-4xl w-full shadow-2xl relative flex flex-col max-h-[95vh]"
+        className="bg-neutral-950 border border-neutral-800 rounded-4xl md:rounded-[3rem] overflow-hidden max-w-4xl w-full shadow-2xl relative flex flex-col max-h-[95vh]"
       >
         <button 
           onClick={onClose}
           aria-label="Fermer"
-          className="absolute top-6 right-6 z-30 bg-white/10 hover:bg-kabuki-red text-white p-3 rounded-full backdrop-blur-md transition-all active:scale-90"
+          className="absolute top-6 right-6 z-30 bg-white/10 hover:bg-brand-primary text-white p-3 rounded-full backdrop-blur-md transition-all active:scale-90"
         >
           <X size={24} />
         </button>
 
-        <div className="relative w-full bg-[#050505] h-[40vh] md:h-[45vh] flex-shrink-0 group overflow-hidden border-b border-neutral-900/50">
+        <div className="relative w-full bg-[#050505] h-[40vh] md:h-[45vh] shrink-0 group overflow-hidden border-b border-neutral-900/50">
           {item.image_url ? (
             <Image 
               src={item.image_url} 
@@ -177,13 +177,13 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
           </div>
         </div>
 
-        <div className="p-8 md:p-12 flex flex-col flex-grow overflow-y-auto no-scrollbar">
+        <div className="p-8 md:p-12 flex flex-col grow overflow-y-auto no-scrollbar">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 shrink-0">
             <div>
               <h2 className="text-3xl md:text-5xl font-display font-bold text-white uppercase tracking-tighter leading-none mb-2">
                 {name}
               </h2>
-              <span className="text-kabuki-red text-[10px] uppercase font-black tracking-[0.4em]">Signature Kabuki</span>
+              <span className="text-brand-primary text-[10px] uppercase font-black tracking-[0.4em]">Signature Kabuki</span>
             </div>
             <div className="text-3xl md:text-4xl font-bold text-white whitespace-nowrap">
               {Number(item.price).toFixed(2)} <span className="text-xs text-neutral-500 uppercase ml-1">chf</span>
@@ -206,7 +206,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
               
               {mochiSelections.map((selection, idx) => (
                 <div key={idx} className="bg-neutral-900 border border-neutral-800 p-4 md:p-5 rounded-2xl">
-                  <h5 className="text-[10px] text-kabuki-red uppercase font-black tracking-widest mb-4">
+                  <h5 className="text-[10px] text-brand-primary uppercase font-black tracking-widest mb-4">
                     Portion {idx + 1}
                   </h5>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -215,7 +215,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
                       <select 
                         value={selection[0]} 
                         onChange={(e) => updateMochiFlavor(idx, 0, e.target.value)}
-                        className="w-full bg-black border border-neutral-800 p-3 md:p-4 rounded-xl outline-none focus:border-kabuki-red transition text-white font-bold text-sm appearance-none"
+                        className="w-full bg-black border border-neutral-800 p-3 md:p-4 rounded-xl outline-none focus:border-brand-primary transition text-white font-bold text-sm appearance-none"
                         style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem top 50%', backgroundSize: '0.65rem auto' }}
                       >
                         {MOCHI_FLAVORS.map(flavor => (
@@ -228,7 +228,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
                       <select 
                         value={selection[1]} 
                         onChange={(e) => updateMochiFlavor(idx, 1, e.target.value)}
-                        className="w-full bg-black border border-neutral-800 p-3 md:p-4 rounded-xl outline-none focus:border-kabuki-red transition text-white font-bold text-sm appearance-none"
+                        className="w-full bg-black border border-neutral-800 p-3 md:p-4 rounded-xl outline-none focus:border-brand-primary transition text-white font-bold text-sm appearance-none"
                         style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem top 50%', backgroundSize: '0.65rem auto' }}
                       >
                         {MOCHI_FLAVORS.map(flavor => (
@@ -243,7 +243,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
           )}
 
           <div className="mt-auto pt-4 flex flex-col gap-4 w-full shrink-0 border-t border-neutral-900/50">
-            <div className="flex items-center justify-between bg-white/5 border border-neutral-800 rounded-2xl min-h-[64px] h-16 w-full px-4 shrink-0 mt-2">
+            <div className="flex items-center justify-between bg-white/5 border border-neutral-800 rounded-2xl min-h-16 h-16 w-full px-4 shrink-0 mt-2">
               <button 
                 onClick={() => handleQuantityChange(quantity - 1)}
                 className="w-12 h-12 flex items-center justify-center text-neutral-400 hover:text-white transition-colors active:bg-neutral-800 rounded-xl"
@@ -265,7 +265,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
 
             <button 
               onClick={handleAddToCart}
-              className="w-full bg-kabuki-red hover:bg-red-700 text-white font-bold min-h-[64px] h-16 rounded-2xl uppercase tracking-[0.15em] text-sm transition-all active:scale-[0.98] shadow-2xl shadow-red-900/20 flex items-center justify-center gap-4 shrink-0"
+              className="w-full bg-brand-primary hover:bg-red-700 text-white font-bold min-h-16 h-16 rounded-2xl uppercase tracking-[0.15em] text-sm transition-all active:scale-[0.98] shadow-2xl shadow-red-900/20 flex items-center justify-center gap-4 shrink-0"
             >
               <ShoppingCart size={20} />
               <span>AJOUTER AU PANIER • {(item.price * quantity).toFixed(2)} CHF</span>

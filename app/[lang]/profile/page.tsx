@@ -20,14 +20,14 @@ export default function ProfilePage() {
         
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 space-y-6">
-            <div className="w-12 h-12 border-4 border-kabuki-red border-t-transparent rounded-full animate-spin" />
-            <p className="text-kabuki-red text-xs font-bold uppercase tracking-widest animate-pulse">
+            <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-brand-primary text-xs font-bold uppercase tracking-widest animate-pulse">
               Synchronisation...
             </p>
           </div>
         ) : !user ? (
           <div className="flex flex-col items-center justify-center py-32 text-center space-y-6 bg-neutral-900/30 border border-neutral-800 rounded-3xl p-8 shadow-2xl">
-            <AlertCircle size={48} className="text-kabuki-red mb-2" />
+            <AlertCircle size={48} className="text-brand-primary mb-2" />
             <h1 className="text-2xl font-display font-bold text-white uppercase tracking-widest">Accès réservé</h1>
             <p className="text-gray-400 max-w-md mx-auto">
               Votre session a expiré ou vous n&apos;êtes pas connecté. Veuillez vous identifier pour accéder à votre espace.
@@ -36,7 +36,7 @@ export default function ProfilePage() {
               onClick={() => {
                 // 🔔 TODO : Insérer ici la fonction d'ouverture de la modale
               }}
-              className="bg-kabuki-red text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+              className="bg-brand-primary text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all"
             >
               Se connecter
             </button>
@@ -48,8 +48,8 @@ export default function ProfilePage() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 mb-8 flex flex-col md:flex-row items-center gap-8 shadow-2xl"
             >
-              <div className="w-24 h-24 bg-kabuki-red/10 rounded-full flex items-center justify-center border-2 border-kabuki-red shadow-lg shadow-red-900/20">
-                <User size={48} className="text-kabuki-red" />
+              <div className="w-24 h-24 bg-brand-primary/10 rounded-full flex items-center justify-center border-2 border-brand-primary shadow-lg shadow-red-900/20">
+                <User size={48} className="text-brand-primary" />
               </div>
               <div className="text-center md:text-left flex-1">
                 <h1 className="text-3xl font-display font-bold text-white uppercase tracking-wider mb-2">
@@ -59,7 +59,7 @@ export default function ProfilePage() {
               </div>
               <div className="bg-black/40 backdrop-blur-md border border-neutral-800 rounded-2xl p-6 text-center min-w-[200px]">
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em] mb-1">Cagnotte Fidélité</p>
-                <p className="text-3xl font-display font-bold text-kabuki-red">
+                <p className="text-3xl font-display font-bold text-brand-primary">
                   {profile?.wallet_balance ? Number(profile.wallet_balance).toFixed(2) : "0.00"} <span className="text-sm">CHF</span>
                 </p>
               </div>
@@ -73,7 +73,7 @@ export default function ProfilePage() {
                 className="md:col-span-2 bg-neutral-900/50 border border-neutral-800 p-8 rounded-3xl shadow-xl"
               >
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="p-3 bg-kabuki-red/10 rounded-2xl text-kabuki-red">
+                  <div className="p-3 bg-brand-primary/10 rounded-2xl text-brand-primary">
                     <History size={24} />
                   </div>
                   <div>
@@ -92,16 +92,16 @@ export default function ProfilePage() {
                     <m.div 
                       whileHover={{ scale: 1.02, backgroundColor: "rgba(38, 38, 38, 0.8)" }}
                       whileTap={{ scale: 0.98 }}
-                      className="bg-kabuki-red/10 border border-kabuki-red/50 p-6 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-kabuki-red transition-all duration-300 shadow-xl"
+                      className="bg-brand-primary/10 border border-brand-primary/50 p-6 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-brand-primary transition-all duration-300 shadow-xl"
                     >
-                      <div className="p-3 bg-kabuki-red text-white rounded-xl">
+                      <div className="p-3 bg-brand-primary text-white rounded-xl">
                         <Shield size={24} />
                       </div>
                       <div className="flex-1">
                         <h3 className="text-white font-bold text-sm uppercase tracking-wider">Administration</h3>
-                        <p className="text-[10px] text-kabuki-red uppercase">Panneau de contrôle</p>
+                        <p className="text-[10px] text-brand-primary uppercase">Panneau de contrôle</p>
                       </div>
-                      <ChevronRight size={18} className="text-kabuki-red" />
+                      <ChevronRight size={18} className="text-brand-primary" />
                     </m.div>
                   </TransitionLink>
                 )}
@@ -110,7 +110,7 @@ export default function ProfilePage() {
                   <m.div 
                     whileHover={{ scale: 1.02, backgroundColor: "rgba(38, 38, 38, 0.8)" }}
                     whileTap={{ scale: 0.98 }}
-                    className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-kabuki-red transition-all duration-300 shadow-xl"
+                    className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-brand-primary transition-all duration-300 shadow-xl"
                   >
                     <div className="p-3 bg-neutral-800 text-white rounded-xl">
                       <Settings size={24} />

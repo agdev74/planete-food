@@ -51,7 +51,7 @@ export default function TrackPage() {
     <div className="min-h-screen bg-black pt-32 pb-20 px-4">
       <Suspense 
         fallback={
-          <div className="flex flex-col items-center mt-20 text-kabuki-red">
+          <div className="flex flex-col items-center mt-20 text-brand-primary">
             <Loader2 className="animate-spin mb-4" size={32} />
             <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500">Chargement...</span>
           </div>

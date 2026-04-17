@@ -9,7 +9,7 @@ export default function AdminDashboardPage() {
       <Reveal>
         <div className="mb-10">
           <h1 className="text-3xl font-display font-bold uppercase tracking-widest text-white">
-            Tableau de <span className="text-kabuki-red">Bord</span>
+            Tableau de <span className="text-brand-primary">Bord</span>
           </h1>
           <p className="text-gray-500 text-sm mt-2 italic">
             Suivi des commandes passées via le site.

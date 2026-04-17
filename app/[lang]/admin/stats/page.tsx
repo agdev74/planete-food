@@ -183,7 +183,7 @@ export default function AdminStatsPage() {
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center p-20 space-y-4">
-      <Loader2 className="animate-spin text-kabuki-red" size={32} />
+      <Loader2 className="animate-spin text-brand-primary" size={32} />
       <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em]">Calcul des marges nettes...</span>
     </div>
   );
@@ -193,7 +193,7 @@ export default function AdminStatsPage() {
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6">
         <div>
           <h1 className="text-3xl font-display font-bold uppercase tracking-widest">
-            Analyse <span className="text-kabuki-red">Financière</span>
+            Analyse <span className="text-brand-primary">Financière</span>
           </h1>
           
           <div className="flex flex-wrap items-center gap-3 mt-6">
@@ -222,7 +222,7 @@ export default function AdminStatsPage() {
 
         <button 
           onClick={exportToCSV}
-          className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-kabuki-red hover:text-white transition-all shadow-xl"
+          className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all shadow-xl"
         >
           <Download size={16} /> Rapport Comptable (CSV)
         </button>
@@ -262,7 +262,7 @@ export default function AdminStatsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-neutral-900/50 border border-neutral-800 rounded-4xl p-8">
           <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 bg-kabuki-red/10 rounded-lg"><Trophy size={20} className="text-kabuki-red" /></div>
+            <div className="p-2 bg-brand-primary/10 rounded-lg"><Trophy size={20} className="text-brand-primary" /></div>
             <h2 className="text-lg font-bold uppercase tracking-widest">Top 5 sur la période</h2>
           </div>
           <div className="space-y-4">
@@ -320,8 +320,8 @@ export default function AdminStatsPage() {
 
 function StatCard({ title, value, icon, trend, color }: StatCardProps) {
   return (
-    <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-3xl shadow-xl relative overflow-hidden group hover:border-kabuki-red/50 transition-colors">
-      <div className="absolute -right-2 -top-2 text-white/5 group-hover:text-kabuki-red/10 transition-colors">
+    <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-3xl shadow-xl relative overflow-hidden group hover:border-brand-primary/50 transition-colors">
+      <div className="absolute -right-2 -top-2 text-white/5 group-hover:text-brand-primary/10 transition-colors">
         {icon}
       </div>
       <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3">{title}</p>

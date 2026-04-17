@@ -73,7 +73,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
   ];
 
   return (
-    <nav className="bg-kabuki-black text-white fixed w-full z-50 border-b border-neutral-800 shadow-lg">
+    <nav className="bg-brand-black text-white fixed w-full z-50 border-b border-neutral-800 shadow-lg">
       <div className="container mx-auto px-6 h-20 flex justify-between items-center">
         
         <TransitionLink 
@@ -105,7 +105,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
               {isActive(link.path) && (
                 <m.div 
                   layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-kabuki-red"
+                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand-primary"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -122,7 +122,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
                   <span className="text-[11px] font-bold text-white capitalize leading-tight">
                     {profile?.full_name || "Client"}
                   </span>
-                  <span className="text-[9px] font-bold text-kabuki-red uppercase tracking-widest leading-tight">
+                  <span className="text-[9px] font-bold text-brand-primary uppercase tracking-widest leading-tight">
                     {profile?.wallet_balance ? Number(profile.wallet_balance).toFixed(2) : "0.00"} CHF
                   </span>
                 </TransitionLink>
@@ -137,9 +137,9 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
             ) : (
               <button
                 onClick={() => setIsAuthModalOpen(true)}
-                className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white hover:text-kabuki-red transition bg-neutral-900 px-5 py-2.5 rounded-full border border-neutral-800 shadow-md"
+                className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white hover:text-brand-primary transition bg-neutral-900 px-5 py-2.5 rounded-full border border-neutral-800 shadow-md"
               >
-                <UserIcon size={16} className="text-kabuki-red" /> Connexion
+                <UserIcon size={16} className="text-brand-primary" /> Connexion
               </button>
             )}
           </div>
@@ -150,7 +150,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
               {totalItems > 0 && (
                 <m.div 
                   initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                  className="absolute -top-1 -right-1 bg-kabuki-red text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-kabuki-black"
+                  className="absolute -top-1 -right-1 bg-brand-primary text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-brand-black"
                 >
                   {totalItems}
                 </m.div>
@@ -164,7 +164,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
           {user && profile?.is_admin && (
             <TransitionLink 
               href={`/${lang}/admin/menu`} 
-              className="text-[10px] bg-white/10 hover:bg-white/20 px-3 py-1 rounded border border-white/20 font-bold uppercase tracking-widest transition-colors text-kabuki-red ml-2"
+              className="text-[10px] bg-white/10 hover:bg-white/20 px-3 py-1 rounded border border-white/20 font-bold uppercase tracking-widest transition-colors text-brand-primary ml-2"
             >
               Admin
             </TransitionLink>
@@ -174,7 +174,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
         {/* --- MOBILE --- */}
         <div className="flex md:hidden items-center space-x-4">
           <button onClick={() => user ? handleSignOut() : setIsAuthModalOpen(true)} className="relative p-2 active:scale-90 transition-transform">
-            {user ? <LogOut size={22} className="text-kabuki-red" /> : <UserIcon size={22} className="text-white" />}
+            {user ? <LogOut size={22} className="text-brand-primary" /> : <UserIcon size={22} className="text-white" />}
           </button>
 
           <button onClick={onOpenCart} className="relative p-2 z-50 active:scale-90 transition-transform">
@@ -183,7 +183,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
               {totalItems > 0 && (
                 <m.div 
                   initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                  className="absolute top-0 right-0 bg-kabuki-red text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-kabuki-black"
+                  className="absolute top-0 right-0 bg-brand-primary text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-brand-black"
                 >
                   {totalItems}
                 </m.div>
@@ -193,7 +193,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
 
           <button onClick={() => setIsOpen(!isOpen)} className="z-50 w-8 h-10 flex flex-col justify-center items-center">
             <m.span animate={isOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }} className="w-8 h-0.5 bg-white block mb-2 rounded-full" />
-            <m.span animate={isOpen ? { opacity: 0 } : { opacity: 1 }} className="w-8 h-0.5 bg-kabuki-red block mb-2 rounded-full" />
+            <m.span animate={isOpen ? { opacity: 0 } : { opacity: 1 }} className="w-8 h-0.5 bg-brand-primary block mb-2 rounded-full" />
             <m.span animate={isOpen ? { rotate: -45, y: -10 } : { rotate: 0, y: 0 }} className="w-8 h-0.5 bg-white block rounded-full" />
           </button>
         </div>
@@ -204,13 +204,13 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
           <m.div
             initial={{ opacity: 0, x: "100%" }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="fixed inset-0 bg-kabuki-black z-40 flex flex-col items-center justify-center md:hidden"
+            className="fixed inset-0 bg-brand-black z-40 flex flex-col items-center justify-center md:hidden"
           >
             {user && profile && (
               <TransitionLink href={`/${lang}/profile`} className="absolute top-24 w-full flex justify-center">
                 <div className="bg-neutral-900 border border-neutral-800 rounded-full px-6 py-2 flex items-center gap-3 shadow-lg">
                   <span className="text-xs font-bold text-white capitalize">{profile.full_name}</span>
-                  <span className="text-[10px] font-bold text-kabuki-red uppercase tracking-widest">
+                  <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest">
                     {Number(profile.wallet_balance).toFixed(2)} CHF
                   </span>
                 </div>
@@ -220,7 +220,7 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
             <ul className="space-y-8 text-center mt-12">
               {navLinks.map((link) => (
                 <li key={link.path}>
-                  <TransitionLink href={link.path} className={`text-3xl font-display font-bold uppercase tracking-widest block transition-colors ${isActive(link.path) ? "text-kabuki-red" : "text-white hover:text-gray-300"}`}>
+                  <TransitionLink href={link.path} className={`text-3xl font-display font-bold uppercase tracking-widest block transition-colors ${isActive(link.path) ? "text-brand-primary" : "text-white hover:text-gray-300"}`}>
                     {link.name}
                   </TransitionLink>
                 </li>

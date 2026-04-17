@@ -127,13 +127,13 @@ export default function DriverDashboard() {
     }
   };
 
-  if (loading) return <div className="min-h-screen bg-black flex items-center justify-center"><Loader2 className="animate-spin text-kabuki-red" size={40} /></div>;
+  if (loading) return <div className="min-h-screen bg-black flex items-center justify-center"><Loader2 className="animate-spin text-brand-primary" size={40} /></div>;
 
   return (
     <div className="min-h-screen bg-black text-white p-4 pb-24">
       <div className="mb-6 pt-4">
         <h1 className="text-2xl font-display font-bold uppercase flex items-center gap-3 tracking-widest text-white">
-          <Truck className="text-kabuki-red" size={28} /> Espace Livreur
+          <Truck className="text-brand-primary" size={28} /> Espace Livreur
         </h1>
         <p className="text-gray-500 text-xs mt-1 uppercase font-bold tracking-widest">
           {orders.length} livraison(s) en attente
@@ -164,7 +164,7 @@ export default function DriverDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className={`p-5 rounded-3xl border transition-all duration-500 flex flex-col ${
                   isTrackingMe 
-                    ? "bg-kabuki-red/10 border-kabuki-red shadow-[0_0_30px_rgba(220,38,38,0.2)]" 
+                    ? "bg-brand-primary/10 border-brand-primary shadow-[0_0_30px_rgba(220,38,38,0.2)]" 
                     : "bg-neutral-900 border-neutral-800"
                 }`}
               >
@@ -186,7 +186,7 @@ export default function DriverDashboard() {
                     <MapPin className="text-gray-500 mt-0.5 shrink-0" size={18} />
                     <div>
                       <p className="font-bold text-sm leading-tight">{safeAddress}</p>
-                      <p className="text-kabuki-red font-black text-xs mt-1">{safeZip}</p>
+                      <p className="text-brand-primary font-black text-xs mt-1">{safeZip}</p>
                     </div>
                   </div>
                   
@@ -216,7 +216,7 @@ export default function DriverDashboard() {
                       className={`w-full py-4 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 ${
                         activeDeliveryId !== null 
                           ? "bg-neutral-800 text-gray-600 cursor-not-allowed" 
-                          : "bg-kabuki-red text-white shadow-lg hover:bg-red-700 shadow-red-900/30"
+                          : "bg-brand-primary text-white shadow-lg hover:bg-red-700 shadow-red-900/30"
                       }`}
                     >
                       <Navigation size={20} /> Démarrer la course
@@ -224,7 +224,7 @@ export default function DriverDashboard() {
                   )}
                   
                   {isTrackingMe && (
-                    <p className="text-center text-[10px] text-kabuki-red uppercase font-bold mt-4 animate-pulse tracking-widest">
+                    <p className="text-center text-[10px] text-brand-primary uppercase font-bold mt-4 animate-pulse tracking-widest">
                       📍 Partage GPS en direct activé...
                     </p>
                   )}

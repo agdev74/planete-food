@@ -34,7 +34,7 @@ export default function LanguageSwitcher() {
           type="button"
           onClick={() => handleLanguageChange(l.code)}
           className={`text-[10px] font-bold tracking-widest transition-colors p-1 ${
-            lang === l.code ? "text-kabuki-red" : "text-gray-400 hover:text-white"
+            lang === l.code ? "text-brand-primary" : "text-gray-400 hover:text-white"
           }`}
         >
           <m.span 

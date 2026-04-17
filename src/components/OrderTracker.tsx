@@ -74,7 +74,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
     localStorage.removeItem("kabuki_active_order");
   };
 
-  if (loading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-kabuki-red" /></div>;
+  if (loading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin text-brand-primary" /></div>;
   if (!order) return <div className="text-center p-10 text-gray-500 font-bold uppercase tracking-widest text-sm">Commande introuvable</div>;
 
   const isDelivery = order.order_type === "Livraison";
@@ -104,7 +104,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
       <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 shadow-2xl overflow-hidden">
         
         <div className="text-center mb-8">
-          <span className="text-kabuki-red font-bold text-[10px] uppercase tracking-[0.3em]">
+          <span className="text-brand-primary font-bold text-[10px] uppercase tracking-[0.3em]">
             {isDelivery ? "Suivi de Livraison" : "Suivi en direct"}
           </span>
           <h2 className="text-white font-display font-bold uppercase text-3xl tracking-tighter italic mt-1">
@@ -134,7 +134,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
             animate={{ opacity: 1, scale: 1 }} 
             className="text-center py-10 bg-red-900/10 rounded-2xl border border-red-500/20"
           >
-            <XCircle size={48} className="text-kabuki-red mx-auto mb-4" />
+            <XCircle size={48} className="text-brand-primary mx-auto mb-4" />
             <h3 className="text-white font-bold uppercase tracking-widest mb-2">Commande Annulée</h3>
             <p className="text-gray-400 text-xs px-6 leading-relaxed">
               Cette commande a été annulée. Un remboursement a été initié vers votre moyen de paiement original.
@@ -173,7 +173,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
                         <m.p 
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
-                          className="text-xs text-kabuki-red font-bold mt-1 overflow-hidden"
+                          className="text-xs text-brand-primary font-bold mt-1 overflow-hidden"
                         >
                           {step.id === "Payé" ? "En attente de prise en charge." :
                            step.id === "En préparation" ? "Nos chefs préparent vos sushis..." : 
@@ -202,7 +202,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
             <Link 
               href={`/${lang}/menu`}
               onClick={handleFinish}
-              className="w-full bg-white text-black font-bold py-5 rounded-2xl uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-kabuki-red hover:text-white transition-all shadow-xl"
+              className="w-full bg-white text-black font-bold py-5 rounded-2xl uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-brand-primary hover:text-white transition-all shadow-xl"
             >
               Nouvelle commande <ArrowRight size={16} />
             </Link>

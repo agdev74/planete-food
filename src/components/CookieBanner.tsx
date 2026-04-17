@@ -33,7 +33,7 @@ export default function CookieBanner() {
         >
           <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl shadow-2xl backdrop-blur-md">
             <div className="flex items-start gap-4">
-              <div className="bg-kabuki-red/10 p-3 rounded-xl text-kabuki-red">
+              <div className="bg-brand-primary/10 p-3 rounded-xl text-brand-primary">
                 <Cookie size={24} />
               </div>
               <div className="flex-1">

@@ -2,9 +2,9 @@
 
 @theme {
   /* Vos couleurs personnalisées */
-  --color-kabuki-red: #E60012;
-  --color-kabuki-black: #111111;
-  --color-kabuki-dark: #333333;
+  --color-brand-primary: #E60012;
+  --color-brand-black: #111111;
+  --color-brand-dark: #333333;
   --font-display: var(--font-oswald);
 
   /* Configuration Next.js standard */

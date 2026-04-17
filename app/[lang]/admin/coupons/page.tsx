@@ -122,18 +122,18 @@ export default function AdminCouponsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-3xl font-display font-bold uppercase tracking-widest">
-            Codes <span className="text-kabuki-red">Promo</span>
+            Codes <span className="text-brand-primary">Promo</span>
           </h1>
           <p className="text-neutral-500 text-sm mt-2 italic">Gérez vos offres et réductions clients.</p>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 bg-kabuki-red hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-red-900/20 uppercase text-xs tracking-widest">
+        <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 bg-brand-primary hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-red-900/20 uppercase text-xs tracking-widest">
           <Plus size={18} /> Nouveau Coupon
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full p-20 text-center"><Loader2 className="animate-spin text-kabuki-red mx-auto" size={40} /></div>
+          <div className="col-span-full p-20 text-center"><Loader2 className="animate-spin text-brand-primary mx-auto" size={40} /></div>
         ) : coupons.length === 0 ? (
           <div className="col-span-full p-20 text-center border-2 border-dashed border-neutral-800 rounded-3xl text-neutral-600 font-bold uppercase tracking-widest">Aucun coupon actif</div>
         ) : (
@@ -141,7 +141,7 @@ export default function AdminCouponsPage() {
             <m.div layout key={coupon.id} className={`relative bg-neutral-900 border rounded-4xl p-6 transition-all ${coupon.is_active ? 'border-neutral-800' : 'border-red-900/20 opacity-60'}`}>
               <div className="flex justify-between items-start mb-6">
                 <div className="bg-black/40 px-4 py-2 rounded-xl border border-white/5 flex items-center gap-2">
-                  <Ticket size={16} className="text-kabuki-red" />
+                  <Ticket size={16} className="text-brand-primary" />
                   <span className="font-display font-black text-xl tracking-tighter text-white">{coupon.code}</span>
                 </div>
                 <div className="flex gap-2">
@@ -189,35 +189,35 @@ export default function AdminCouponsPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block tracking-widest">Code (Ex: KABUKI20)</label>
-                  <input required className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-kabuki-red transition text-white font-black" value={form.code} onChange={e => setForm({...form, code: e.target.value.toUpperCase()})} placeholder="BIENVENUE5" />
+                  <input required className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-brand-primary transition text-white font-black" value={form.code} onChange={e => setForm({...form, code: e.target.value.toUpperCase()})} placeholder="BIENVENUE5" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block tracking-widest">Type</label>
-                    <select className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-kabuki-red transition text-white" value={form.discount_type} onChange={e => setForm({...form, discount_type: e.target.value as 'percentage' | 'fixed'})}>
+                    <select className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-brand-primary transition text-white" value={form.discount_type} onChange={e => setForm({...form, discount_type: e.target.value as 'percentage' | 'fixed'})}>
                       <option value="percentage">Pourcentage (%)</option>
                       <option value="fixed">Montant fixe (CHF)</option>
                     </select>
                   </div>
                   <div>
                     <label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block tracking-widest">Valeur</label>
-                    <input type="number" required className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-kabuki-red transition text-white" value={form.discount_value} onChange={e => setForm({...form, discount_value: e.target.value})} placeholder="10" />
+                    <input type="number" required className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-brand-primary transition text-white" value={form.discount_value} onChange={e => setForm({...form, discount_value: e.target.value})} placeholder="10" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block tracking-widest">Min. Commande (CHF)</label>
-                    <input type="number" className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-kabuki-red transition text-white" value={form.min_order_amount} onChange={e => setForm({...form, min_order_amount: e.target.value})} />
+                    <input type="number" className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-brand-primary transition text-white" value={form.min_order_amount} onChange={e => setForm({...form, min_order_amount: e.target.value})} />
                   </div>
                   <div>
                     <label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block tracking-widest">{"Date d'expiration"}</label>
-                    <input type="date" className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-kabuki-red transition text-white" value={form.expiration_date} onChange={e => setForm({...form, expiration_date: e.target.value})} />
+                    <input type="date" className="w-full bg-black border border-neutral-800 p-4 rounded-2xl outline-none focus:border-brand-primary transition text-white" value={form.expiration_date} onChange={e => setForm({...form, expiration_date: e.target.value})} />
                   </div>
                 </div>
 
-                <button type="submit" disabled={isSubmitting} className="w-full bg-kabuki-red text-white py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50">
+                <button type="submit" disabled={isSubmitting} className="w-full bg-brand-primary text-white py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50">
                   {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : "Créer le coupon"}
                 </button>
               </form>

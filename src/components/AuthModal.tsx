@@ -149,7 +149,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                           value={formData.fullName}
                           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                           placeholder="Jean Dupont"
-                          className="w-full bg-black text-white border border-neutral-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-kabuki-red transition text-sm"
+                          className="w-full bg-black text-white border border-neutral-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-brand-primary transition text-sm"
                         />
                       </div>
                     </m.div>
@@ -166,7 +166,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="votre@email.com"
-                      className="w-full bg-black text-white border border-neutral-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-kabuki-red transition text-sm"
+                      className="w-full bg-black text-white border border-neutral-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-brand-primary transition text-sm"
                     />
                   </div>
                 </div>
@@ -181,7 +181,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       placeholder="••••••••"
-                      className="w-full bg-black text-white border border-neutral-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-kabuki-red transition text-sm"
+                      className="w-full bg-black text-white border border-neutral-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-brand-primary transition text-sm"
                     />
                   </div>
                 </div>
@@ -189,7 +189,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-kabuki-red text-white font-bold py-4 rounded-xl uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg shadow-red-900/30 mt-6 disabled:opacity-50"
+                  className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg shadow-red-900/30 mt-6 disabled:opacity-50"
                 >
                   {loading && isLogin ? (
                     <Loader2 size={18} className="animate-spin" />

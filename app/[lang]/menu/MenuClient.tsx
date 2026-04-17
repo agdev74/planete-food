@@ -65,7 +65,7 @@ const MenuItemCard = memo(({ item, index, onClick }: { item: MenuItem; index: nu
     // ✅ RETRAIT DE m.div : On utilise une balise HTML standard div pour libérer 100% du CPU
     <div 
       onClick={() => onClick(item)}
-      className="bg-neutral-800 rounded-xl shadow-lg overflow-hidden hover:border-kabuki-red transition-colors duration-300 group border border-neutral-700 flex flex-col h-full cursor-pointer relative"
+      className="bg-neutral-800 rounded-xl shadow-lg overflow-hidden hover:border-brand-primary transition-colors duration-300 group border border-neutral-700 flex flex-col h-full cursor-pointer relative"
     >
       <div className="w-full bg-neutral-900 relative aspect-square overflow-hidden">
         <AnimatePresence>
@@ -74,7 +74,7 @@ const MenuItemCard = memo(({ item, index, onClick }: { item: MenuItem; index: nu
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute top-2 left-2 z-20 bg-kabuki-red text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center shadow-lg border border-white/10"
+              className="absolute top-2 left-2 z-20 bg-brand-primary text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center shadow-lg border border-white/10"
             >
               {quantity}
             </m.div>
@@ -148,7 +148,7 @@ const MenuItemCard = memo(({ item, index, onClick }: { item: MenuItem; index: nu
               onClick={handleAdd}
               aria-label="Plus"
               className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
-                quantity > 0 ? "text-kabuki-red" : "bg-neutral-700 text-white hover:bg-kabuki-red"
+                quantity > 0 ? "text-brand-primary" : "bg-neutral-700 text-white hover:bg-brand-primary"
               }`}
             >
               <Plus size={12} strokeWidth={3} />
@@ -203,7 +203,7 @@ export default function MenuClient({ initialItems }: MenuClientProps) {
             <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-widest relative z-10">
               {t.menu.title}
             </h1>
-            <div className="w-12 h-1 bg-kabuki-red mx-auto mt-6 relative z-10"></div>
+            <div className="w-12 h-1 bg-brand-primary mx-auto mt-6 relative z-10"></div>
           </Reveal>
         </div>
 
@@ -217,7 +217,7 @@ export default function MenuClient({ initialItems }: MenuClientProps) {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={lang === "fr" ? "Rechercher..." : "Search..."}
                 aria-label="Rechercher un plat"
-                className="w-full bg-black border border-neutral-800 rounded-2xl py-2 pl-12 pr-4 text-xs text-white focus:border-kabuki-red outline-none shadow-xl transition-all"
+                className="w-full bg-black border border-neutral-800 rounded-2xl py-2 pl-12 pr-4 text-xs text-white focus:border-brand-primary outline-none shadow-xl transition-all"
               />
             </div>
 
@@ -229,7 +229,7 @@ export default function MenuClient({ initialItems }: MenuClientProps) {
                   aria-pressed={activeCategory === cat.id}
                   className={`flex-shrink-0 px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all ${
                     activeCategory === cat.id 
-                    ? "bg-kabuki-red border-kabuki-red text-white" 
+                    ? "bg-brand-primary border-brand-primary text-white" 
                     : "bg-neutral-900 border-neutral-800 text-neutral-500 hover:text-white"
                   }`}
                 >

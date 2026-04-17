@@ -100,34 +100,34 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-neutral-500 uppercase ml-1">Nom complet</label>
-                <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-kabuki-red outline-none transition-all text-sm text-white" />
+                <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-brand-primary outline-none transition-all text-sm text-white" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-neutral-500 uppercase ml-1">Téléphone</label>
-                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-kabuki-red outline-none transition-all text-sm text-white" />
+                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-brand-primary outline-none transition-all text-sm text-white" />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-[10px] font-bold text-neutral-500 uppercase ml-1">Adresse</label>
-              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-kabuki-red outline-none transition-all text-sm text-white" />
+              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-brand-primary outline-none transition-all text-sm text-white" />
             </div>
             
             <div className="grid grid-cols-2 gap-6">
-               <input type="text" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="Code Postal" className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-kabuki-red outline-none transition-all text-sm text-white" />
-               <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Ville" className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-kabuki-red outline-none transition-all text-sm text-white" />
+               <input type="text" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="Code Postal" className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-brand-primary outline-none transition-all text-sm text-white" />
+               <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Ville" className="w-full bg-black border border-neutral-800 p-4 rounded-xl focus:border-brand-primary outline-none transition-all text-sm text-white" />
             </div>
 
             {errorMsg && (
               <div className="bg-red-900/20 border border-red-500/50 text-red-500 p-4 rounded-xl flex items-center gap-2 text-xs font-bold uppercase animate-pulse">
-                <AlertTriangle size={16} className="shrink-0" /> <span className="flex-1 break-words">{errorMsg}</span>
+                <AlertTriangle size={16} className="shrink-0" /> <span className="flex-1 wrap-break-word">{errorMsg}</span>
               </div>
             )}
 
             <button 
               type="submit"
               disabled={isUpdating} 
-              className="w-full bg-kabuki-red text-white py-4 rounded-xl font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-brand-primary text-white py-4 rounded-xl font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isUpdating ? <><Loader2 size={18} className="animate-spin" /> Traitement...</> : <><Save size={18} /> Sauvegarder</>}
             </button>
