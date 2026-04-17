@@ -14,7 +14,8 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://*.supabase.co https://accounts.google.com https://*.gstatic.com",
               "connect-src 'self' https://*.stripe.com https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://accounts.google.com",
               "frame-src 'self' https://js.stripe.com https://accounts.google.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://*.gstatic.com https://lh3.googleusercontent.com",
+              // Ajout de images.unsplash.com dans img-src pour la CSP
+              "img-src 'self' data: blob: https://*.supabase.co https://*.gstatic.com https://lh3.googleusercontent.com https://images.unsplash.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' data: https://fonts.gstatic.com",
             ].join('; ')
@@ -28,7 +29,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co' },
-      { protocol: 'https', hostname: 'lh3.googleusercontent.com' }
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' } // Ajout pour next/image
     ],
   }
 };

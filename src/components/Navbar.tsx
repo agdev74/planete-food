@@ -70,7 +70,6 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
     { name: t?.nav?.home || "Accueil", path: `/${lang}` },
     { name: (t?.nav as NavTranslations)?.restaurants || "Restaurants", path: `/${lang}/restaurant` },
     { name: t?.nav?.menu || "Menu", path: `/${lang}/menu` },
-    { name: t?.nav?.catering || "Traiteur", path: `/${lang}/traiteur` },
     { name: t?.nav?.contact || "Contact", path: `/${lang}/contact` },
   ];
 

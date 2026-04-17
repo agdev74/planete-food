@@ -7,6 +7,7 @@ import { Search, Info, Plus, Minus } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import { useTranslation } from "@/context/LanguageContext";
 import ProductModal from "@/components/ProductModal";
+import RestaurantBanner from "@/components/RestaurantBanner";
 import { useCart, MenuItem as ContextMenuItem } from "@/context/CartContext";
 
 export interface MenuItem extends ContextMenuItem {
@@ -234,8 +235,11 @@ export default function MenuClient({ initialItems, restaurant }: MenuClientProps
           </Reveal>
         </div>
 
-        <div className="sticky top-70px z-30 bg-[#080808]/80 backdrop-blur-xl py-4 border-b border-neutral-900 mb-8">
-          <div className="container mx-auto px-4">
+        <div className="sticky top-70px z-30 bg-[#080808]/80 backdrop-blur-xl border-b border-neutral-900 mb-8">
+          <div className="border-b border-neutral-900/50 py-2">
+            <RestaurantBanner />
+          </div>
+          <div className="container mx-auto px-4 py-4">
             <div className="relative max-w-md mx-auto mb-6">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600" size={16} aria-hidden="true" />
               <input 

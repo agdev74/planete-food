@@ -5,10 +5,13 @@ export const translations = {
   fr: {
     nav: { home: "Accueil", restaurants: "Restaurants", menu: "La Carte", catering: "Traiteur", contact: "Contact" },
     hero: {
-      subtitle: "Saveurs Authentiques & Créations d'Exception",
+      badge: "🇨🇭 Genève · Livraison & Click & Collect",
+      subtitle: "Le Food Court Digital de Genève",
       title_top: "Planet",
       title_bottom: "Food",
-      desc: "Une expérience gastronomique d'exception. Découvrez nos créations sur place, à emporter ou livrées chez vous.",
+      tagline: "Plusieurs restaurants. Un seul panier. Une seule livraison.",
+      desc: "Le meilleur de la food à Genève, livré chez vous. La qualité restaurant au prix juste — faites-vous plaisir sans casser la tirelire.",
+      btnRestaurants: "Découvrir les Restaurants",
       btnMenu: "Découvrir la Carte",
       btnTraiteur: "Service Traiteur"
     },
@@ -41,6 +44,19 @@ export const translations = {
       title: "Prêt à commander ?",
       desc: "Notre équipe est prête à préparer votre commande. Livraison rapide ou à emporter.",
       call: "Appeler"
+    },
+    values: {
+      subtitle: "Nos Engagements",
+      title: "Pourquoi Planet Food ?",
+      items: [
+        { icon: "speed", title: "Livraison Express", desc: "Vos commandes préparées et livrées en moins de 30 min dans tout Genève." },
+        { icon: "payment", title: "Paiement Sécurisé", desc: "Stripe certifié PCI-DSS. Vos données bancaires ne transitent jamais par nos serveurs." },
+        { icon: "mobile", title: "Web & Mobile", desc: "Commandez depuis n'importe quel appareil. Application PWA disponible directement depuis votre navigateur." },
+        { icon: "shared", title: "Panier Commun", desc: "Burgers, pizzas, tacos : mélangez plusieurs restaurants dans une seule commande." }
+      ]
+    },
+    restaurants: {
+      banner: "Nos Enseignes"
     },
     catering: {
       title: "Service Traiteur de Prestige",
@@ -99,10 +115,13 @@ export const translations = {
   en: {
     nav: { home: "Home", restaurants: "Restaurants", menu: "Menu", catering: "Catering", contact: "Contact" },
     hero: {
-      subtitle: "Authentic Flavors & Exceptional Creations",
+      badge: "🇨🇭 Geneva · Delivery & Click & Collect",
+      subtitle: "Geneva's Digital Food Court",
       title_top: "Planet",
       title_bottom: "Food",
-      desc: "An exceptional gastronomic experience. Discover our creations dine-in, takeaway, or delivered to your door.",
+      tagline: "Multiple restaurants. One cart. One delivery.",
+      desc: "The best food Geneva has to offer, delivered to your door. Restaurant quality at the right price — treat yourself without breaking the bank.",
+      btnRestaurants: "Explore Restaurants",
       btnMenu: "Discover the Menu",
       btnTraiteur: "Catering Service"
     },
@@ -135,6 +154,19 @@ export const translations = {
       title: "Ready to order?",
       desc: "Our team is ready to prepare your order. Fast delivery or takeaway.",
       call: "Call"
+    },
+    values: {
+      subtitle: "Our Commitments",
+      title: "Why Planet Food?",
+      items: [
+        { icon: "speed", title: "Express Delivery", desc: "Orders prepared and delivered in under 30 min across Geneva." },
+        { icon: "payment", title: "Secure Payment", desc: "PCI-DSS certified Stripe. Your banking details never transit through our servers." },
+        { icon: "mobile", title: "Web & Mobile", desc: "Order from any device. PWA application available directly from your browser." },
+        { icon: "shared", title: "Shared Cart", desc: "Burgers, pizzas, tacos: mix multiple restaurants in a single order." }
+      ]
+    },
+    restaurants: {
+      banner: "Our Restaurants"
     },
     catering: {
       title: "Prestige Catering Service",
@@ -193,10 +225,13 @@ export const translations = {
   es: {
     nav: { home: "Inicio", restaurants: "Restaurantes", menu: "La Carta", catering: "Catering", contact: "Contacto" },
     hero: {
-      subtitle: "Sabores Auténticos & Creaciones de Excepción",
+      badge: "🇨🇭 Ginebra · Entrega & Click & Collect",
+      subtitle: "El Food Court Digital de Ginebra",
       title_top: "Planet",
       title_bottom: "Food",
-      desc: "Una experiencia gastronómica excepcional. Descubra nuestras creaciones en el local, para llevar o con entrega a domicilio.",
+      tagline: "Varios restaurantes. Un solo carrito. Una sola entrega.",
+      desc: "Lo mejor de la gastronomía de Ginebra, entregado en su puerta. Calidad de restaurante al precio justo — disfrute sin gastar de más.",
+      btnRestaurants: "Descubrir los Restaurantes",
       btnMenu: "Descubrir la Carta",
       btnTraiteur: "Servicio de Catering"
     },
@@ -229,6 +264,19 @@ export const translations = {
       title: "¿Listo para pedir?",
       desc: "Nuestro equipo está listo para preparar su pedido. Entrega rápida o para llevar.",
       call: "Llamar"
+    },
+    values: {
+      subtitle: "Nuestros Compromisos",
+      title: "¿Por qué Planet Food?",
+      items: [
+        { icon: "speed", title: "Entrega Express", desc: "Pedidos preparados y entregados en menos de 30 min en toda Ginebra." },
+        { icon: "payment", title: "Pago Seguro", desc: "Stripe certificado PCI-DSS. Sus datos bancarios nunca pasan por nuestros servidores." },
+        { icon: "mobile", title: "Web & Móvil", desc: "Pida desde cualquier dispositivo. Aplicación PWA disponible desde su navegador." },
+        { icon: "shared", title: "Carrito Compartido", desc: "Hamburguesas, pizzas, tacos: mezcle varios restaurantes en un solo pedido." }
+      ]
+    },
+    restaurants: {
+      banner: "Nuestros Restaurantes"
     },
     catering: {
       title: "Servicio de Catering de Prestigio",
