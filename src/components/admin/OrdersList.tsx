@@ -133,7 +133,7 @@ export default function OrdersList() {
 
   // Shared orders state
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // List-only
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -174,7 +174,6 @@ export default function OrdersList() {
     supabase
       .from("restaurants")
       .select("id, name")
-      .eq("is_active", true)
       .order("name")
       .then(({ data }) => {
         if (data && data.length > 0) {

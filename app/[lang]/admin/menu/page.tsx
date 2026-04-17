@@ -36,7 +36,7 @@ export default function AdminMenu() {
   const { lang } = useTranslation();
   const [items, setItems] = useState<MenuItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
@@ -81,7 +81,7 @@ export default function AdminMenu() {
 
   // Fetch restaurants once; sets activeRestaurantId which triggers the menu fetch below.
   useEffect(() => {
-    supabase.from("restaurants").select("id, name").eq("is_active", true).order("name").then(({ data }) => {
+    supabase.from("restaurants").select("id, name").order("name").then(({ data }) => {
       if (data && data.length > 0) {
         setRestaurants(data as RestaurantOption[]);
         setActiveRestaurantId((data as RestaurantOption[])[0].id);
