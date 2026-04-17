@@ -82,17 +82,22 @@ export default function AdminMenu() {
 
   // Fetch restaurants once; sets activeRestaurantId which triggers the menu fetch below.
   useEffect(() => {
-    supabase.from("restaurants").select("id, name").order("name")
-      .then(({ data, error }) => {
-        if (error) {
-          console.error("[DIAG] Erreur fetch restaurants (menu):", error);
-        }
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("restaurants")
+          .select("id, name")
+          .order("name");
+        if (error) console.error("[DIAG] Erreur fetch restaurants (menu):", error);
+        console.log("Restaurants chargés (menu):", data);
         if (data && data.length > 0) {
           setRestaurants(data as RestaurantOption[]);
           setActiveRestaurantId((data as RestaurantOption[])[0].id);
         }
-      })
-      .finally(() => setRestaurantsLoaded(true));
+      } finally {
+        setRestaurantsLoaded(true);
+      }
+    })();
   }, [supabase]);
 
   // Fetch menu whenever the active restaurant changes. fetchMenu is stable so this

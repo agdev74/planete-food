@@ -129,6 +129,7 @@ export default function OrdersList() {
 
   // Restaurant tabs (kanban)
   const [restaurants, setRestaurants] = useState<RestaurantOption[]>([]);
+  const [restaurantsLoaded, setRestaurantsLoaded] = useState(false);
   const [activeRestaurantId, setActiveRestaurantId] = useState<number | null>(null);
 
   // Shared orders state
@@ -171,16 +172,22 @@ export default function OrdersList() {
 
   // ── Fetch restaurants once ──────────────────────────────────────────────────
   useEffect(() => {
-    supabase
-      .from("restaurants")
-      .select("id, name")
-      .order("name")
-      .then(({ data }) => {
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("restaurants")
+          .select("id, name")
+          .order("name");
+        if (error) console.error("[DIAG] Erreur fetch restaurants (commandes):", error);
+        console.log("Restaurants chargés (commandes):", data);
         if (data && data.length > 0) {
           setRestaurants(data as RestaurantOption[]);
           setActiveRestaurantId((data as RestaurantOption[])[0].id);
         }
-      });
+      } finally {
+        setRestaurantsLoaded(true);
+      }
+    })();
   }, [supabase]);
 
   // ── Data fetch functions ────────────────────────────────────────────────────
@@ -392,10 +399,12 @@ export default function OrdersList() {
       {/* ── Restaurant tabs (kanban only) ── */}
       {activeView === "kanban" && (
         <div className="flex flex-wrap gap-2">
-          {restaurants.length === 0 ? (
+          {!restaurantsLoaded ? (
             <span className="flex items-center gap-2 text-neutral-600 text-xs uppercase font-bold tracking-widest">
               <Loader2 size={12} className="animate-spin" /> Chargement des enseignes…
             </span>
+          ) : restaurants.length === 0 ? (
+            <span className="text-neutral-600 text-xs uppercase font-bold tracking-widest">Aucune enseigne trouvée.</span>
           ) : (
             restaurants.map((r) => (
               <button
