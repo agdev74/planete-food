@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/context/LanguageContext";
-import { 
-  UtensilsCrossed, 
+import {
+  UtensilsCrossed,
   LogOut,
   ArrowLeft,
   ShoppingBag,
   Truck,
   BarChart3,
-  Ticket 
+  Ticket,
+  ChefHat,
 } from "lucide-react";
 // ✅ CORRECTION IMPORT
 import { createClient } from "@/utils/supabase/client";
@@ -57,10 +58,15 @@ export default function AdminHeader({ lang }: { lang: string }) {
       path: `/${lang}/admin/driver`, 
       icon: <Truck size={16} /> 
     },
-    { 
-      name: "Stats", 
-      path: `/${lang}/admin/stats`, 
-      icon: <BarChart3 size={16} /> 
+    {
+      name: "Stats",
+      path: `/${lang}/admin/stats`,
+      icon: <BarChart3 size={16} />,
+    },
+    {
+      name: "KDS",
+      path: `/${lang}/admin/kitchen`,
+      icon: <ChefHat size={16} />,
     },
   ];
 
