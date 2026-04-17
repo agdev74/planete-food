@@ -11,7 +11,7 @@ import type { Restaurant } from "@/types";
 import {
   ShoppingBag,
   Wallet,
-  Timer,
+  Bike,
   ArrowRight,
   ChevronDown,
   ChevronRight,
@@ -78,42 +78,23 @@ export default function HomeClient() {
 
           {/* Tagline */}
           <Reveal delay={0.15}>
-            <p className="text-white/80 font-bold text-lg md:text-2xl tracking-tight max-w-lg">
-              {t.hero.tagline}
+            <p className="text-white/80 font-bold text-lg md:text-2xl tracking-tight max-w-xl">
+              Tous vos restaurants préférés. Un panier commun. Une livraison rapide.
             </p>
           </Reveal>
 
-          {/* Description */}
-          <Reveal delay={0.2}>
-            <p className="text-neutral-400 text-base md:text-lg max-w-xl leading-relaxed">
-              {t.hero.desc}
-            </p>
-          </Reveal>
-
-          {/* ── CTA block ── */}
-          <Reveal delay={0.3} y={20}>
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-
-              {/* Primary — dominant, glowing */}
-              <Link
-                href={`/${lang}/restaurant`}
-                className="group inline-flex items-center gap-3 px-12 py-5 bg-brand-primary text-white font-black rounded-2xl hover:bg-violet-600 hover:scale-105 active:scale-100 transition-all duration-300 uppercase tracking-widest shadow-glow text-sm md:text-base"
-              >
-                Commander Maintenant
-                <ArrowRight
-                  size={18}
-                  className="group-hover:translate-x-1 transition-transform duration-200"
-                />
-              </Link>
-
-              {/* Secondary */}
-              <Link
-                href={`/${lang}/traiteur`}
-                className="inline-flex items-center gap-2 px-8 py-5 border border-white/10 text-white/60 font-bold rounded-2xl hover:bg-white/5 hover:text-white hover:border-white/20 transition-all duration-300 uppercase tracking-widest text-sm"
-              >
-                {t.hero.btnTraiteur}
-              </Link>
-            </div>
+          {/* ── CTA principal ── */}
+          <Reveal delay={0.25} y={20}>
+            <Link
+              href={`/${lang}/restaurant`}
+              className="group inline-flex items-center gap-3 px-12 py-5 bg-brand-primary text-white font-black rounded-2xl hover:bg-violet-600 hover:scale-105 active:scale-100 transition-all duration-300 uppercase tracking-widest shadow-glow text-sm md:text-base"
+            >
+              Commander Maintenant
+              <ArrowRight
+                size={18}
+                className="group-hover:translate-x-1 transition-transform duration-200"
+              />
+            </Link>
           </Reveal>
 
           {/* Trust bar */}
@@ -294,7 +275,7 @@ export default function HomeClient() {
                 <div className="absolute -top-12 -right-12 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors duration-700" />
 
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/10 shrink-0">
-                  <Timer size={22} className="text-blue-400" />
+                  <Bike size={22} className="text-blue-400" />
                 </div>
 
                 <span className="text-blue-400 text-xs font-black uppercase tracking-widest">
