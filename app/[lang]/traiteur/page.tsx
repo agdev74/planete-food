@@ -87,7 +87,7 @@ export default function TraiteurPage() {
                 className="object-cover opacity-40 scale-105"
                 priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-kabuki-black/60 to-kabuki-black"></div>
+            <div className="absolute inset-0 bg-linear-to-b from-transparent via-kabuki-black/60 to-kabuki-black"></div>
         </div>
         
         <div className="container mx-auto px-6 relative z-10 text-center max-w-4xl">
@@ -135,7 +135,7 @@ export default function TraiteurPage() {
                 className="grid md:grid-cols-2 gap-12 items-center"
               >
                 {/* FIX IMAGE : Utilisation de aspect-square et object-cover pour éviter le vide ou la troncature excessive */}
-                <div className={`relative aspect-square md:h-[550px] rounded-2xl overflow-hidden shadow-2xl transition duration-500 border border-neutral-800 
+                <div className={`relative aspect-square md:h-137.5 rounded-2xl overflow-hidden shadow-2xl transition duration-500 border border-neutral-800 
                   ${index % 2 === 0 ? "md:-rotate-2 hover:rotate-0" : "order-1 md:order-2 md:rotate-2 hover:rotate-0"}`}
                 >
                   <Image 
@@ -144,7 +144,7 @@ export default function TraiteurPage() {
                     fill 
                     className="object-cover" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-kabuki-black/80 via-transparent to-transparent"></div>
+                  <div className="absolute inset-0 bg-linear-to-t from-kabuki-black/80 via-transparent to-transparent"></div>
                 </div>
                 <div className={`space-y-6 ${index % 2 === 0 ? "md:pl-12" : "md:pr-12 order-2 md:order-1"}`}>
                   <div className="text-kabuki-red font-display text-2xl font-bold">{bloc.tag}</div>
@@ -176,7 +176,7 @@ export default function TraiteurPage() {
             transition={{ duration: 40, ease: "linear", repeat: Infinity }}
           >
             {galleryImages.map((img, i) => (
-              <div key={i} className="relative w-[300px] h-[400px] md:w-[450px] md:h-[550px] rounded-2xl overflow-hidden shrink-0 shadow-xl border border-neutral-100">
+              <div key={i} className="relative w-75 h-100 md:w-112.5 md:h-137.5 rounded-2xl overflow-hidden shrink-0 shadow-xl border border-neutral-100">
                 <Image src={img} alt={`Gallery ${i}`} fill className="object-cover" />
               </div>
             ))}

@@ -260,7 +260,7 @@ export default function AdminStatsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-neutral-900/50 border border-neutral-800 rounded-[32px] p-8">
+        <div className="lg:col-span-2 bg-neutral-900/50 border border-neutral-800 rounded-4xl p-8">
           <div className="flex items-center gap-3 mb-8">
             <div className="p-2 bg-kabuki-red/10 rounded-lg"><Trophy size={20} className="text-kabuki-red" /></div>
             <h2 className="text-lg font-bold uppercase tracking-widest">Top 5 sur la période</h2>
@@ -281,7 +281,7 @@ export default function AdminStatsPage() {
           </div>
         </div>
 
-        <div className="bg-neutral-900/50 border border-neutral-800 rounded-[32px] p-8">
+        <div className="bg-neutral-900/50 border border-neutral-800 rounded-4xl p-8">
           <h2 className="text-lg font-bold uppercase tracking-widest mb-8">Canaux de vente</h2>
           <div className="space-y-6">
             <div className="space-y-2">
@@ -320,7 +320,7 @@ export default function AdminStatsPage() {
 
 function StatCard({ title, value, icon, trend, color }: StatCardProps) {
   return (
-    <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-[24px] shadow-xl relative overflow-hidden group hover:border-kabuki-red/50 transition-colors">
+    <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-3xl shadow-xl relative overflow-hidden group hover:border-kabuki-red/50 transition-colors">
       <div className="absolute -right-2 -top-2 text-white/5 group-hover:text-kabuki-red/10 transition-colors">
         {icon}
       </div>
