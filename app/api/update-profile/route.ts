@@ -16,17 +16,18 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { fullName, phone, address, zipCode, city, lang } = body;
 
+    // ✅ Remplacement de upsert() par update() pour éviter les conflits RLS/Triggers
     const { data: updatedProfile, error: dbError } = await supabase
       .from("profiles")
-      .upsert({
-        id: user.id, // ✅ On force l'ID de la session pour empêcher l'usurpation
+      .update({
         full_name: fullName,
         phone,
         address,
         zip_code: zipCode,
         city,
         updated_at: new Date().toISOString(),
-      }, { onConflict: 'id' })
+      })
+      .eq("id", user.id) // 🔒 Sécurité : on cible uniquement la ligne du user connecté
       .select()
       .single(); 
 

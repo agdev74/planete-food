@@ -3,12 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useUser } from "@/context/UserContext";
 import { ArrowLeft, CheckCircle, AlertTriangle, Save, Loader2 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import TransitionLink from "@/components/TransitionLink";
 
 export default function SettingsPage() {
-  const { user, profile } = useUser();
+  // ✅ 1. On récupère la nouvelle fonction refreshProfile du contexte
+  const { user, profile, refreshProfile } = useUser();
   const params = useParams();
+  const router = useRouter();
   const lang = typeof params?.lang === 'string' ? params.lang : 'fr';
 
   const isProcessing = useRef(false);
@@ -49,7 +51,6 @@ export default function SettingsPage() {
       const response = await fetch("/api/update-profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // ✅ On envoie la langue (lang) pour que l'API puisse vider le bon cache
         body: JSON.stringify({ fullName, phone, address, zipCode, city, lang }),
       });
 
@@ -59,7 +60,7 @@ export default function SettingsPage() {
         throw new Error(data.error || "Échec de la sauvegarde réseau.");
       }
 
-      // On met à jour les champs visuels IMMÉDIATEMENT
+      // On met à jour les champs visuels locaux
       if (data.profile) {
         setFullName(data.profile.full_name || "");
         setPhone(data.profile.phone || "");
@@ -70,11 +71,15 @@ export default function SettingsPage() {
 
       setShowSuccess(true);
       
-      // ✅ SOLUTION RADICALE : On attend 1.5s pour que l'utilisateur voie le message vert,
-      // puis on redirige brutalement vers le profil. Cela force le navigateur à télécharger
-      // les données fraîches validées par l'API.
+      // ✅ 2. LA MAGIE OPÈRE ICI : On met à jour le state global React !
+      await refreshProfile();
+      
+      // On dit au serveur Next.js de rafraîchir ses données en arrière-plan
+      router.refresh();
+      
+      // On attend 1.5s pour afficher le message vert, puis on redirige
       setTimeout(() => {
-        window.location.href = `/${lang}/profile`;
+        router.push(`/${lang}/profile`);
       }, 1500);
 
     } catch (err: unknown) {

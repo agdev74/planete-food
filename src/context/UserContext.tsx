@@ -23,29 +23,33 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [supabase] = useState(() => createClient());
 
-  const fetchProfile = useCallback(async (silent = false) => {
+  // ✅ On utilise directement Supabase Client (qui ne souffre pas du cache de Next.js)
+  const fetchProfile = useCallback(async (userId: string, silent = false) => {
     if (!silent) setLoading(true);
 
     try {
-      // ⚡ BYPASS CLIENT : On utilise l'API serveur pour lire le profil
-      const response = await fetch("/api/get-profile");
-      const data = await response.json();
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
 
-      if (response.ok) {
-        setProfile(data.profile);
-      } else {
-        setProfile(null);
-      }
+      if (error) throw error;
+      if (data) setProfile(data);
     } catch (err) {
       console.error("[UserContext Fetch Error]:", err);
       setProfile(null);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [supabase]);
 
+  // ✅ La fonction magique qui force la récupération des données fraîches
   const refreshProfile = async () => {
-    await fetchProfile(true);
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    if (currentUser) {
+      await fetchProfile(currentUser.id, true);
+    }
   };
 
   const signOut = async () => {
@@ -63,7 +67,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         if (session?.user) {
           setUser(session.user);
-          await fetchProfile();
+          await fetchProfile(session.user.id);
         } else {
           setUser(null); setProfile(null); setLoading(false);
         }
