@@ -112,7 +112,7 @@ const MenuItemCard = memo(({ item, index, onClick }: { item: MenuItem; index: nu
         </div>
       </div>
       
-      <div className="p-3 flex flex-col flex-grow relative">
+      <div className="p-3 flex flex-col grow relative">
         <div className="flex-1 min-w-0 mb-3">
           <h3 className="text-[11px] font-bold text-white uppercase line-clamp-1 leading-tight font-display tracking-wide mb-1">
             {displayName.split('(')[0]}
@@ -227,9 +227,9 @@ export default function MenuClient({ initialItems }: MenuClientProps) {
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
                   aria-pressed={activeCategory === cat.id}
-                  className={`flex-shrink-0 px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all ${
-                    activeCategory === cat.id 
-                    ? "bg-brand-primary border-brand-primary text-white" 
+                  className={`shrink-0 px-5 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all ${
+                    activeCategory === cat.id
+                    ? "bg-brand-primary border-brand-primary text-white shadow-glow"
                     : "bg-neutral-900 border-neutral-800 text-neutral-500 hover:text-white"
                   }`}
                 >

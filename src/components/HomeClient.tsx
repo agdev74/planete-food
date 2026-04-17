@@ -18,12 +18,12 @@ export default function HomeClient() {
     <div className="min-h-screen bg-[#080808]">
       
       {/* --- HERO SECTION : VERSION TURBO --- */}
-      <section className="relative min-h-[600px] h-[85vh] flex items-center justify-center overflow-hidden bg-black">
+      <section className="relative min-h-150 h-[85vh] flex items-center justify-center overflow-hidden bg-black">
         <div className="absolute inset-0 z-0">
           {/* Spotlight CSS ultra-léger */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#1a1a1a_0%,_#000000_100%)]" />
           <div className="absolute inset-0 bg-[url('/pattern-kimono.png')] opacity-[0.02] pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-[#080808] via-transparent to-transparent" />
         </div>
 
         <div className="container mx-auto px-6 relative z-10 text-center">
@@ -51,7 +51,7 @@ export default function HomeClient() {
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <Link 
                 href={`/${lang}/menu`} 
-                className="px-10 py-5 bg-brand-primary text-white font-bold rounded-2xl hover:bg-red-700 transition-all uppercase tracking-widest shadow-xl shadow-red-900/20"
+                className="px-10 py-5 bg-brand-primary text-white font-bold rounded-2xl hover:bg-violet-700 transition-all uppercase tracking-widest shadow-glow"
               >
                 {t.hero.btnMenu}
               </Link>

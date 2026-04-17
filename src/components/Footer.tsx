@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useTranslation } from "@/context/LanguageContext";
-import { Instagram, Facebook, MapPin, Phone, Globe } from "lucide-react";
+import { Instagram, Facebook, MapPin, Phone, Globe, Rocket } from "lucide-react";
 import { restaurantConfig } from "@/config/restaurant";
 
 export default function Footer() {
@@ -29,15 +28,11 @@ export default function Footer() {
 
           {/* COLONNE 1 : LOGO & RÉSEAUX */}
           <div className="space-y-6">
-            <Link href={`/${lang}`} className="inline-block w-32" aria-label="Retour à l'accueil">
-              <Image
-                src="/images/logo.png"
-                alt={`${restaurantConfig.name} Logo`}
-                width={150}
-                height={150}
-                sizes="(max-width: 768px) 120px, 150px"
-                className="w-full h-auto"
-              />
+            <Link href={`/${lang}`} className="flex items-center gap-3 group" aria-label="Retour à l'accueil">
+              <Rocket size={32} className="text-brand-primary drop-shadow-[0_0_10px_var(--color-brand-primary)] group-hover:scale-110 transition-transform" />
+              <span className="font-display font-bold text-white text-xl uppercase tracking-tight leading-none">
+                {restaurantConfig.name}
+              </span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
               {t.footer.desc}
@@ -64,10 +59,10 @@ export default function Footer() {
               {t.footer.linksTitle}
             </h3>
             <ul className="space-y-3 text-gray-400">
-              <li><Link href={`/${lang}`} className="hover:text-red-400 transition">{t.nav.home}</Link></li>
-              <li><Link href={`/${lang}/menu`} className="hover:text-red-400 transition">{t.nav.menu}</Link></li>
-              <li><Link href={`/${lang}/traiteur`} className="hover:text-red-400 transition">{t.nav.catering}</Link></li>
-              <li><Link href={`/${lang}/contact`} className="hover:text-red-400 transition">{t.nav.contact}</Link></li>
+              <li><Link href={`/${lang}`} className="hover:text-violet-400 transition">{t.nav.home}</Link></li>
+              <li><Link href={`/${lang}/menu`} className="hover:text-violet-400 transition">{t.nav.menu}</Link></li>
+              <li><Link href={`/${lang}/traiteur`} className="hover:text-violet-400 transition">{t.nav.catering}</Link></li>
+              <li><Link href={`/${lang}/contact`} className="hover:text-violet-400 transition">{t.nav.contact}</Link></li>
             </ul>
           </div>
 

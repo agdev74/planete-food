@@ -48,7 +48,7 @@ export default function ProfilePage() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 mb-8 flex flex-col md:flex-row items-center gap-8 shadow-2xl"
             >
-              <div className="w-24 h-24 bg-brand-primary/10 rounded-full flex items-center justify-center border-2 border-brand-primary shadow-lg shadow-red-900/20">
+              <div className="w-24 h-24 bg-brand-primary/10 rounded-full flex items-center justify-center border-2 border-brand-primary shadow-lg shadow-violet-900/20">
                 <User size={48} className="text-brand-primary" />
               </div>
               <div className="text-center md:text-left flex-1">

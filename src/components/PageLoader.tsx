@@ -3,7 +3,7 @@
 import { m, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { Rocket } from "lucide-react";
 
 export default function PageLoader() {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,19 +12,15 @@ export default function PageLoader() {
   const isFirstMount = useRef(true);
 
   useEffect(() => {
-    // 1. On ignore toujours le tout premier montage pour PageSpeed
     if (isFirstMount.current) {
       isFirstMount.current = false;
       return;
     }
 
-    // ✅ FIX : On utilise un timeout de 0 pour éviter le "cascading render"
-    // Cela déplace le setState dans la file d'attente des tâches suivante.
     const startTimer = setTimeout(() => {
       setIsLoading(true);
     }, 0);
 
-    // 2. On ferme le loader après un délai court pour l'effet visuel
     const stopTimer = setTimeout(() => {
       setIsLoading(false);
     }, 800);
@@ -35,7 +31,6 @@ export default function PageLoader() {
     };
   }, [pathname, searchParams]);
 
-  // Écouteurs pour déclenchement manuel (Admin, etc.)
   useEffect(() => {
     const handleStart = () => setIsLoading(true);
     const handleStop = () => setIsLoading(false);
@@ -56,11 +51,11 @@ export default function PageLoader() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           style={{ willChange: "opacity" }}
-          className="fixed inset-0 z-[9999] bg-[#080808]/90 backdrop-blur-md flex flex-col items-center justify-center pointer-events-none"
+          className="fixed inset-0 z-9999 bg-[#080808]/90 backdrop-blur-md flex flex-col items-center justify-center pointer-events-none"
         >
           <div className="relative w-48 h-48 flex items-center justify-center">
-            
-            {/* --- CERCLE TOURNANT --- */}
+
+            {/* Cercle tournant */}
             <m.svg
               className="absolute inset-0 w-full h-full"
               viewBox="0 0 100 100"
@@ -73,7 +68,7 @@ export default function PageLoader() {
               />
               <m.circle
                 cx="50" cy="50" r="42"
-                stroke="#E60012"
+                stroke="#A855F7"
                 strokeWidth="2"
                 fill="none"
                 strokeLinecap="round"
@@ -81,19 +76,15 @@ export default function PageLoader() {
               />
             </m.svg>
 
-            {/* --- LOGO CENTRAL --- */}
-            <m.div 
-              animate={{ scale: [0.98, 1.02, 0.98] }} 
+            {/* Rocket central */}
+            <m.div
+              animate={{ scale: [0.98, 1.08, 0.98] }}
               transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
               className="relative z-10"
             >
-              <Image 
-                src="/images/logo.png" 
-                alt="Logo"
-                width={100} 
-                height={100} 
-                priority
-                className="object-contain"
+              <Rocket
+                size={52}
+                className="text-brand-primary drop-shadow-[0_0_18px_var(--color-brand-primary)]"
               />
             </m.div>
           </div>

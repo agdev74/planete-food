@@ -265,7 +265,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
 
             <button 
               onClick={handleAddToCart}
-              className="w-full bg-brand-primary hover:bg-red-700 text-white font-bold min-h-16 h-16 rounded-2xl uppercase tracking-[0.15em] text-sm transition-all active:scale-[0.98] shadow-2xl shadow-red-900/20 flex items-center justify-center gap-4 shrink-0"
+              className="w-full bg-brand-primary hover:bg-violet-700 text-white font-bold min-h-16 h-16 rounded-2xl uppercase tracking-[0.15em] text-sm transition-all active:scale-[0.98] shadow-glow flex items-center justify-center gap-4 shrink-0"
             >
               <ShoppingCart size={20} />
               <span>AJOUTER AU PANIER • {(item.price * quantity).toFixed(2)} CHF</span>

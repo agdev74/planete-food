@@ -237,8 +237,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]" aria-hidden="true" />
-          <m.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-neutral-900 border-l border-neutral-800 z-[101] flex flex-col shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+          <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-100" aria-hidden="true" />
+          <m.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="fixed top-0 right-0 h-full w-full md:w-112.5 bg-neutral-900 border-l border-neutral-800 z-101 flex flex-col shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="cart-title">
             {!isSuccess && (
               <div className="flex items-center justify-between p-6 border-b border-neutral-800 bg-black/20">
                 <h2 id="cart-title" className="text-xl font-display font-bold text-white uppercase tracking-widest flex items-center gap-3">
@@ -259,7 +259,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <span className="text-[10px] text-gray-400 uppercase font-black tracking-widest">Numéro de commande</span>
                     <p className="text-3xl font-display font-bold text-brand-primary tracking-tighter mt-1">#KBK-{orderId}</p>
                 </div>
-                <button onClick={() => { onClose(); window.location.href = `/${lang}/track?order_id=${orderId}`; }} className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase shadow-lg shadow-red-900/30 hover:bg-red-700 transition-all">Suivre ma commande</button>
+                <button onClick={() => { onClose(); window.location.href = `/${lang}/track?order_id=${orderId}`; }} className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase shadow-lg shadow-violet-900/30 hover:bg-violet-700 transition-all">Suivre ma commande</button>
               </div>
             ) : isPayment && clientSecret && orderId ? (
               <Elements options={{ clientSecret, appearance: { theme: 'night', variables: { colorPrimary: '#dc2626' } } }} stripe={stripePromise}>
@@ -460,11 +460,11 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     </div>
                     
                     {!isCheckout ? (
-                      <button onClick={() => setIsCheckout(true)} className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg shadow-red-900/30">
+                      <button onClick={() => setIsCheckout(true)} className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase flex items-center justify-center gap-2 hover:bg-violet-700 transition shadow-lg shadow-violet-900/30">
                         {t.btnValidate} <ArrowRight size={16} aria-hidden="true" />
                       </button>
                     ) : (
-                      <button type="submit" form="checkout-form" disabled={!isFormReady || isSubmitting} className={`w-full font-bold py-4 rounded-xl uppercase flex items-center justify-center gap-2 transition-all ${isFormReady && !isSubmitting ? "bg-brand-primary text-white hover:bg-red-700 shadow-lg shadow-red-900/30" : "bg-neutral-800 text-neutral-500 cursor-not-allowed"}`}>
+                      <button type="submit" form="checkout-form" disabled={!isFormReady || isSubmitting} className={`w-full font-bold py-4 rounded-xl uppercase flex items-center justify-center gap-2 transition-all ${isFormReady && !isSubmitting ? "bg-brand-primary text-white hover:bg-violet-700 shadow-lg shadow-violet-900/30" : "bg-neutral-800 text-neutral-500 cursor-not-allowed"}`}>
                         {isSubmitting ? <><Loader2 size={18} className="animate-spin" aria-hidden="true" /> {t.sending}</> : <><ShieldCheck size={18} aria-hidden="true" /> Continuer vers le paiement</>}</button>
                     )}
                   </div>

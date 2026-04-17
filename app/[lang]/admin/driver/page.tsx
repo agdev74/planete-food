@@ -216,7 +216,7 @@ export default function DriverDashboard() {
                       className={`w-full py-4 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 ${
                         activeDeliveryId !== null 
                           ? "bg-neutral-800 text-gray-600 cursor-not-allowed" 
-                          : "bg-brand-primary text-white shadow-lg hover:bg-red-700 shadow-red-900/30"
+                          : "bg-brand-primary text-white shadow-lg hover:bg-violet-700 shadow-violet-900/30"
                       }`}
                     >
                       <Navigation size={20} /> Démarrer la course

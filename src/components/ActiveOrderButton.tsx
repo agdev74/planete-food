@@ -36,7 +36,7 @@ export default function ActiveOrderButton() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           // Placement : en bas à droite (au-dessus de la barre mobile si besoin)
-          className="fixed bottom-24 right-4 md:bottom-10 md:right-10 z-[60]"
+          className="fixed bottom-24 right-4 md:bottom-10 md:right-10 z-60"
         >
           <Link 
             href={`/${lang}/track`}

@@ -126,7 +126,7 @@ export default function AdminCouponsPage() {
           </h1>
           <p className="text-neutral-500 text-sm mt-2 italic">Gérez vos offres et réductions clients.</p>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 bg-brand-primary hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-red-900/20 uppercase text-xs tracking-widest">
+        <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 bg-brand-primary hover:bg-violet-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-violet-900/20 uppercase text-xs tracking-widest">
           <Plus size={18} /> Nouveau Coupon
         </button>
       </div>
@@ -179,7 +179,7 @@ export default function AdminCouponsPage() {
 
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-[110] flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-110 flex items-center justify-center p-4">
             <m.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-neutral-900 border border-neutral-800 p-8 rounded-[40px] max-w-lg w-full shadow-2xl text-white">
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold uppercase tracking-tighter">Nouveau Code Promo</h2>
@@ -217,7 +217,7 @@ export default function AdminCouponsPage() {
                   </div>
                 </div>
 
-                <button type="submit" disabled={isSubmitting} className="w-full bg-brand-primary text-white py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50">
+                <button type="submit" disabled={isSubmitting} className="w-full bg-brand-primary text-white py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-violet-700 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50">
                   {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : "Créer le coupon"}
                 </button>
               </form>

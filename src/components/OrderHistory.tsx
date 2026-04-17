@@ -56,7 +56,7 @@ export default function OrderHistory() {
   if (orders.length === 0) return <div className="text-gray-500 text-xs uppercase italic">Aucune commande passée.</div>;
 
   return (
-    <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+    <div className="space-y-4 max-h-100 overflow-y-auto pr-2 custom-scrollbar">
       {orders.map((order) => {
         const status = statusMap[order.status] || statusMap.pending;
         const Icon = status.icon;

@@ -36,7 +36,7 @@ export default function NotFound() {
         {/* Bouton de retour */}
         <Link 
           href="/" 
-          className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-brand-primary px-10 py-4 font-bold text-white transition-all hover:scale-105 shadow-xl hover:shadow-red-900/40"
+          className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-brand-primary px-10 py-4 font-bold text-white transition-all hover:scale-105 shadow-xl hover:shadow-violet-900/40"
         >
           <span className="absolute inset-0 bg-linear-to-r from-red-600 to-red-800 opacity-0 transition-opacity group-hover:opacity-100"></span>
           <span className="relative tracking-widest uppercase text-sm flex items-center">

@@ -87,7 +87,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-200 flex items-center justify-center p-4">
           <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -189,7 +189,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg shadow-red-900/30 mt-6 disabled:opacity-50"
+                  className="w-full bg-brand-primary text-white font-bold py-4 rounded-xl uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-violet-700 transition shadow-lg shadow-violet-900/30 mt-6 disabled:opacity-50"
                 >
                   {loading && isLogin ? (
                     <Loader2 size={18} className="animate-spin" />

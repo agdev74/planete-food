@@ -244,7 +244,7 @@ export default function TraiteurPage() {
                   </div>
 
                   <div className="text-center pt-6">
-                    <button type="submit" disabled={formStatus === "submitting"} className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-brand-primary px-16 py-5 font-bold text-white transition-all hover:scale-105 shadow-xl hover:shadow-red-900/50 disabled:opacity-50">
+                    <button type="submit" disabled={formStatus === "submitting"} className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-brand-primary px-16 py-5 font-bold text-white transition-all hover:scale-105 shadow-xl hover:shadow-violet-900/50 disabled:opacity-50">
                       {formStatus === "submitting" ? (
                         <span className="flex items-center gap-3">
                            <div className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full"></div>

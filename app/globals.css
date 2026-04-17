@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  /* Vos couleurs personnalisées */
-  --color-brand-primary: #E60012;
+  --color-brand-primary: #A855F7;
   --color-brand-black: #111111;
   --color-brand-dark: #333333;
   --font-display: var(--font-oswald);
+
+  /* Neon glow shadow — utilisé via shadow-glow */
+  --shadow-glow: 0 0 20px rgba(168, 85, 247, 0.45), 0 0 45px rgba(168, 85, 247, 0.2);
 
   /* Configuration Next.js standard */
   --color-background: var(--background);
@@ -13,14 +15,12 @@
 }
 
 :root {
-  /* On passe sur un noir "Encre" (Sumi-e) très profond et pur */
-  --background: #080808; 
+  --background: #080808;
   --foreground: #ededed;
 
   scroll-behavior: smooth;
 }
 
-/* On force l'esthétique sombre même si l'utilisateur est en mode clair */
 @media (prefers-color-scheme: light) {
   :root {
     --background: #080808;
@@ -37,14 +37,10 @@ body {
   font-family: var(--font-inter), sans-serif;
   @apply antialiased;
 
-  /* --- LE FOND "ENCRE & LUMIÈRE" (PROFONDEUR LISSE) --- */
   background-color: var(--background);
-  background-image: 
-    /* Spot 1 : Une lueur très diffuse en haut à droite pour casser le plat */
+  background-image:
     radial-gradient(circle at 80% 0%, #141414 0%, transparent 50%),
-    /* Spot 2 : L'éclairage central principal qui fait ressortir vos sushis */
     radial-gradient(circle at 50% 30%, #111111 0%, #080808 100%);
-  
-  /* Attachment fixed pour que la lumière reste en place quand on scrolle */
+
   background-attachment: fixed;
 }

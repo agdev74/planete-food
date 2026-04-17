@@ -248,7 +248,7 @@ export default function ContactPage() {
                       {errors.message && <p className="text-brand-primary text-[9px] font-bold uppercase mt-1">{errors.message}</p>}
                     </div>
 
-                    <button type="submit" disabled={isSubmitting} className="w-full bg-brand-primary text-white font-bold py-5 rounded-2xl hover:bg-red-700 transition shadow-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3 disabled:opacity-50 active:scale-95">
+                    <button type="submit" disabled={isSubmitting} className="w-full bg-brand-primary text-white font-bold py-5 rounded-2xl hover:bg-violet-700 transition shadow-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3 disabled:opacity-50 active:scale-95">
                       {isSubmitting ? <Loader2 className="animate-spin" /> : <><Send size={18} /> {t.catering.formSection.submit}</>}
                     </button>
                   </m.form>

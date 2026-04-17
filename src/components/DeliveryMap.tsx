@@ -80,7 +80,7 @@ export default function DeliveryMap({ driverLat, driverLng }: DeliveryMapProps) 
       </MapContainer>
 
       {/* Petit badge par-dessus la carte */}
-      <div className="absolute top-4 right-4 z-[400] bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest flex items-center gap-2">
+      <div className="absolute top-4 right-4 z-400 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
         GPS en direct
       </div>

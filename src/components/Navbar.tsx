@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import TransitionLink from "./TransitionLink";
-import Image from "next/image";
-import { usePathname } from "next/navigation"; 
-import { m, AnimatePresence } from "framer-motion"; 
+import { usePathname } from "next/navigation";
+import { m, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/context/LanguageContext";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { ShoppingCart, User as UserIcon, LogOut } from "lucide-react"; 
+import { ShoppingCart, User as UserIcon, LogOut, Rocket } from "lucide-react";
+import { restaurantConfig } from "@/config/restaurant";
 import { useCart } from "@/context/CartContext"; 
 import { useUser } from "@/context/UserContext"; 
 import AuthModal from "./AuthModal";
@@ -76,19 +76,15 @@ export default function Navbar({ onOpenCart }: NavbarProps) {
     <nav className="bg-brand-black text-white fixed w-full z-50 border-b border-neutral-800 shadow-lg">
       <div className="container mx-auto px-6 h-20 flex justify-between items-center">
         
-        <TransitionLink 
-          href={`/${lang}`} 
-          className="relative w-24 md:w-32 hover:scale-105 transition-transform duration-300"
+        <TransitionLink
+          href={`/${lang}`}
+          className="flex items-center gap-2 hover:scale-105 transition-transform duration-300"
           onClick={() => setIsOpen(false)}
         >
-          <Image 
-            src="/images/logo.png" 
-            alt="Logo" 
-            width={120} 
-            height={120}
-            className="w-full h-auto object-contain"
-            priority
-          />
+          <Rocket size={26} className="text-brand-primary drop-shadow-[0_0_8px_var(--color-brand-primary)]" />
+          <span className="font-display font-bold text-white text-lg uppercase tracking-tight leading-none hidden sm:block">
+            {restaurantConfig.name}
+          </span>
         </TransitionLink>
 
         {/* --- DESKTOP --- */}

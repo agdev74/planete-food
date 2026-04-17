@@ -47,7 +47,7 @@ export default function MobileActionBar({ onOpenCart }: MobileActionBarProps) {
               exit={{ y: -10, opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={onOpenCart}
-              className="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold flex items-center justify-between px-6 shadow-lg shadow-red-900/40 active:scale-[0.98] transition-all"
+              className="w-full bg-brand-primary text-white py-4 rounded-2xl font-bold flex items-center justify-between px-6 shadow-glow active:scale-[0.98] transition-all"
             >
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -117,7 +117,7 @@ export default function MobileActionBar({ onOpenCart }: MobileActionBarProps) {
               exit={{ y: "100%" }}
               transition={{ type: "tween", duration: 0.3, ease: "circOut" }}
               style={{ willChange: "transform" }}
-              className="fixed bottom-0 left-0 right-0 bg-neutral-950 rounded-t-[32px] p-8 z-[110] border-t border-neutral-800 pb-12"
+              className="fixed bottom-0 left-0 right-0 bg-neutral-950 rounded-t-4xl p-8 z-110 border-t border-neutral-800 pb-12"
             >
               <div className="w-12 h-1.5 bg-neutral-800 rounded-full mx-auto mb-8" />
 

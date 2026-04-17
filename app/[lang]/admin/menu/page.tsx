@@ -224,7 +224,7 @@ export default function AdminMenu() {
               <LogOut size={14} /> Se déconnecter
             </button>
           </div>
-          <button onClick={() => { resetForm(); setIsModalOpen(true); }} className="flex items-center gap-2 bg-brand-primary hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-red-900/20 uppercase text-xs tracking-widest">
+          <button onClick={() => { resetForm(); setIsModalOpen(true); }} className="flex items-center gap-2 bg-brand-primary hover:bg-violet-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg shadow-violet-900/20 uppercase text-xs tracking-widest">
              <Plus size={20} /> Nouveau Produit
           </button>
         </div>
@@ -351,7 +351,7 @@ export default function AdminMenu() {
                   )}
                 </div>
 
-                <button type="submit" disabled={actionLoading || uploading || isTranslating} className="w-full bg-brand-primary text-white py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-red-700 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50">
+                <button type="submit" disabled={actionLoading || uploading || isTranslating} className="w-full bg-brand-primary text-white py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-violet-700 transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50">
                   {actionLoading ? <Loader2 className="animate-spin" size={20} /> : (editingId ? "Sauvegarder" : "Ajouter")}
                 </button>
               </form>
