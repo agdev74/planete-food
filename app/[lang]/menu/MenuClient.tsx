@@ -22,12 +22,6 @@ export interface MenuItem extends ContextMenuItem {
 
 interface MenuClientProps {
   initialItems: MenuItem[];
-  restaurant?: {
-    id: number;
-    name: string;
-    description?: string;
-    category?: string;
-  };
   noHeader?: boolean;
 }
 
@@ -181,7 +175,7 @@ const MenuItemCard = memo(({ item, index, onClick }: { item: MenuItem; index: nu
 
 MenuItemCard.displayName = "MenuItemCard";
 
-export default function MenuClient({ initialItems, restaurant, noHeader = false }: MenuClientProps) {
+export default function MenuClient({ initialItems, noHeader = false }: MenuClientProps) {
   const { t, lang } = useTranslation();
   const items = initialItems;
   
@@ -220,19 +214,9 @@ export default function MenuClient({ initialItems, restaurant, noHeader = false 
           <div className="bg-black text-white py-12 md:py-16 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('/pattern-kimono.png')] opacity-5 z-0" aria-hidden="true"></div>
             <Reveal>
-              {restaurant?.category && (
-                <p className="text-brand-primary font-bold tracking-[0.3em] uppercase mb-3 text-sm relative z-10">
-                  {restaurant.category}
-                </p>
-              )}
               <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-widest relative z-10">
-                {restaurant ? restaurant.name : t.menu.title}
+                {t.menu.title}
               </h1>
-              {restaurant?.description && (
-                <p className="text-neutral-400 text-sm mt-3 max-w-xl mx-auto relative z-10 italic">
-                  {restaurant.description}
-                </p>
-              )}
               <div className="w-12 h-1 bg-brand-primary mx-auto mt-6 relative z-10"></div>
             </Reveal>
           </div>
