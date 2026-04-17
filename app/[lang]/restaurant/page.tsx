@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import Image from "next/image";
+import RestaurantBanner from "@/components/RestaurantBanner";
 import type { Metadata } from "next";
 
 export const revalidate = 3600;
@@ -23,7 +24,13 @@ export default async function RestaurantsPage({ params }: Props) {
     .order("name");
 
   return (
-    <div className="bg-[#080808] min-h-screen pb-32 pt-24">
+    <div className="bg-[#080808] min-h-screen pb-32 pt-20">
+
+      {/* Sticky restaurant selector — sticks below the fixed navbar (h-20) */}
+      <div className="sticky top-20 z-30 bg-neutral-950/90 backdrop-blur-xl border-b border-neutral-900">
+        <RestaurantBanner />
+      </div>
+
       <div className="bg-black text-white py-12 md:py-16 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/pattern-kimono.png')] opacity-5 z-0" aria-hidden="true" />
         <p className="text-brand-primary font-bold tracking-[0.3em] uppercase mb-3 text-sm relative z-10">

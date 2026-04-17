@@ -82,22 +82,32 @@ export default function AdminMenu() {
 
   // Fetch restaurants once; sets activeRestaurantId which triggers the menu fetch below.
   useEffect(() => {
+    // Safety: unblock UI after 5 s even if Supabase hangs or RLS silently rejects
+    const safetyTimer = setTimeout(() => {
+      console.warn("[SAFETY] Restaurant fetch timeout after 5s (menu) — UI unblocked");
+      setRestaurantsLoaded(true);
+    }, 5000);
+
     (async () => {
       try {
+        console.log("[DIAG] Début fetch restaurants (menu)…");
         const { data, error } = await supabase
           .from("restaurants")
           .select("id, name")
           .order("name");
         if (error) console.error("[DIAG] Erreur fetch restaurants (menu):", error);
-        console.log("Restaurants chargés (menu):", data);
+        console.log("[DIAG] Restaurants chargés (menu):", data);
         if (data && data.length > 0) {
           setRestaurants(data as RestaurantOption[]);
           setActiveRestaurantId((data as RestaurantOption[])[0].id);
         }
       } finally {
+        clearTimeout(safetyTimer);
         setRestaurantsLoaded(true);
       }
     })();
+
+    return () => clearTimeout(safetyTimer);
   }, [supabase]);
 
   // Fetch menu whenever the active restaurant changes. fetchMenu is stable so this

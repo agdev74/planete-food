@@ -172,22 +172,32 @@ export default function OrdersList() {
 
   // ── Fetch restaurants once ──────────────────────────────────────────────────
   useEffect(() => {
+    // Safety: if fetch hangs for any reason, unblock the UI after 5 s
+    const safetyTimer = setTimeout(() => {
+      console.warn("[SAFETY] Restaurant fetch timeout after 5s (commandes) — UI unblocked");
+      setRestaurantsLoaded(true);
+    }, 5000);
+
     (async () => {
       try {
+        console.log("[DIAG] Début fetch restaurants (commandes)…");
         const { data, error } = await supabase
           .from("restaurants")
           .select("id, name")
           .order("name");
         if (error) console.error("[DIAG] Erreur fetch restaurants (commandes):", error);
-        console.log("Restaurants chargés (commandes):", data);
+        console.log("[DIAG] Restaurants chargés (commandes):", data);
         if (data && data.length > 0) {
           setRestaurants(data as RestaurantOption[]);
           setActiveRestaurantId((data as RestaurantOption[])[0].id);
         }
       } finally {
+        clearTimeout(safetyTimer);
         setRestaurantsLoaded(true);
       }
     })();
+
+    return () => clearTimeout(safetyTimer);
   }, [supabase]);
 
   // ── Data fetch functions ────────────────────────────────────────────────────
