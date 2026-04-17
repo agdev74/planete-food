@@ -3,7 +3,7 @@
 
 export const translations = {
   fr: {
-    nav: { home: "Accueil", menu: "La Carte", catering: "Traiteur", contact: "Contact" },
+    nav: { home: "Accueil", restaurants: "Restaurants", menu: "La Carte", catering: "Traiteur", contact: "Contact" },
     hero: {
       subtitle: "Saveurs Authentiques & Créations d'Exception",
       title_top: "Planet",
@@ -97,7 +97,7 @@ export const translations = {
     }
   },
   en: {
-    nav: { home: "Home", menu: "Menu", catering: "Catering", contact: "Contact" },
+    nav: { home: "Home", restaurants: "Restaurants", menu: "Menu", catering: "Catering", contact: "Contact" },
     hero: {
       subtitle: "Authentic Flavors & Exceptional Creations",
       title_top: "Planet",
@@ -191,7 +191,7 @@ export const translations = {
     }
   },
   es: {
-    nav: { home: "Inicio", menu: "La Carta", catering: "Catering", contact: "Contacto" },
+    nav: { home: "Inicio", restaurants: "Restaurantes", menu: "La Carta", catering: "Catering", contact: "Contacto" },
     hero: {
       subtitle: "Sabores Auténticos & Creaciones de Excepción",
       title_top: "Planet",

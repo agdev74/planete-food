@@ -1,50 +1,39 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from "react";
+import type { MenuItem, CartItem, Variant, Addon, RestaurantGroup } from "@/types";
 
-// 1. Définition de la structure d'un plat
-export interface MenuItem {
-  id: number;
-  name: string;
-  description?: string;
-  price: number;
-  image_url?: string;
-  category?: string;
-}
-
-// 2. Un article du panier = un plat + une quantité
-export interface CartItem extends MenuItem {
-  quantity: number;
-}
+export type { MenuItem, CartItem, Variant, Addon, RestaurantGroup };
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (item: MenuItem) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  addToCart: (item: MenuItem, options?: { variant?: Variant; addons?: Addon[] }) => void;
+  removeFromCart: (cartKey: string) => void;
+  updateQuantity: (cartKey: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  restaurantGroups: RestaurantGroup[];
 }
 
-// 3. Création du Contexte
+function makeCartKey(itemId: number, restaurantId?: number, variantSize?: string): string {
+  const parts = [String(itemId)];
+  if (restaurantId) parts.push(String(restaurantId));
+  if (variantSize) parts.push(variantSize);
+  return parts.join(":");
+}
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// 4. Le Provider
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // 🔄 Charger le panier depuis la mémoire du navigateur au démarrage
   useEffect(() => {
     const savedCart = localStorage.getItem("pf_cart");
     if (savedCart) {
       try {
-        const parsedCart = JSON.parse(savedCart);
-        // ✅ On force le silence d'ESLint pour cette ligne précise 
-        // car c'est le comportement voulu pour l'hydratation Next.js
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setItems(parsedCart);
+        setItems(JSON.parse(savedCart));
       } catch (e) {
         console.error("Erreur de lecture du panier", e);
       }
@@ -52,48 +41,78 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setIsLoaded(true);
   }, []);
 
-  // 💾 Sauvegarder le panier à chaque modification
   useEffect(() => {
     if (isLoaded) {
       localStorage.setItem("pf_cart", JSON.stringify(items));
     }
   }, [items, isLoaded]);
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (item: MenuItem, options?: { variant?: Variant; addons?: Addon[] }) => {
+    const { variant, addons } = options ?? {};
+    const effectivePrice = variant ? variant.price : item.price;
+    const cartKey = makeCartKey(item.id, item.restaurant_id, variant?.size);
+
     setItems((prev) => {
-      const existingItem = prev.find((i) => i.id === item.id);
-      if (existingItem) {
+      const existing = prev.find((i) => i._cartKey === cartKey);
+      if (existing) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          i._cartKey === cartKey
+            ? { ...i, quantity: i.quantity + 1, selected_addons: addons ?? i.selected_addons }
+            : i
         );
       }
-      return [...prev, { ...item, quantity: 1 }];
+      return [
+        ...prev,
+        {
+          ...item,
+          price: effectivePrice,
+          quantity: 1,
+          selected_variant: variant,
+          selected_addons: addons,
+          _cartKey: cartKey,
+        },
+      ];
     });
   };
 
-  const removeFromCart = (id: number) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
+  const removeFromCart = (cartKey: string) => {
+    setItems((prev) => prev.filter((i) => i._cartKey !== cartKey));
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (cartKey: string, quantity: number) => {
     if (quantity < 1) {
-      removeFromCart(id);
+      removeFromCart(cartKey);
       return;
     }
     setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, quantity } : i))
+      prev.map((i) => (i._cartKey === cartKey ? { ...i, quantity } : i))
     );
   };
 
   const clearCart = () => {
     setItems([]);
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       localStorage.removeItem("pf_cart");
     }
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const restaurantGroups = useMemo<RestaurantGroup[]>(() => {
+    const groupMap = new Map<number | null, CartItem[]>();
+    items.forEach((item) => {
+      const key = item.restaurant_id ?? null;
+      if (!groupMap.has(key)) groupMap.set(key, []);
+      groupMap.get(key)!.push(item);
+    });
+    return Array.from(groupMap.entries()).map(([restaurantId, groupItems]) => ({
+      restaurant_id: restaurantId,
+      restaurant_name: groupItems[0]?.restaurant_name ?? "Menu Général",
+      items: groupItems,
+      subtotal: groupItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    }));
+  }, [items]);
 
   return (
     <CartContext.Provider
@@ -105,6 +124,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        restaurantGroups,
       }}
     >
       {children}
@@ -112,7 +132,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// 5. Hook personnalisé
 export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {

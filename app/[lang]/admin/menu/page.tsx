@@ -22,7 +22,13 @@ interface MenuItem {
   description_en: string;
   description_es: string;
   image_url: string;
-  is_available: boolean; 
+  is_available: boolean;
+  restaurant_id: number | null;
+}
+
+interface RestaurantOption {
+  id: number;
+  name: string;
 }
 
 export default function AdminMenu() {
@@ -39,13 +45,15 @@ export default function AdminMenu() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+  const [restaurants, setRestaurants] = useState<RestaurantOption[]>([]);
 
   const [form, setForm] = useState<Omit<MenuItem, 'id' | 'is_available'>>({
     name_fr: "", name_en: "", name_es: "",
-    price: "", 
-    category: "Makis",
+    price: "",
+    category: "Nos Spécialités",
     description_fr: "", description_en: "", description_es: "",
-    image_url: ""
+    image_url: "",
+    restaurant_id: null,
   });
 
   const showToast = useCallback((message: string, type: 'success' | 'error' = 'success') => {
@@ -70,7 +78,10 @@ export default function AdminMenu() {
 
   useEffect(() => {
     fetchMenu();
-  }, [fetchMenu]);
+    supabase.from("restaurants").select("id, name").eq("is_active", true).order("name").then(({ data }) => {
+      if (data) setRestaurants(data as RestaurantOption[]);
+    });
+  }, [fetchMenu, supabase]);
 
   const toggleAvailability = async (id: number, currentStatus: boolean) => {
     setUpdatingId(id);
@@ -179,9 +190,10 @@ export default function AdminMenu() {
   }
 
   const resetForm = () => {
-    setForm({ 
-      name_fr: "", name_en: "", name_es: "", price: "", 
-      category: "Makis", description_fr: "", description_en: "", description_es: "", image_url: "" 
+    setForm({
+      name_fr: "", name_en: "", name_es: "", price: "",
+      category: "Nos Spécialités", description_fr: "", description_en: "", description_es: "",
+      image_url: "", restaurant_id: null,
     });
     setEditingId(null);
   };
@@ -309,13 +321,11 @@ export default function AdminMenu() {
                   <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Nom (ES)</label><input className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white" value={form.name_es} onChange={e => setForm({...form, name_es: e.target.value})} /></div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-3 gap-6">
                   <div><label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Prix (CHF)</label><input type="text" inputMode="decimal" className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white" value={form.price} onChange={e => setForm({...form, price: e.target.value})} required /></div>
                   <div>
                     <label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Catégorie</label>
                     <select className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white" value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
-                      <option value="Makis">Makis</option>
-                      <option value="Sushis">Sushis</option>
                       <option value="Nos Spécialités">Nos Spécialités</option>
                       <option value="Entrées">Entrées</option>
                       <option value="Plats Principaux">Plats Principaux</option>
@@ -324,6 +334,23 @@ export default function AdminMenu() {
                       <option value="Boissons">Boissons</option>
                       <option value="Formules">Formules</option>
                       <option value="À Partager">À Partager</option>
+                      <option value="Burgers">Burgers</option>
+                      <option value="Pizzas">Pizzas</option>
+                      <option value="Tacos & Crêpes">Tacos & Crêpes</option>
+                      <option value="BBQ & Grillades">BBQ & Grillades</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase text-gray-500 font-bold mb-2 block">Restaurant</label>
+                    <select
+                      className="w-full bg-black border border-neutral-800 p-3 rounded-xl outline-none focus:border-brand-primary transition text-white"
+                      value={form.restaurant_id ?? ""}
+                      onChange={e => setForm({...form, restaurant_id: e.target.value ? Number(e.target.value) : null})}
+                    >
+                      <option value="">Menu Principal</option>
+                      {restaurants.map(r => (
+                        <option key={r.id} value={r.id}>{r.name}</option>
+                      ))}
                     </select>
                   </div>
                 </div>

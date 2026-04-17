@@ -80,7 +80,7 @@ function StripeCheckoutForm({ total, onSuccess, onCancel, t }: StripeCheckoutFor
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const supabase = createClient();
 
-  const { items, updateQuantity, removeFromCart, totalPrice, clearCart, totalItems } = useCart();
+  const { items, updateQuantity, removeFromCart, totalPrice, clearCart, totalItems, restaurantGroups } = useCart();
   const { lang } = useTranslation();
   const t = cartTranslations[lang as keyof typeof cartTranslations] || cartTranslations.fr;
 
@@ -272,21 +272,38 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     !isCheckout ? (
                       <div className="space-y-6">
                         <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-2 border-b border-neutral-800 pb-2"><ShoppingBag size={12} aria-hidden="true" /> {totalItems} {totalItems > 1 ? t.itemsPlural : t.items}</div>
-                        {items.map(i => (
-                          <div key={i.id} className="flex gap-4 items-center bg-black/40 p-3 rounded-2xl border border-neutral-800/50 hover:border-neutral-700 transition">
-                            <div className="w-16 h-16 relative bg-neutral-800 rounded-xl overflow-hidden shrink-0 shadow-md">
-                              {i.image_url && <Image src={i.image_url} alt={i.name} fill className="object-cover" />}
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="text-white font-bold text-sm uppercase leading-tight">{i.name}</h3>
-                              <div className="text-brand-primary font-bold text-xs">{(i.price * i.quantity).toFixed(2)} CHF</div>
-                            </div>
-                            <div className="flex items-center gap-3 bg-neutral-800 rounded-full px-2 py-1 shadow-inner border border-neutral-700/50">
-                              <button onClick={() => updateQuantity(i.id, i.quantity - 1)} aria-label={t.decrease} className="text-white hover:text-brand-primary transition"><Minus size={14} aria-hidden="true" /></button>
-                              <span className="text-white text-xs font-black w-4 text-center" aria-live="polite">{i.quantity}</span>
-                              <button onClick={() => updateQuantity(i.id, i.quantity + 1)} aria-label={t.increase} className="text-white hover:text-brand-primary transition"><Plus size={14} aria-hidden="true" /></button>
-                            </div>
-                            <button onClick={() => removeFromCart(i.id)} aria-label={t.remove} className="text-gray-400 hover:text-brand-primary transition p-1"><Trash2 size={16} aria-hidden="true" /></button>
+                        {restaurantGroups.map(group => (
+                          <div key={group.restaurant_id ?? "global"}>
+                            {restaurantGroups.length > 1 && (
+                              <p className="text-[9px] text-brand-primary font-black uppercase tracking-[0.3em] pt-4 pb-2 border-b border-neutral-800/50">
+                                {group.restaurant_name}
+                              </p>
+                            )}
+                            {group.items.map(i => (
+                              <div key={i._cartKey} className="flex gap-4 items-center bg-black/40 p-3 rounded-2xl border border-neutral-800/50 hover:border-neutral-700 transition mt-3">
+                                <div className="w-16 h-16 relative bg-neutral-800 rounded-xl overflow-hidden shrink-0 shadow-md">
+                                  {i.image_url && <Image src={i.image_url} alt={i.name} fill className="object-cover" />}
+                                </div>
+                                <div className="flex-1">
+                                  <h3 className="text-white font-bold text-sm uppercase leading-tight">{i.name}</h3>
+                                  {i.selected_variant && (
+                                    <span className="text-[9px] text-neutral-500 uppercase font-bold">{i.selected_variant.label ?? i.selected_variant.size}</span>
+                                  )}
+                                  <div className="text-brand-primary font-bold text-xs">{(i.price * i.quantity).toFixed(2)} CHF</div>
+                                </div>
+                                <div className="flex items-center gap-3 bg-neutral-800 rounded-full px-2 py-1 shadow-inner border border-neutral-700/50">
+                                  <button onClick={() => updateQuantity(i._cartKey, i.quantity - 1)} aria-label={t.decrease} className="text-white hover:text-brand-primary transition"><Minus size={14} aria-hidden="true" /></button>
+                                  <span className="text-white text-xs font-black w-4 text-center" aria-live="polite">{i.quantity}</span>
+                                  <button onClick={() => updateQuantity(i._cartKey, i.quantity + 1)} aria-label={t.increase} className="text-white hover:text-brand-primary transition"><Plus size={14} aria-hidden="true" /></button>
+                                </div>
+                                <button onClick={() => removeFromCart(i._cartKey)} aria-label={t.remove} className="text-gray-400 hover:text-brand-primary transition p-1"><Trash2 size={16} aria-hidden="true" /></button>
+                              </div>
+                            ))}
+                            {restaurantGroups.length > 1 && (
+                              <p className="text-right text-[9px] text-gray-600 font-bold uppercase tracking-widest mt-2 mb-1">
+                                Sous-total: {group.subtotal.toFixed(2)} CHF
+                              </p>
+                            )}
                           </div>
                         ))}
 

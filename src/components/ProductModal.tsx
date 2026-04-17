@@ -5,7 +5,7 @@ import { m } from "framer-motion";
 import { X, Minus, Plus, ShoppingCart, Maximize2, Info } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "@/context/LanguageContext";
-import { useCart, MenuItem as ContextMenuItem } from "@/context/CartContext";
+import { useCart, MenuItem as ContextMenuItem, type Variant, type Addon } from "@/context/CartContext";
 
 export interface MenuItem extends ContextMenuItem {
   name_fr: string;
@@ -29,11 +29,26 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
   const { addToCart } = useCart();
   
   const [quantity, setQuantity] = useState(1);
-  
+  const [selectedVariant, setSelectedVariant] = useState<Variant | undefined>(
+    item.variants?.[0]
+  );
+  const [selectedAddons, setSelectedAddons] = useState<Addon[]>([]);
+
   // Tableau stockant les parfums pour chaque portion sélectionnée
   const [mochiSelections, setMochiSelections] = useState<[string, string][]>([
     [MOCHI_FLAVORS[0], MOCHI_FLAVORS[0]]
   ]);
+
+  const effectivePrice = selectedVariant ? selectedVariant.price : item.price;
+  const addonsTotal = selectedAddons.reduce((sum, a) => sum + a.price, 0);
+
+  const toggleAddon = (addon: Addon) => {
+    setSelectedAddons(prev =>
+      prev.find(a => a.id === addon.id)
+        ? prev.filter(a => a.id !== addon.id)
+        : [...prev, addon]
+    );
+  };
 
   const { name, desc } = useMemo(() => {
     const currentLang = lang.toLowerCase();
@@ -103,25 +118,26 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
   };
 
   const handleAddToCart = () => {
+    const base = {
+      id: item.id,
+      image_url: item.image_url,
+      category: item.category,
+      restaurant_id: item.restaurant_id,
+      restaurant_name: item.restaurant_name,
+    };
     if (isMochi) {
       mochiSelections.forEach(selection => {
-        addToCart({
-          id: item.id,
-          name: `${name} (${selection[0]} & ${selection[1]})`,
-          price: item.price,
-          image_url: item.image_url,
-          category: item.category,
-        });
+        addToCart({ ...base, name: `${name} (${selection[0]} & ${selection[1]})`, price: item.price });
       });
     } else {
+      const variantLabel = selectedVariant?.label ?? selectedVariant?.size;
+      const cartName = variantLabel ? `${name} (${variantLabel})` : name;
+      const options = {
+        variant: selectedVariant,
+        addons: selectedAddons.length > 0 ? selectedAddons : undefined,
+      };
       for (let i = 0; i < quantity; i++) {
-        addToCart({
-          id: item.id,
-          name: name,
-          price: item.price,
-          image_url: item.image_url,
-          category: item.category,
-        });
+        addToCart({ ...base, name: cartName, price: effectivePrice }, options);
       }
     }
     onClose();
@@ -186,7 +202,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
               <span className="text-brand-primary text-[10px] uppercase font-black tracking-[0.4em]">Signature</span>
             </div>
             <div className="text-3xl md:text-4xl font-bold text-white whitespace-nowrap">
-              {Number(item.price).toFixed(2)} <span className="text-xs text-neutral-500 uppercase ml-1">chf</span>
+              {Number(effectivePrice + addonsTotal).toFixed(2)} <span className="text-xs text-neutral-500 uppercase ml-1">chf</span>
             </div>
           </div>
           
@@ -196,6 +212,57 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
               {desc || "Préparé avec passion et précision."}
             </p>
           </div>
+
+          {/* VARIANT SELECTOR (pizza sizes) */}
+          {item.variants && item.variants.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-neutral-600 text-[10px] uppercase font-black tracking-[0.3em] mb-3">Taille</h4>
+              <div className="grid grid-cols-4 gap-2">
+                {item.variants.map(v => (
+                  <button
+                    key={v.size}
+                    onClick={() => setSelectedVariant(v)}
+                    className={`py-3 rounded-xl border text-xs font-bold transition flex flex-col items-center gap-1 ${
+                      selectedVariant?.size === v.size
+                        ? "bg-brand-primary border-brand-primary text-white shadow-glow"
+                        : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
+                    }`}
+                  >
+                    <span className="font-display text-base">{v.size}</span>
+                    <span className="text-[9px] opacity-80">{v.price.toFixed(2)}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ADDON SELECTOR (composable items) */}
+          {item.addons && item.addons.length > 0 && (
+            <div className="mb-6">
+              <h4 className="text-neutral-600 text-[10px] uppercase font-black tracking-[0.3em] mb-3">Garnitures</h4>
+              <div className="space-y-2">
+                {item.addons.map(addon => {
+                  const isSelected = selectedAddons.some(a => a.id === addon.id);
+                  return (
+                    <button
+                      key={addon.id}
+                      onClick={() => toggleAddon(addon)}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition ${
+                        isSelected
+                          ? "bg-brand-primary/10 border-brand-primary text-white"
+                          : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
+                      }`}
+                    >
+                      <span>{addon.name}</span>
+                      <span className={`text-xs ${isSelected ? "text-brand-primary" : "text-neutral-500"}`}>
+                        +{addon.price.toFixed(2)} CHF
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* DYNAMIC MOCHI SELECTION */}
           {isMochi && (
@@ -268,7 +335,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
               className="w-full bg-brand-primary hover:bg-violet-700 text-white font-bold min-h-16 h-16 rounded-2xl uppercase tracking-[0.15em] text-sm transition-all active:scale-[0.98] shadow-glow flex items-center justify-center gap-4 shrink-0"
             >
               <ShoppingCart size={20} />
-              <span>AJOUTER AU PANIER • {(item.price * quantity).toFixed(2)} CHF</span>
+              <span>AJOUTER AU PANIER • {((effectivePrice + addonsTotal) * quantity).toFixed(2)} CHF</span>
             </button>
           </div>
         </div>
