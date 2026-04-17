@@ -8,7 +8,7 @@ import {
   Trophy, Zap, MapPin, MousePointer2,
   Download, ArrowRight, ArrowDownRight
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 interface OrderItem {
   name: string;
@@ -290,7 +290,7 @@ export default function AdminStatsPage() {
                 <span>{stats.rangeOrdersCount > 0 ? Math.round((stats.deliverySplit.delivery / stats.rangeOrdersCount) * 100) : 0}%</span>
               </div>
               <div className="h-2 bg-black rounded-full overflow-hidden">
-                <motion.div 
+                <m.div 
                   initial={{ width: 0 }} 
                   animate={{ width: `${stats.rangeOrdersCount > 0 ? (stats.deliverySplit.delivery / stats.rangeOrdersCount) * 100 : 0}%` }} 
                   className="h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
@@ -304,7 +304,7 @@ export default function AdminStatsPage() {
                 <span>{stats.rangeOrdersCount > 0 ? Math.round((stats.deliverySplit.takeaway / stats.rangeOrdersCount) * 100) : 0}%</span>
               </div>
               <div className="h-2 bg-black rounded-full overflow-hidden">
-                <motion.div 
+                <m.div 
                   initial={{ width: 0 }} 
                   animate={{ width: `${stats.rangeOrdersCount > 0 ? (stats.deliverySplit.takeaway / stats.rangeOrdersCount) * 100 : 0}%` }} 
                   className="h-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { X, Mail, Lock, User as UserIcon, Loader2, ArrowRight } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
@@ -88,7 +88,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -96,7 +96,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
           />
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -134,7 +134,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <AnimatePresence mode="popLayout">
                   {!isLogin && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
@@ -152,7 +152,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                           className="w-full bg-black text-white border border-neutral-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-kabuki-red transition text-sm"
                         />
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
 
@@ -237,7 +237,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>

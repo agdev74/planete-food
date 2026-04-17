@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "@/context/LanguageContext";
 import { Cookie, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 export default function CookieBanner() {
   const [isVisible, setIsVisible] = useState(false);
@@ -25,7 +25,7 @@ export default function CookieBanner() {
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.div
+        <m.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
@@ -66,7 +66,7 @@ export default function CookieBanner() {
               </button>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

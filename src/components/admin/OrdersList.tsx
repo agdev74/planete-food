@@ -7,7 +7,7 @@ import {
   AlertCircle, ChefHat, Truck, Loader2, RefreshCw, Clock, 
   MessageSquare, Volume2, VolumeX, ShoppingBag 
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 interface OrderItem {
   id: number | string;
@@ -149,7 +149,7 @@ export default function OrdersList() {
             const isDelivery = order.order_type === "Livraison";
 
             return (
-              <motion.div 
+              <m.div 
                 key={order.id} 
                 layout
                 initial={{ opacity: 0, y: 10 }}
@@ -217,7 +217,7 @@ export default function OrdersList() {
                     <Eye size={20} />
                   </button>
                 </div>
-              </motion.div>
+              </m.div>
             );
           })}
         </AnimatePresence>
@@ -226,8 +226,8 @@ export default function OrdersList() {
       <AnimatePresence>
         {selectedOrder && (
           <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedOrder(null)} className="absolute inset-0 bg-black/90 backdrop-blur-md" />
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative bg-neutral-900 border border-neutral-800 w-full max-w-xl rounded-[40px] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+            <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedOrder(null)} className="absolute inset-0 bg-black/90 backdrop-blur-md" />
+            <m.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative bg-neutral-900 border border-neutral-800 w-full max-w-xl rounded-[40px] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
               <div className="p-8 border-b border-neutral-800 flex justify-between items-center bg-white/5">
                 <div className="flex items-center gap-4">
                     <span className="bg-kabuki-red text-white text-lg font-black px-4 py-1 rounded-lg italic">#KBK-{selectedOrder.id}</span>
@@ -306,7 +306,7 @@ export default function OrdersList() {
                   )}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

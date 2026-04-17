@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { PackageSearch } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
 
@@ -31,7 +31,7 @@ export default function ActiveOrderButton() {
   return (
     <AnimatePresence>
       {orderId && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 50, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
@@ -45,7 +45,7 @@ export default function ActiveOrderButton() {
             <PackageSearch size={18} className="animate-pulse" />
             <span>Suivre ma commande</span>
           </Link>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

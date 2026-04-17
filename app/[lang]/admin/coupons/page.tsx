@@ -8,7 +8,7 @@ import {
   CheckCircle2, AlertCircle, Power, PowerOff, 
   Calendar
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 interface Coupon {
   id: number;
@@ -112,10 +112,10 @@ export default function AdminCouponsPage() {
       
       <AnimatePresence>
         {toast && (
-          <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className={`fixed bottom-10 right-10 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl border backdrop-blur-md ${toast.type === 'success' ? 'bg-neutral-900/90 border-green-500/50 text-green-400' : 'bg-neutral-900/90 border-red-500/50 text-red-400'}`}>
+          <m.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className={`fixed bottom-10 right-10 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl border backdrop-blur-md ${toast.type === 'success' ? 'bg-neutral-900/90 border-green-500/50 text-green-400' : 'bg-neutral-900/90 border-red-500/50 text-red-400'}`}>
             {toast.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
             <span className="font-bold text-sm uppercase tracking-widest">{toast.message}</span>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -138,7 +138,7 @@ export default function AdminCouponsPage() {
           <div className="col-span-full p-20 text-center border-2 border-dashed border-neutral-800 rounded-3xl text-neutral-600 font-bold uppercase tracking-widest">Aucun coupon actif</div>
         ) : (
           coupons.map((coupon) => (
-            <motion.div layout key={coupon.id} className={`relative bg-neutral-900 border rounded-[32px] p-6 transition-all ${coupon.is_active ? 'border-neutral-800' : 'border-red-900/20 opacity-60'}`}>
+            <m.div layout key={coupon.id} className={`relative bg-neutral-900 border rounded-[32px] p-6 transition-all ${coupon.is_active ? 'border-neutral-800' : 'border-red-900/20 opacity-60'}`}>
               <div className="flex justify-between items-start mb-6">
                 <div className="bg-black/40 px-4 py-2 rounded-xl border border-white/5 flex items-center gap-2">
                   <Ticket size={16} className="text-kabuki-red" />
@@ -172,7 +172,7 @@ export default function AdminCouponsPage() {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </m.div>
           ))
         )}
       </div>
@@ -180,7 +180,7 @@ export default function AdminCouponsPage() {
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-[110] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-neutral-900 border border-neutral-800 p-8 rounded-[40px] max-w-lg w-full shadow-2xl text-white">
+            <m.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="bg-neutral-900 border border-neutral-800 p-8 rounded-[40px] max-w-lg w-full shadow-2xl text-white">
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold uppercase tracking-tighter">Nouveau Code Promo</h2>
                 <button onClick={() => setIsModalOpen(false)} className="bg-neutral-800 p-2 rounded-full hover:bg-neutral-700 transition"><X size={20}/></button>
@@ -221,7 +221,7 @@ export default function AdminCouponsPage() {
                   {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : "Créer le coupon"}
                 </button>
               </form>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

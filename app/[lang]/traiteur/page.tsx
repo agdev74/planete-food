@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useTranslation } from "@/context/LanguageContext"; 
 import { z } from "zod";
 import { Camera, CheckCircle2, Utensils, Star } from "lucide-react"; 
@@ -91,7 +91,7 @@ export default function TraiteurPage() {
         </div>
         
         <div className="container mx-auto px-6 relative z-10 text-center max-w-4xl">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+          <m.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
             <span className="text-kabuki-red font-display font-bold uppercase tracking-[0.4em] text-sm mb-4 block">
               Prestations d&apos;Exception
             </span>
@@ -108,7 +108,7 @@ export default function TraiteurPage() {
               {t.catering.btnHero}
               <Utensils size={18} />
             </a>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -119,14 +119,14 @@ export default function TraiteurPage() {
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-center mb-20">
+          <m.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold font-display uppercase tracking-wider">{t.catering.experienceTitle}</h2>
             <div className="w-24 h-1 bg-kabuki-red mx-auto mt-6"></div>
-          </motion.div>
+          </m.div>
 
           <div className="space-y-24">
             {t.catering.blocs.map((bloc: CateringBloc, index: number) => (
-              <motion.div 
+              <m.div 
                 key={index}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -154,7 +154,7 @@ export default function TraiteurPage() {
                     <CheckCircle2 size={16} className="text-kabuki-red" /> Excellence Garantie
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
@@ -170,7 +170,7 @@ export default function TraiteurPage() {
         </div>
 
         <div className="flex w-full">
-          <motion.div 
+          <m.div 
             className="flex flex-nowrap gap-6 px-6"
             animate={{ x: ["0%", "-50%"] }}
             transition={{ duration: 40, ease: "linear", repeat: Infinity }}
@@ -180,7 +180,7 @@ export default function TraiteurPage() {
                 <Image src={img} alt={`Gallery ${i}`} fill className="object-cover" />
               </div>
             ))}
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -189,7 +189,7 @@ export default function TraiteurPage() {
         <div className="absolute inset-0 bg-[url('/pattern-kimono.png')] opacity-5 z-0"></div>
 
         <div className="container mx-auto px-6 relative z-10 max-w-5xl">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="bg-neutral-900/80 backdrop-blur-md p-10 md:p-16 rounded-[3rem] shadow-2xl border border-neutral-800">
+          <m.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="bg-neutral-900/80 backdrop-blur-md p-10 md:p-16 rounded-[3rem] shadow-2xl border border-neutral-800">
             {formStatus === "success" ? (
               <div className="text-center py-10">
                 <div className="relative w-64 h-64 md:w-80 md:h-80 mx-auto mb-8">
@@ -258,7 +258,7 @@ export default function TraiteurPage() {
                 </form>
               </>
             )}
-          </motion.div>
+          </m.div>
         </div>
       </section>
 

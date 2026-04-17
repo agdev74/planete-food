@@ -7,7 +7,7 @@ import {
   CheckCircle2, AlertCircle, Wand2, 
   LogOut, Power, PowerOff, RefreshCw
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useTranslation } from "@/context/LanguageContext";
 
@@ -209,10 +209,10 @@ export default function AdminMenu() {
     <div className="p-4 md:p-10 bg-black min-h-screen text-white pt-24 md:pt-32">
       <AnimatePresence>
         {toast && (
-          <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} className={`fixed bottom-10 right-10 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl border backdrop-blur-md ${toast.type === 'success' ? 'bg-neutral-900/90 border-green-500/50 text-green-400' : 'bg-neutral-900/90 border-red-500/50 text-red-400'}`}>
+          <m.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} className={`fixed bottom-10 right-10 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl border backdrop-blur-md ${toast.type === 'success' ? 'bg-neutral-900/90 border-green-500/50 text-green-400' : 'bg-neutral-900/90 border-red-500/50 text-red-400'}`}>
             {toast.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
             <span className="font-bold text-sm uppercase tracking-widest">{toast.message}</span>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -291,7 +291,7 @@ export default function AdminMenu() {
         {isModalOpen && (
           // ✅ CORRECTION GPU/SAFARI : Désactivation du backdrop-blur sur mobile et forçage de l'accélération matérielle
           <div className="fixed inset-0 bg-black/95 md:backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity" style={{ WebkitTransform: 'translate3d(0,0,0)' }}>
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl max-w-4xl w-full shadow-2xl overflow-y-auto max-h-[90vh]">
+            <m.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-neutral-900 border border-neutral-800 p-6 md:p-8 rounded-3xl max-w-4xl w-full shadow-2xl overflow-y-auto max-h-[90vh]">
               <div className="flex justify-between items-center mb-8 border-b border-neutral-800 pb-4">
                 <h2 className="text-2xl font-bold uppercase tracking-tighter">{editingId ? "Modifier" : "Ajouter"}</h2>
                 <div className="flex items-center gap-3">
@@ -353,7 +353,7 @@ export default function AdminMenu() {
                   {actionLoading ? <Loader2 className="animate-spin" size={20} /> : (editingId ? "Sauvegarder" : "Ajouter")}
                 </button>
               </form>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

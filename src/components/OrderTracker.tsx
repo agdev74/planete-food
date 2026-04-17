@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 // ✅ CORRECTION IMPORT : On utilise la nouvelle méthode d'export
 import { createClient } from "@/utils/supabase/client";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Receipt, ChefHat, Package, CheckCircle2, Loader2, ArrowRight, XCircle, Truck } from "lucide-react"; 
 import Link from "next/link";
 import { useTranslation } from "@/context/LanguageContext";
@@ -117,19 +117,19 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
 
         <AnimatePresence>
           {showMap && !isDelivered && !isCancelled && (
-            <motion.div 
+            <m.div 
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               className="mb-8"
             >
               <DeliveryMap driverLat={order.driver_lat} driverLng={order.driver_lng} />
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
 
         {isCancelled ? (
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, scale: 0.9 }} 
             animate={{ opacity: 1, scale: 1 }} 
             className="text-center py-10 bg-red-900/10 rounded-2xl border border-red-500/20"
@@ -139,7 +139,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
             <p className="text-gray-400 text-xs px-6 leading-relaxed">
               Cette commande a été annulée. Un remboursement a été initié vers votre moyen de paiement original.
             </p>
-          </motion.div>
+          </m.div>
         ) : (
           <div className="relative mt-4">
             <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-neutral-800" />
@@ -152,7 +152,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
 
                 return (
                   <div key={step.id} className="relative flex items-center gap-6 z-10">
-                    <motion.div
+                    <m.div
                       initial={false}
                       animate={{
                         backgroundColor: isCompleted ? "#DC2626" : "#171717",
@@ -163,14 +163,14 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
                       className={`w-12 h-12 rounded-full border-2 flex items-center justify-center shrink-0 ${isActive ? 'shadow-[0_0_20px_rgba(220,38,38,0.4)]' : ''}`}
                     >
                       <Icon size={20} />
-                    </motion.div>
+                    </m.div>
 
                     <div>
                       <h4 className={`text-sm font-bold uppercase tracking-widest ${isCompleted ? 'text-white' : 'text-gray-500'}`}>
                         {step.label}
                       </h4>
                       {isActive && (
-                        <motion.p 
+                        <m.p 
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           className="text-xs text-kabuki-red font-bold mt-1 overflow-hidden"
@@ -181,7 +181,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
                            step.id === "Prête" && isDelivery ? "Le livreur est en route vers le restaurant." : 
                            step.id === "En livraison" ? "Regardez la carte, il arrive !" : 
                            step.id === "Livrée" ? "Bon appétit ! Merci de votre confiance." : ""}
-                        </motion.p>
+                        </m.p>
                       )}
                     </div>
                   </div>
@@ -194,7 +194,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
 
       <AnimatePresence>
         {(isDelivered || isCancelled) && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col gap-4"
@@ -214,7 +214,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
             >
               {"Retour à l'accueil"}
             </Link>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

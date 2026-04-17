@@ -2,7 +2,7 @@
 
 import { useTranslation } from "@/context/LanguageContext";
 import { MessageCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function WhatsAppButton() {
   const { lang } = useTranslation();
@@ -26,7 +26,7 @@ export default function WhatsAppButton() {
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(getDefaultMessage())}`;
 
   return (
-    <motion.a
+    <m.a
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
@@ -52,6 +52,6 @@ export default function WhatsAppButton() {
           <span className="relative inline-flex rounded-full h-4 w-4 bg-kabuki-red border-2 border-white"></span>
         </span>
       </div>
-    </motion.a>
+    </m.a>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, Trash2, ShoppingBag, ArrowRight, ArrowLeft, Clock, Calendar, MessageSquare, Loader2, CheckCircle, ShieldCheck, MapPin, Tag } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
@@ -237,8 +237,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]" aria-hidden="true" />
-          <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-neutral-900 border-l border-neutral-800 z-[101] flex flex-col shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+          <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]" aria-hidden="true" />
+          <m.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-neutral-900 border-l border-neutral-800 z-[101] flex flex-col shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="cart-title">
             {!isSuccess && (
               <div className="flex items-center justify-between p-6 border-b border-neutral-800 bg-black/20">
                 <h2 id="cart-title" className="text-xl font-display font-bold text-white uppercase tracking-widest flex items-center gap-3">
@@ -250,9 +250,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             
             {isSuccess ? (
               <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-6 text-center">
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center">
+                <m.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center">
                     <CheckCircle size={48} className="text-green-500" aria-hidden="true" />
-                </motion.div>
+                </m.div>
                 <h2 className="text-2xl font-bold text-white uppercase tracking-tight">{t.successTitle}</h2>
                 <div className="bg-neutral-800 p-6 rounded-2xl border border-neutral-700 w-full shadow-inner">
                     <p className="text-gray-300 text-sm mb-4">{t.successDesc}</p>
@@ -354,7 +354,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
                         <AnimatePresence>
                           {formData.type === "Livraison" && (
-                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-4 overflow-hidden">
+                            <m.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-4 overflow-hidden">
                               {totalPrice < 25 && (
                                 <div role="alert" className="bg-red-900/20 text-red-500 text-[10px] font-black p-3 rounded-xl border border-red-500/20 text-center uppercase tracking-widest">
                                   ⚠️ {t.minOrderError}
@@ -385,20 +385,20 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                 
                                 <AnimatePresence>
                                   {formData.type === "Livraison" && formData.zip.length === 4 && !isGenevaZip(formData.zip) && (
-                                    <motion.p 
+                                    <m.p 
                                       initial={{ opacity: 0, height: 0 }} 
                                       animate={{ opacity: 1, height: "auto" }} 
                                       exit={{ opacity: 0, height: 0 }} 
                                       className="text-red-500 text-[10px] font-bold mt-1 text-center uppercase"
                                     >
                                       Nous livrons uniquement dans le canton de Genève (12xx).
-                                    </motion.p>
+                                    </m.p>
                                   )}
                                 </AnimatePresence>
 
                                 <input id="door_code" placeholder={t.codePlaceholder} value={formData.doorCode} onChange={e => setFormData({...formData, doorCode: e.target.value})} className="w-full bg-black text-white border border-neutral-800 rounded-lg px-4 py-2 text-sm outline-none focus:border-kabuki-red transition" />
                               </div>
-                            </motion.div>
+                            </m.div>
                           )}
                         </AnimatePresence>
 
@@ -471,7 +471,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 )}
               </div>
             )}
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>

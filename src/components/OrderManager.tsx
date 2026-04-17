@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Clock, ChefHat, Truck, PackageCheck, Loader2, ShoppingBasket } from "lucide-react";
 
 interface OrderItem {
@@ -102,7 +102,7 @@ export default function OrderManager() {
           {orders.map((order) => {
             const config = getStatusConfig(order.status);
             return (
-              <motion.div
+              <m.div
                 key={order.id}
                 layout
                 initial={{ opacity: 0, y: 20 }}
@@ -153,16 +153,16 @@ export default function OrderManager() {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             );
           })}
         </AnimatePresence>
 
         {orders.length === 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-32 bg-neutral-900/30 rounded-3xl border border-dashed border-neutral-800">
+          <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-32 bg-neutral-900/30 rounded-3xl border border-dashed border-neutral-800">
             <ShoppingBasket size={48} className="mx-auto mb-4 text-neutral-800" />
             <p className="uppercase tracking-[0.3em] text-[10px] font-bold text-neutral-600">Le calme avant la tempête...</p>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </div>

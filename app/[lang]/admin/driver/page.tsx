@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Truck, MapPin, CheckCircle2, Navigation, Loader2, AlertTriangle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 interface Order {
   id: number;
@@ -157,7 +157,7 @@ export default function DriverDashboard() {
             const safeZip = order.delivery_zip || "";
 
             return (
-              <motion.div 
+              <m.div 
                 key={order.id} 
                 layout 
                 initial={{ opacity: 0, y: 20 }} 
@@ -229,7 +229,7 @@ export default function DriverDashboard() {
                     </p>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             );
           })}
         </AnimatePresence>
