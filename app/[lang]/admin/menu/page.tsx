@@ -61,13 +61,14 @@ export default function AdminMenu() {
     setTimeout(() => setToast(null), 3000);
   }, []);
 
-  const fetchMenu = useCallback(async () => {
-    if (activeRestaurantId === null) return;
+  // Receives restaurantId as a parameter so it never captures activeRestaurantId
+  // in its closure — deps stay [supabase, showToast] and the function is stable forever.
+  const fetchMenu = useCallback(async (restaurantId: number) => {
     setLoading(true);
     const { data, error } = await supabase
       .from("menu_items")
       .select("*")
-      .eq("restaurant_id", activeRestaurantId)
+      .eq("restaurant_id", restaurantId)
       .order("id", { ascending: false });
 
     if (error) {
@@ -76,8 +77,9 @@ export default function AdminMenu() {
       setItems(data as MenuItem[]);
     }
     setLoading(false);
-  }, [supabase, showToast, activeRestaurantId]);
+  }, [supabase, showToast]);
 
+  // Fetch restaurants once; sets activeRestaurantId which triggers the menu fetch below.
   useEffect(() => {
     supabase.from("restaurants").select("id, name").eq("is_active", true).order("name").then(({ data }) => {
       if (data && data.length > 0) {
@@ -87,9 +89,12 @@ export default function AdminMenu() {
     });
   }, [supabase]);
 
+  // Fetch menu whenever the active restaurant changes. fetchMenu is stable so this
+  // only re-runs when activeRestaurantId actually changes — no spurious re-fetches.
   useEffect(() => {
-    fetchMenu();
-  }, [fetchMenu]);
+    if (activeRestaurantId === null) return;
+    fetchMenu(activeRestaurantId);
+  }, [activeRestaurantId, fetchMenu]);
 
   const activeRestaurantName = restaurants.find(r => r.id === activeRestaurantId)?.name ?? "—";
 
@@ -175,7 +180,7 @@ export default function AdminMenu() {
       }
       setIsModalOpen(false);
       resetForm();
-      fetchMenu();
+      if (activeRestaurantId !== null) fetchMenu(activeRestaurantId);
     } catch (err) {
       const error = err as Error;
       showToast(error.message, 'error');

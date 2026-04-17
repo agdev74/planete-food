@@ -198,34 +198,35 @@ export default function OrdersList() {
     setLoading(false);
   }, [supabase]);
 
-  // Kanban: per-restaurant, active statuses today — recreates when restaurant changes
-  const fetchKanbanOrders = useCallback(async () => {
-    if (!activeRestaurantId) return;
+  // Receives restaurantId as a parameter — stable forever, deps: [supabase] only.
+  const fetchKanbanOrders = useCallback(async (restaurantId: number) => {
     setLoading(true);
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const { data } = await supabase
       .from("orders")
       .select("*")
-      .eq("restaurant_id", activeRestaurantId)
+      .eq("restaurant_id", restaurantId)
       .in("status", ["Payé", "En préparation", "Prête"])
       .gte("created_at", todayStart.toISOString())
       .order("created_at", { ascending: true });
     if (data) setOrders(data as Order[]);
     setLoading(false);
-  }, [supabase, activeRestaurantId]);
+  }, [supabase]);
 
-  // ── Fetch effects (separated to avoid cross-contamination) ──────────────────
+  // ── Fetch effects ────────────────────────────────────────────────────────────
 
   useEffect(() => {
     if (activeView !== "list") return;
     fetchListOrders(true);
   }, [activeView, fetchListOrders]);
 
+  // Single kanban effect: runs when view switches to kanban OR restaurant changes.
+  // fetchKanbanOrders is stable so this never fires spuriously.
   useEffect(() => {
-    if (activeView !== "kanban") return;
-    fetchKanbanOrders();
-  }, [activeView, fetchKanbanOrders]);
+    if (activeView !== "kanban" || !activeRestaurantId) return;
+    fetchKanbanOrders(activeRestaurantId);
+  }, [activeView, activeRestaurantId, fetchKanbanOrders]);
 
   // ── List Realtime — re-fetches on events (manager global view) ───────────────
   // Deps: [supabase, activeView, fetchListOrders, playNotification] — all stable
@@ -381,7 +382,7 @@ export default function OrdersList() {
             {isSoundEnabled ? "Alertes ON" : "Alertes OFF"}
           </button>
           <button
-            onClick={() => activeView === "kanban" ? fetchKanbanOrders() : fetchListOrders(true)}
+            onClick={() => activeView === "kanban" && activeRestaurantId ? fetchKanbanOrders(activeRestaurantId) : fetchListOrders(true)}
             className="flex items-center gap-2 text-xs bg-neutral-800 hover:bg-neutral-700 text-gray-400 px-4 py-2 rounded-full uppercase font-bold transition border border-neutral-700"
           >
             <RefreshCw size={12} /> Actualiser

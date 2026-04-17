@@ -130,12 +130,11 @@ export default function AdminStatsPage() {
     });
   }, [startDate, endDate]);
 
-  // Fetch restaurants once for the context selector
+  // Fetch all restaurants (no is_active filter — inactive restaurants still have historical orders)
   useEffect(() => {
     supabase
       .from("restaurants")
       .select("id, name")
-      .eq("is_active", true)
       .order("name")
       .then(({ data }) => { if (data) setRestaurants(data as RestaurantOption[]); });
   }, [supabase]);
