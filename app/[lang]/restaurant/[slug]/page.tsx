@@ -1,9 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import MenuClient, { type MenuItem } from "../../menu/MenuClient";
-import DynamicRestaurantGrid from "@/components/DynamicRestaurantGrid";
 import type { Metadata } from "next";
-import type { Restaurant } from "@/types";
 
 export const revalidate = 3600;
 

@@ -1,74 +1,74 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { useParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { useTranslation } from "@/context/LanguageContext";
-import TransitionLink from "./TransitionLink";
 import type { Restaurant } from "@/types";
 
 export default function RestaurantBanner() {
   const { lang } = useTranslation();
-  const pathname = usePathname();
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-
-  const segments = pathname.split("/");
-  const restaurantIdx = segments.indexOf("restaurant");
-  const currentSlug = restaurantIdx !== -1 ? segments[restaurantIdx + 1] : undefined;
+  const params = useParams();
+  const currentSlug = params.slug;
+  const [restaurants, setRestaurants] = useState<Pick<Restaurant, "id" | "name" | "slug" | "image_url">[]>([]);
 
   useEffect(() => {
-    createClient()
+    const supabase = createClient();
+    supabase
       .from("restaurants")
-      .select("id, name, slug, category, is_active")
+      .select("id, name, slug, image_url")
       .eq("is_active", true)
       .order("name")
       .then(({ data }) => {
-        if (data) setRestaurants(data as Restaurant[]);
+        if (data) setRestaurants(data);
       });
   }, []);
 
-  useEffect(() => {
-    if (!currentSlug) return;
-    const el = document.getElementById(`rb-${currentSlug}`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-  }, [restaurants, currentSlug]);
-
-  if (restaurants.length === 0) return null;
-
   return (
-    <div className="flex gap-2 overflow-x-auto no-scrollbar px-4 py-2">
-      {restaurants.map((r) => {
-        const isActive = r.slug === currentSlug;
-        return (
-          <div key={r.id} id={`rb-${r.slug}`} className="shrink-0">
-            <TransitionLink
-              href={`/${lang}/restaurant/${r.slug}`}
-              className={`flex flex-col items-center gap-1 px-4 py-2.5 rounded-2xl border text-center transition-all min-w-20 block ${
-                isActive
-                  ? "bg-brand-primary/10 border-brand-primary shadow-glow"
-                  : "bg-neutral-900/50 border-neutral-800 text-neutral-500 hover:border-neutral-600 hover:text-white"
-              }`}
-            >
-              <span
-                className={`text-[10px] font-black uppercase tracking-tight leading-tight ${
-                  isActive ? "text-white" : "text-neutral-400"
-                }`}
-              >
-                {r.name}
-              </span>
-              {r.category && (
-                <span
-                  className={`text-[8px] uppercase tracking-widest leading-none ${
-                    isActive ? "text-brand-primary" : "text-neutral-600"
-                  }`}
-                >
-                  {r.category}
-                </span>
-              )}
-            </TransitionLink>
-          </div>
-        );
-      })}
+    <div className="w-full bg-[#080808] py-4">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center gap-4 overflow-x-auto no-scrollbar pb-2">
+          
+          {/* Option "Tous" */}
+          <Link href={`/${lang}/restaurant`}>
+            <div className={`relative shrink-0 w-32 h-20 rounded-2xl overflow-hidden border-2 transition-all ${!currentSlug ? 'border-brand-primary shadow-glow' : 'border-neutral-800 opacity-60'}`}>
+              <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-white z-10">
+                Tous
+              </div>
+            </div>
+          </Link>
+
+          {/* Liste des Enseignes */}
+          {restaurants.map((r) => (
+            <Link key={r.id} href={`/${lang}/restaurant/${r.slug}`}>
+              <div className={`relative shrink-0 w-40 h-20 rounded-2xl overflow-hidden border-2 transition-all group ${currentSlug === r.slug ? 'border-brand-primary shadow-glow' : 'border-neutral-800 hover:border-neutral-600'}`}>
+                
+                {r.image_url ? (
+                  <Image 
+                    src={r.image_url} 
+                    alt={r.name} 
+                    fill 
+                    className={`object-cover transition-transform duration-500 group-hover:scale-110 ${currentSlug === r.slug ? 'opacity-100' : 'opacity-40 group-hover:opacity-60'}`}
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-neutral-800" />
+                )}
+                
+                {/* Tailwind v4 : bg-linear-to-t au lieu de bg-gradient-to-t */}
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10" />
+                
+                <div className="absolute inset-0 flex items-center justify-center p-2 z-20">
+                  <span className="text-white text-[10px] font-black uppercase tracking-tighter text-center leading-tight">
+                    {r.name}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

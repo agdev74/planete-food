@@ -17,10 +17,10 @@
 :root {
   --background: #080808;
   --foreground: #ededed;
-
   scroll-behavior: smooth;
 }
 
+/* Forçage du thème sombre même si le système est en light */
 @media (prefers-color-scheme: light) {
   :root {
     --background: #080808;
@@ -30,8 +30,11 @@
 
 html {
   scroll-behavior: smooth;
+  /* Évite les sauts de layout lors de l'apparition de la scrollbar */
+  scrollbar-gutter: stable;
 }
 
+/* Utilitaire pour cacher la scrollbar sur la bannière restaurant */
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -44,10 +47,24 @@ body {
   font-family: var(--font-inter), sans-serif;
   @apply antialiased;
 
+  /* Fond harmonisé avec la couleur de base #080808 */
   background-color: var(--background);
-  background-image:
-    radial-gradient(circle at 80% 0%, #141414 0%, transparent 50%),
-    radial-gradient(circle at 50% 30%, #111111 0%, #080808 100%);
+  background-image: 
+    radial-gradient(circle at 80% 0%, #0f0f0f 0%, transparent 50%),
+    radial-gradient(circle at 50% 30%, #0a0a0a 0%, #080808 100%);
 
   background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Correction pour les éléments sticky sur mobile */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+/* Style global pour les sélections de texte */
+::selection {
+  background-color: rgba(168, 85, 247, 0.3);
+  color: #ffffff;
 }
