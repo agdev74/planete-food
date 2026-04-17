@@ -54,9 +54,8 @@ export default async function RestaurantPage({ params }: Props) {
   }));
 
   return (
-    <>
-      <DynamicRestaurantGrid current={restaurant as Restaurant} />
-      <MenuClient initialItems={items} noHeader />
-    </>
+    <div className="bg-[#080808] min-h-screen">
+      <MenuClient initialItems={items} />
+    </div>
   );
 }
