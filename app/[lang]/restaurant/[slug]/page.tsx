@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import MenuClient, { type MenuItem } from "../../menu/MenuClient";
-import UnifiedRestaurantHeader from "@/components/UnifiedRestaurantHeader";
+import IntegratedRestaurantBanner from "@/components/IntegratedRestaurantBanner";
 import type { Metadata } from "next";
 import type { Restaurant } from "@/types";
 
@@ -55,7 +55,7 @@ export default async function RestaurantPage({ params }: Props) {
 
   return (
     <>
-      <UnifiedRestaurantHeader current={restaurant as Restaurant} />
+      <IntegratedRestaurantBanner current={restaurant as Restaurant} />
       <MenuClient initialItems={items} noHeader />
     </>
   );
