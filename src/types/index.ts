@@ -1,13 +1,26 @@
+export interface ComboPrice {
+  qty: number;
+  price: number;
+}
+
 export interface Variant {
   size: string;
   price: number;
   label?: string;
+  combo_prices?: ComboPrice[];
 }
 
 export interface Addon {
   id: string;
   name: string;
   price: number;
+  category?: string;
+}
+
+export interface TacosSelection {
+  meat: Addon | null;
+  sauces: Addon[];
+  gratin: Addon | null;
 }
 
 export interface Restaurant {

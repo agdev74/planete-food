@@ -6,6 +6,8 @@ import { X, Minus, Plus, ShoppingCart, Maximize2, Info } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "@/context/LanguageContext";
 import { useCart, MenuItem as ContextMenuItem, type Variant, type Addon } from "@/context/CartContext";
+import TacosBuilder from "@/components/TacosBuilder";
+import type { TacosSelection } from "@/types";
 
 export interface MenuItem extends ContextMenuItem {
   name_fr: string;
@@ -33,6 +35,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
     item.variants?.[0]
   );
   const [selectedAddons, setSelectedAddons] = useState<Addon[]>([]);
+  const [tacosSelection, setTacosSelection] = useState<TacosSelection>({ meat: null, sauces: [], gratin: null });
 
   // Tableau stockant les parfums pour chaque portion sélectionnée
   const [mochiSelections, setMochiSelections] = useState<[string, string][]>([
@@ -72,6 +75,22 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
     
     return safeNameFr.includes("mochi") || safeName.includes("mochi");
   }, [item.id, item.name_fr, name]);
+
+  const isTacos = useMemo(
+    () => item.addons?.some((a) => a.category === "meat") ?? false,
+    [item.addons]
+  );
+
+  // Unified display price: tacos total (base + surcharges) or pizza/generic (variant + addons)
+  const displayPrice = useMemo(() => {
+    if (isTacos) {
+      return item.price
+        + (tacosSelection.meat?.price ?? 0)
+        + tacosSelection.sauces.reduce((s, a) => s + a.price, 0)
+        + (tacosSelection.gratin?.price ?? 0);
+    }
+    return effectivePrice + addonsTotal;
+  }, [isTacos, item.price, effectivePrice, addonsTotal, tacosSelection]);
 
   useEffect(() => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
@@ -125,6 +144,25 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
       restaurant_id: item.restaurant_id,
       restaurant_name: item.restaurant_name,
     };
+
+    if (isTacos) {
+      if (!tacosSelection.meat) return;
+      const allAddons = [tacosSelection.meat, ...tacosSelection.sauces, tacosSelection.gratin].filter(Boolean) as Addon[];
+      const configKey = allAddons.map((a) => a.id).join("-");
+      const label = [
+        tacosSelection.meat.name,
+        tacosSelection.sauces.length > 0 ? tacosSelection.sauces.map((s) => s.name).join("+") : null,
+        tacosSelection.gratin?.name,
+      ].filter(Boolean).join(" | ");
+      // pseudo-variant gives this config a unique cart key and stores the label for CartDrawer
+      const pseudoVariant: Variant = { size: configKey, price: displayPrice, label };
+      for (let i = 0; i < quantity; i++) {
+        addToCart({ ...base, name, price: displayPrice }, { variant: pseudoVariant, addons: allAddons });
+      }
+      onClose();
+      return;
+    }
+
     if (isMochi) {
       mochiSelections.forEach(selection => {
         addToCart({ ...base, name: `${name} (${selection[0]} & ${selection[1]})`, price: item.price });
@@ -202,7 +240,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
               <span className="text-brand-primary text-[10px] uppercase font-black tracking-[0.4em]">Signature</span>
             </div>
             <div className="text-3xl md:text-4xl font-bold text-white whitespace-nowrap">
-              {Number(effectivePrice + addonsTotal).toFixed(2)} <span className="text-xs text-neutral-500 uppercase ml-1">chf</span>
+              {Number(displayPrice).toFixed(2)} <span className="text-xs text-neutral-500 uppercase ml-1">chf</span>
             </div>
           </div>
           
@@ -214,7 +252,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
           </div>
 
           {/* VARIANT SELECTOR (pizza sizes) */}
-          {item.variants && item.variants.length > 0 && (
+          {!isTacos && item.variants && item.variants.length > 0 && (
             <div className="mb-6">
               <h4 className="text-neutral-600 text-[10px] uppercase font-black tracking-[0.3em] mb-3">Taille</h4>
               <div className="grid grid-cols-4 gap-2">
@@ -236,8 +274,16 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
             </div>
           )}
 
+          {/* TACOS BUILDER (multi-step stepper) */}
+          {isTacos && item.addons && (
+            <div className="mb-6">
+              <h4 className="text-neutral-600 text-xs uppercase font-black tracking-widest mb-4">Composition du Tacos</h4>
+              <TacosBuilder addons={item.addons} selection={tacosSelection} onChange={setTacosSelection} />
+            </div>
+          )}
+
           {/* ADDON SELECTOR (composable items) */}
-          {item.addons && item.addons.length > 0 && (
+          {!isTacos && item.addons && item.addons.length > 0 && (
             <div className="mb-6">
               <h4 className="text-neutral-600 text-[10px] uppercase font-black tracking-[0.3em] mb-3">Garnitures</h4>
               <div className="space-y-2">
@@ -330,12 +376,17 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
               </button>
             </div>
 
-            <button 
+            <button
               onClick={handleAddToCart}
-              className="w-full bg-brand-primary hover:bg-violet-700 text-white font-bold min-h-16 h-16 rounded-2xl uppercase tracking-[0.15em] text-sm transition-all active:scale-[0.98] shadow-glow flex items-center justify-center gap-4 shrink-0"
+              disabled={isTacos && !tacosSelection.meat}
+              className={`w-full text-white font-bold min-h-16 h-16 rounded-2xl uppercase tracking-[0.15em] text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-4 shrink-0 ${
+                isTacos && !tacosSelection.meat
+                  ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
+                  : "bg-brand-primary hover:bg-violet-700 shadow-glow"
+              }`}
             >
               <ShoppingCart size={20} />
-              <span>AJOUTER AU PANIER • {((effectivePrice + addonsTotal) * quantity).toFixed(2)} CHF</span>
+              <span>AJOUTER AU PANIER • {(displayPrice * quantity).toFixed(2)} CHF</span>
             </button>
           </div>
         </div>

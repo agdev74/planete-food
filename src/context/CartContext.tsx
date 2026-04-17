@@ -13,6 +13,7 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  comboSavings: number;
   restaurantGroups: RestaurantGroup[];
 }
 
@@ -97,7 +98,49 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const { totalPrice, comboSavings } = useMemo(() => {
+    // Group items that carry combo_prices tiers by (restaurant_id, variant.size)
+    const comboGroups = new Map<string, CartItem[]>();
+    let baseTotal = 0;
+
+    items.forEach((item) => {
+      if (item.selected_variant?.combo_prices?.length) {
+        const key = `${item.restaurant_id ?? 0}:${item.selected_variant.size}`;
+        if (!comboGroups.has(key)) comboGroups.set(key, []);
+        comboGroups.get(key)!.push(item);
+      } else {
+        baseTotal += item.price * item.quantity;
+      }
+    });
+
+    let comboTotal = 0;
+    let savings = 0;
+
+    comboGroups.forEach((group) => {
+      const unitPrice = group[0].price;
+      const tiers = [...group[0].selected_variant!.combo_prices!].sort((a, b) => b.qty - a.qty);
+      const totalQty = group.reduce((s, i) => s + i.quantity, 0);
+      const standardCost = totalQty * unitPrice;
+      let remaining = totalQty;
+      let groupCost = 0;
+
+      // Greedy: fill with the highest applicable tier first
+      for (const tier of tiers) {
+        if (remaining >= tier.qty) {
+          const times = Math.floor(remaining / tier.qty);
+          groupCost += times * tier.price;
+          remaining -= times * tier.qty;
+        }
+      }
+      groupCost += remaining * unitPrice;
+
+      savings += Math.max(0, standardCost - groupCost);
+      comboTotal += groupCost;
+    });
+
+    return { totalPrice: baseTotal + comboTotal, comboSavings: savings };
+  }, [items]);
 
   const restaurantGroups = useMemo<RestaurantGroup[]>(() => {
     const groupMap = new Map<number | null, CartItem[]>();
@@ -124,6 +167,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        comboSavings,
         restaurantGroups,
       }}
     >

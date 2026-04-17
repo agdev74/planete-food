@@ -80,7 +80,7 @@ function StripeCheckoutForm({ total, onSuccess, onCancel, t }: StripeCheckoutFor
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const supabase = createClient();
 
-  const { items, updateQuantity, removeFromCart, totalPrice, clearCart, totalItems, restaurantGroups } = useCart();
+  const { items, updateQuantity, removeFromCart, totalPrice, comboSavings, clearCart, totalItems, restaurantGroups } = useCart();
   const { lang } = useTranslation();
   const t = cartTranslations[lang as keyof typeof cartTranslations] || cartTranslations.fr;
 
@@ -430,6 +430,18 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 {items.length > 0 && (
                   <div className="p-6 border-t border-neutral-800 bg-neutral-900 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
                     <div className="space-y-2 mb-4">
+                      {comboSavings > 0 && (
+                        <>
+                          <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
+                            <span className="text-gray-500">Sous-total</span>
+                            <span className="text-gray-500">{(totalPrice + comboSavings).toFixed(2)} CHF</span>
+                          </div>
+                          <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-emerald-400">
+                            <span className="flex items-center gap-1"><Tag size={10} /> Combo</span>
+                            <span>-{comboSavings.toFixed(2)} CHF</span>
+                          </div>
+                        </>
+                      )}
                       {appliedCoupon && (
                         <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
                           <span className="text-gray-500">{t.totalEstimated}</span>
