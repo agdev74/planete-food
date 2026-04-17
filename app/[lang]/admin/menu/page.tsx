@@ -45,6 +45,7 @@ export default function AdminMenu() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [restaurants, setRestaurants] = useState<RestaurantOption[]>([]);
+  const [restaurantsLoaded, setRestaurantsLoaded] = useState(false);
   const [activeRestaurantId, setActiveRestaurantId] = useState<number | null>(null);
 
   const [form, setForm] = useState<Omit<MenuItem, 'id' | 'is_available'>>({
@@ -81,12 +82,17 @@ export default function AdminMenu() {
 
   // Fetch restaurants once; sets activeRestaurantId which triggers the menu fetch below.
   useEffect(() => {
-    supabase.from("restaurants").select("id, name").order("name").then(({ data }) => {
-      if (data && data.length > 0) {
-        setRestaurants(data as RestaurantOption[]);
-        setActiveRestaurantId((data as RestaurantOption[])[0].id);
-      }
-    });
+    supabase.from("restaurants").select("id, name").order("name")
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("[DIAG] Erreur fetch restaurants (menu):", error);
+        }
+        if (data && data.length > 0) {
+          setRestaurants(data as RestaurantOption[]);
+          setActiveRestaurantId((data as RestaurantOption[])[0].id);
+        }
+      })
+      .finally(() => setRestaurantsLoaded(true));
   }, [supabase]);
 
   // Fetch menu whenever the active restaurant changes. fetchMenu is stable so this
@@ -256,10 +262,12 @@ export default function AdminMenu() {
 
         {/* Restaurant tabs */}
         <div className="flex flex-wrap gap-2 mb-8">
-          {restaurants.length === 0 ? (
+          {!restaurantsLoaded ? (
             <div className="flex items-center gap-2 text-neutral-500 text-xs uppercase font-bold tracking-widest">
               <Loader2 size={14} className="animate-spin" /> Chargement des enseignes…
             </div>
+          ) : restaurants.length === 0 ? (
+            <p className="text-neutral-500 text-xs uppercase font-bold tracking-widest">Aucune enseigne trouvée.</p>
           ) : (
             restaurants.map((r) => (
               <button
