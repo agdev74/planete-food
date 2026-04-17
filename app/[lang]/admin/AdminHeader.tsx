@@ -11,7 +11,6 @@ import {
   Truck,
   BarChart3,
   Ticket,
-  ChefHat,
 } from "lucide-react";
 // ✅ CORRECTION IMPORT
 import { createClient } from "@/utils/supabase/client";
@@ -62,11 +61,6 @@ export default function AdminHeader({ lang }: { lang: string }) {
       name: "Stats",
       path: `/${lang}/admin/stats`,
       icon: <BarChart3 size={16} />,
-    },
-    {
-      name: "KDS",
-      path: `/${lang}/admin/kitchen`,
-      icon: <ChefHat size={16} />,
     },
   ];
 
