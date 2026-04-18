@@ -197,6 +197,15 @@ export async function POST(request: Request) {
       ? `[Cagnotte déduite: -${walletUsed.toFixed(2)} CHF]\n${comments || ""}`
       : (comments || null);
 
+    // --- TRADUCTION POUR L'ENUM DE LA BASE DE DONNÉES ---
+    let dbOrderType = "À emporter";
+    if (normalizedOrderType === "livraison" || normalizedOrderType === "delivery") {
+      dbOrderType = "Livraison";
+    } else {
+      dbOrderType = "À emporter";
+    }
+    console.log("[DEBUG-CHECKOUT] Traduction ENUM :", dbOrderType);
+
     // ── INSERT commande ───────────────────────────────────────────────────────
     const orderPayload = {
       user_id: user?.id || null,
@@ -204,7 +213,7 @@ export async function POST(request: Request) {
       customer_phone: customerPhone,
       pickup_date: pickupDate,
       pickup_time: pickupTime,
-      order_type: rawOrderType,
+      order_type: dbOrderType,
       delivery_address: deliveryAddress || null,
       delivery_zip: deliveryZip || null,
       total_amount: finalAmount,
