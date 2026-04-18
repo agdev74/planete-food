@@ -36,9 +36,11 @@ const supabaseAdmin = createSupabaseAdmin(
 );
 
 export async function POST(request: Request) {
+  console.log("=== [DEBUG-CHECKOUT] DÉBUT DE LA REQUÊTE ===");
+
   try {
     const body = await request.json() as RequestBody;
-    console.log("[DEBUG] ① Body reçu:", JSON.stringify(body, null, 2));
+    console.log("[DEBUG-CHECKOUT] Payload reçu :", JSON.stringify(body, null, 2));
 
     const {
       couponCode, useWallet, items, customerName, customerPhone,
@@ -47,7 +49,7 @@ export async function POST(request: Request) {
 
     const supabaseServer = await createClient();
     const { data: { user } } = await supabaseServer.auth.getUser();
-    console.log("[DEBUG] ② User:", user?.id ?? "guest");
+    console.log("[DEBUG-CHECKOUT] User authentifié :", user?.id ?? "guest (non connecté)");
 
     // ── Validation orderType (null-safe) ──────────────────────────────────────
     const rawOrderType = typeof orderType === "string" ? orderType : "";
@@ -57,33 +59,39 @@ export async function POST(request: Request) {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
     const validTypes = ["livraison", "a emporter", "delivery", "pickup", "takeaway", "click & collect"];
-    console.log("[DEBUG] ③ normalizedOrderType:", normalizedOrderType);
+    console.log("[DEBUG-CHECKOUT] orderType brut:", orderType, "| normalisé:", normalizedOrderType);
 
     if (!validTypes.includes(normalizedOrderType)) {
-      console.error("[DEBUG] ③ Type de commande invalide:", orderType);
+      console.error("[DEBUG-CHECKOUT] ❌ REJET Type de commande. Reçu:", orderType, "Normalisé:", normalizedOrderType);
       return NextResponse.json({ error: "Type de commande invalide." }, { status: 400 });
     }
+    console.log("[DEBUG-CHECKOUT] ✅ Type de commande validé:", normalizedOrderType);
 
     // ── Validation NPA ────────────────────────────────────────────────────────
     if (normalizedOrderType === "livraison") {
       const zipStr =
         typeof deliveryZip === "string" ? deliveryZip.trim() :
         typeof deliveryZip === "number" ? String(deliveryZip) : "";
+      console.log("[DEBUG-CHECKOUT] NPA reçu:", deliveryZip, "| type:", typeof deliveryZip, "| zipStr:", zipStr);
       if (!/^12\d{2}$/.test(zipStr)) {
+        console.error("[DEBUG-CHECKOUT] ❌ REJET NPA. Reçu:", deliveryZip, "Type:", typeof deliveryZip);
         return NextResponse.json(
           { error: "La livraison est restreinte au canton de Genève (NPA 12xx)." },
           { status: 400 }
         );
       }
+      console.log("[DEBUG-CHECKOUT] ✅ NPA validé:", zipStr);
     }
 
     // ── Validation panier ─────────────────────────────────────────────────────
     if (!Array.isArray(items) || items.length === 0) {
+      console.error("[DEBUG-CHECKOUT] ❌ REJET Panier. Items:", items);
       return NextResponse.json({ error: "Le panier est vide." }, { status: 400 });
     }
+    console.log("[DEBUG-CHECKOUT] ✅ Panier valide, nb articles:", items.length);
 
     const menuItemIds = items.map((i) => i.menuItemId);
-    console.log("[DEBUG] ④ menuItemIds envoyés:", menuItemIds);
+    console.log("[DEBUG-CHECKOUT] menuItemIds à chercher en DB:", menuItemIds);
 
     // ── Fetch prix depuis la DB ───────────────────────────────────────────────
     const { data: dbItems, error: dbError } = await supabaseAdmin
@@ -91,44 +99,44 @@ export async function POST(request: Request) {
       .select("id, price")
       .in("id", menuItemIds);
 
-    console.log("[DEBUG] ⑤ dbItems:", JSON.stringify(dbItems));
+    console.log("[DEBUG-CHECKOUT] Résultat DB menu_items:", JSON.stringify(dbItems));
+
     if (dbError) {
-      console.error("🚨 ERREUR SQL EXACTE (menu_items) :", dbError.message, dbError.details, dbError.hint);
+      console.error("[DEBUG-CHECKOUT] ❌ ERREUR SQL (menu_items) :", dbError.message, "| details:", dbError.details, "| hint:", dbError.hint);
       throw new Error("Impossible de vérifier les prix en base de données.");
     }
     if (!dbItems || dbItems.length === 0) {
-      console.error("[DEBUG] ⑤ Aucun article trouvé pour les IDs:", menuItemIds);
+      console.error("[DEBUG-CHECKOUT] ❌ Aucun article trouvé pour les IDs:", menuItemIds);
       throw new Error("Aucun article trouvé en base de données.");
     }
+    console.log("[DEBUG-CHECKOUT] ✅ Articles trouvés en DB:", dbItems.length);
 
     // ── Calcul du montant ─────────────────────────────────────────────────────
     let serverBaseAmount = 0;
     for (const clientItem of items) {
-      const dbItem = dbItems.find(
-        (d) => String(d.id) === String(clientItem.menuItemId)
-      );
-      console.log("[DEBUG] ⑥ clientItem:", clientItem.menuItemId, "→ dbItem:", JSON.stringify(dbItem));
+      const dbItem = dbItems.find((d) => String(d.id) === String(clientItem.menuItemId));
+      console.log("[DEBUG-CHECKOUT] Article:", clientItem.menuItemId, "→ DB:", JSON.stringify(dbItem));
 
       if (!dbItem) {
-        console.error("[DEBUG] ⑥ Article introuvable en DB:", clientItem.menuItemId);
+        console.error("[DEBUG-CHECKOUT] ❌ REJET Article introuvable. menuItemId:", clientItem.menuItemId, "| dbItems IDs disponibles:", dbItems.map(d => d.id));
         return NextResponse.json({ error: "Un article n'est plus disponible." }, { status: 400 });
       }
 
       const dbPrice = typeof dbItem.price === "number" ? dbItem.price : parseFloat(String(dbItem.price ?? "0"));
       const clientPrice = typeof clientItem.price === "number" && clientItem.price > 0 ? clientItem.price : 0;
-      // Accepte le prix client uniquement s'il est supérieur au prix DB (suppléments Tacos)
       const itemPrice = clientPrice > dbPrice ? clientPrice : dbPrice;
-      console.log("[DEBUG] ⑥ dbPrice:", dbPrice, "| clientPrice:", clientPrice, "| itemPrice retenu:", itemPrice);
+      console.log("[DEBUG-CHECKOUT] Prix → db:", dbPrice, "| client:", clientPrice, "| retenu:", itemPrice, "| qté:", clientItem.quantity);
 
       serverBaseAmount += itemPrice * (clientItem.quantity || 1);
     }
-    console.log("[DEBUG] ⑦ serverBaseAmount:", serverBaseAmount);
+    console.log("[DEBUG-CHECKOUT] ✅ Prix recalculés avec succès, Base:", serverBaseAmount);
 
     // ── Coupon ────────────────────────────────────────────────────────────────
     let finalAmount = serverBaseAmount;
     let discountApplied = 0;
 
     if (couponCode) {
+      console.log("[DEBUG-CHECKOUT] Coupon demandé:", couponCode);
       const { data: coupon } = await supabaseAdmin
         .from("coupons")
         .select("*")
@@ -143,7 +151,10 @@ export async function POST(request: Request) {
             ? (serverBaseAmount * coupon.discount_value) / 100
             : coupon.discount_value;
           finalAmount = Math.max(0, serverBaseAmount - discountApplied);
+          console.log("[DEBUG-CHECKOUT] ✅ Coupon appliqué, remise:", discountApplied, "| finalAmount:", finalAmount);
         }
+      } else {
+        console.log("[DEBUG-CHECKOUT] Coupon non trouvé ou inactif:", couponCode);
       }
     }
 
@@ -160,6 +171,7 @@ export async function POST(request: Request) {
         const maxWalletAllowed = Math.max(0, finalAmount - 0.50);
         walletUsed = Math.min(maxWalletAllowed, Number(profile.wallet_balance));
         finalAmount -= walletUsed;
+        console.log("[DEBUG-CHECKOUT] ✅ Wallet appliqué:", walletUsed, "| finalAmount:", finalAmount);
 
         if (walletUsed > 0) {
           await supabaseAdmin.from("loyalty_transactions").insert([{
@@ -172,10 +184,10 @@ export async function POST(request: Request) {
     }
 
     const amountInCents = Math.round(finalAmount * 100);
-    console.log("[DEBUG] ⑧ amountInCents:", amountInCents, "| finalAmount:", finalAmount);
+    console.log("[DEBUG-CHECKOUT] amountInCents:", amountInCents, "| finalAmount:", finalAmount);
 
     if (!Number.isFinite(amountInCents) || amountInCents < 50) {
-      console.error("[DEBUG] ⑧ Montant invalide ou trop faible:", amountInCents);
+      console.error("[DEBUG-CHECKOUT] ❌ REJET Montant. amountInCents:", amountInCents, "| finalAmount:", finalAmount, "| serverBaseAmount:", serverBaseAmount);
       return NextResponse.json({ error: "Montant trop faible ou invalide (Min 0.50 CHF)." }, { status: 400 });
     }
 
@@ -200,7 +212,7 @@ export async function POST(request: Request) {
       status: "Paiement en cours",
       comments: finalComments,
     };
-    console.log("[DEBUG] ⑨ orderPayload:", JSON.stringify(orderPayload, null, 2));
+    console.log("[DEBUG-CHECKOUT] orderPayload à insérer:", JSON.stringify(orderPayload, null, 2));
 
     const { data: orderData, error: orderError } = await supabaseAdmin
       .from("orders")
@@ -209,10 +221,10 @@ export async function POST(request: Request) {
       .single();
 
     if (orderError || !orderData) {
-      console.error("🚨 ERREUR SQL EXACTE (orders) :", orderError?.message, orderError?.details, orderError?.hint);
+      console.error("[DEBUG-CHECKOUT] ❌ ERREUR SQL (orders) :", orderError?.message, "| details:", orderError?.details, "| hint:", orderError?.hint, "| code:", orderError?.code);
       return NextResponse.json({ error: "Erreur création commande" }, { status: 500 });
     }
-    console.log("[DEBUG] ⑩ Commande créée, id:", orderData.id);
+    console.log("[DEBUG-CHECKOUT] ✅ Insertion Supabase OK, ID:", orderData.id);
 
     // ── Stripe PaymentIntent ──────────────────────────────────────────────────
     const paymentIntent = await stripe.paymentIntents.create({
@@ -228,7 +240,8 @@ export async function POST(request: Request) {
         originalAmount: serverBaseAmount.toFixed(2),
       },
     });
-    console.log("[DEBUG] ⑪ PaymentIntent créé:", paymentIntent.id);
+    console.log("[DEBUG-CHECKOUT] ✅ PaymentIntent créé:", paymentIntent.id, "| montant:", amountInCents, "centimes");
+    console.log("=== [DEBUG-CHECKOUT] SUCCÈS — RÉPONSE ENVOYÉE ===");
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
@@ -237,8 +250,8 @@ export async function POST(request: Request) {
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("❌ Erreur API Stripe/Supabase:", errorMessage);
-    if (error instanceof Error) console.error("❌ Stack:", error.stack);
+    console.error("[DEBUG-CHECKOUT] ❌ EXCEPTION NON GÉRÉE:", errorMessage);
+    if (error instanceof Error) console.error("[DEBUG-CHECKOUT] ❌ Stack:", error.stack);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
