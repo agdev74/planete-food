@@ -1,5 +1,8 @@
 /**
  * 🔒 WEBHOOK STRIPE SÉCURISÉ — Planet Food
+ *
+ * Architecture : create-payment-intent crée la commande (status "Paiement en cours")
+ * et attache orderId dans metadata. Ce webhook fait uniquement des UPDATE de statut.
  */
 
 import Stripe from 'stripe';
@@ -58,118 +61,68 @@ async function markAsProcessed(
   }
 }
 
-// ─── Handlers par type d'événement ───────────────────────────────────────────
+// ─── Handlers ─────────────────────────────────────────────────────────────────
 
-async function handleCheckoutCompleted(
-  session: Stripe.Checkout.Session
-): Promise<void> {
-  if (session.payment_status !== 'paid') {
-    console.info(
-      `[webhook] Session ${session.id} terminée mais payment_status=${session.payment_status}, skip.`
-    );
-    return;
-  }
-
-  const cartMetadata = session.metadata?.cart;
-
-  if (!cartMetadata) {
-    console.error('[webhook] Metadata cart manquante dans la session:', session.id);
-    return;
-  }
-
-  let cart: Array<{ menuItemId: string; quantity: number }>;
-  try {
-    cart = JSON.parse(cartMetadata);
-  } catch {
-    console.error('[webhook] Metadata cart invalide (JSON malformé):', cartMetadata);
-    return;
-  }
-
-  const MAX_ITEM_QUANTITY = 50;
-  const MAX_CART_LINES = 30;
-
-  const isCartValid = 
-    Array.isArray(cart) && 
-    cart.length > 0 && 
-    cart.length <= MAX_CART_LINES &&
-    cart.every(item => 
-      typeof item.menuItemId === 'string' &&
-      item.menuItemId.length > 0 &&
-      Number.isInteger(item.quantity) &&
-      item.quantity >= 1 &&
-      item.quantity <= MAX_ITEM_QUANTITY
-    );
-
-  if (!isCartValid) {
-    console.error('[webhook] ❌ Panier invalide ou hors limites détecté:', cart);
-    return;
-  }
-
-  const menuItemIds = cart.map((i) => i.menuItemId);
-  const { data: menuItems, error: menuError } = await supabaseAdmin
-    .from('menu_items')
-    .select('id, name, price_cents')
-    .in('id', menuItemIds);
-
-  if (menuError || !menuItems) {
-    console.error('[webhook] Impossible de récupérer les prix:', menuError?.message);
-    return;
-  }
-
-  const { data: order, error: orderError } = await supabaseAdmin
-    .from('orders')
-    .insert({
-      stripe_session_id: session.id,
-      stripe_payment_intent_id: session.payment_intent as string,
-      user_id: session.metadata?.userId ?? null,
-      customer_email: session.customer_details?.email ?? null,
-      status: 'Payé', // ✅ CORRECTION : Alignement avec le frontend
-      total_cents: session.amount_total ?? 0,
-      created_at: new Date().toISOString(),
-    })
-    .select('id')
-    .single();
-
-  if (orderError || !order) {
-    console.error('[webhook] Erreur création commande:', orderError?.message);
-    return;
-  }
-
-  const orderItems = cart.map((cartItem) => {
-    const menuItem = menuItems.find((m) => m.id === cartItem.menuItemId);
-    return {
-      order_id: order.id,
-      menu_item_id: cartItem.menuItemId,
-      quantity: cartItem.quantity,
-      unit_price_cents: menuItem?.price_cents ?? 0,
-      name_snapshot: menuItem?.name ?? 'Article inconnu',
-    };
-  });
-
-  const { error: itemsError } = await supabaseAdmin
-    .from('order_items')
-    .insert(orderItems);
-
-  if (itemsError) {
-    console.error('[webhook] Erreur création order_items:', itemsError.message);
-    return;
-  }
-
-  console.info(`[webhook] ✅ Commande ${order.id} créée pour session ${session.id}`);
-}
-
-async function handlePaymentFailed(
+async function handlePaymentIntentSucceeded(
   paymentIntent: Stripe.PaymentIntent
 ): Promise<void> {
+  const orderId = paymentIntent.metadata?.orderId;
+
+  if (!orderId) {
+    console.error(
+      '[webhook] ❌ metadata.orderId manquant pour PaymentIntent:',
+      paymentIntent.id
+    );
+    return;
+  }
+
   const { error } = await supabaseAdmin
     .from('orders')
-    .update({ status: 'Paiement échoué' }) // ✅ CORRECTION : Statut lisible
-    .eq('stripe_payment_intent_id', paymentIntent.id);
+    .update({
+      status: 'Payé',
+      stripe_payment_intent_id: paymentIntent.id,
+    })
+    .eq('id', orderId);
 
   if (error) {
-    console.error('[webhook] Erreur mise à jour statut paiement échoué:', error.message);
+    console.error(
+      `[webhook] ❌ Erreur UPDATE commande ${orderId}:`,
+      error.message
+    );
   } else {
-    console.info(`[webhook] ⚠️ Paiement échoué pour PaymentIntent ${paymentIntent.id}`);
+    console.info(
+      `[webhook] ✅ Commande ${orderId} passée à "Payé" (PI: ${paymentIntent.id})`
+    );
+  }
+}
+
+async function handlePaymentIntentFailed(
+  paymentIntent: Stripe.PaymentIntent
+): Promise<void> {
+  const orderId = paymentIntent.metadata?.orderId;
+
+  if (!orderId) {
+    console.error(
+      '[webhook] ❌ metadata.orderId manquant pour PaymentIntent échoué:',
+      paymentIntent.id
+    );
+    return;
+  }
+
+  const { error } = await supabaseAdmin
+    .from('orders')
+    .update({ status: 'Paiement échoué' })
+    .eq('id', orderId);
+
+  if (error) {
+    console.error(
+      `[webhook] ❌ Erreur UPDATE échec paiement pour commande ${orderId}:`,
+      error.message
+    );
+  } else {
+    console.info(
+      `[webhook] ⚠️ Commande ${orderId} passée à "Paiement échoué" (PI: ${paymentIntent.id})`
+    );
   }
 }
 
@@ -178,13 +131,15 @@ async function handleRefundCreated(charge: Stripe.Charge): Promise<void> {
 
   const { error } = await supabaseAdmin
     .from('orders')
-    .update({ status: 'Annulée' }) // ✅ CORRECTION : Alignement avec la logique d'annulation
+    .update({ status: 'Annulée' })
     .eq('stripe_payment_intent_id', charge.payment_intent as string);
 
   if (error) {
-    console.error('[webhook] Erreur mise à jour statut remboursement:', error.message);
+    console.error('[webhook] Erreur UPDATE remboursement:', error.message);
   } else {
-    console.info(`[webhook] 💸 Remboursement enregistré pour ${charge.payment_intent}`);
+    console.info(
+      `[webhook] 💸 Remboursement enregistré pour PI: ${charge.payment_intent}`
+    );
   }
 }
 
@@ -208,7 +163,10 @@ export async function POST(req: Request): Promise<Response> {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (err) {
-    console.error('[webhook] ❌ Signature invalide:', err instanceof Error ? err.message : err);
+    console.error(
+      '[webhook] ❌ Signature invalide:',
+      err instanceof Error ? err.message : err
+    );
     return new Response('Webhook signature verification failed', { status: 400 });
   }
 
@@ -231,12 +189,16 @@ export async function POST(req: Request): Promise<Response> {
 
   try {
     switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+      case 'payment_intent.succeeded':
+        await handlePaymentIntentSucceeded(
+          event.data.object as Stripe.PaymentIntent
+        );
         break;
 
       case 'payment_intent.payment_failed':
-        await handlePaymentFailed(event.data.object as Stripe.PaymentIntent);
+        await handlePaymentIntentFailed(
+          event.data.object as Stripe.PaymentIntent
+        );
         break;
 
       case 'charge.refunded':
