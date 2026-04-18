@@ -4,7 +4,8 @@ import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/server";
 
 interface CartItem {
-  menuItemId: string;
+  id?: string | number;
+  menuItemId?: string;
   quantity: number;
   name?: string;
   price?: number;
@@ -90,7 +91,7 @@ export async function POST(request: Request) {
     }
     console.log("[DEBUG-CHECKOUT] ✅ Panier valide, nb articles:", items.length);
 
-    const menuItemIds = items.map((i) => i.menuItemId);
+    const menuItemIds = items.map((i) => String(i.id || i.menuItemId));
     console.log("[DEBUG-CHECKOUT] menuItemIds à chercher en DB:", menuItemIds);
 
     // ── Fetch prix depuis la DB ───────────────────────────────────────────────
@@ -114,11 +115,12 @@ export async function POST(request: Request) {
     // ── Calcul du montant ─────────────────────────────────────────────────────
     let serverBaseAmount = 0;
     for (const clientItem of items) {
-      const dbItem = dbItems.find((d) => String(d.id) === String(clientItem.menuItemId));
-      console.log("[DEBUG-CHECKOUT] Article:", clientItem.menuItemId, "→ DB:", JSON.stringify(dbItem));
+      const clientItemId = clientItem.id || clientItem.menuItemId;
+      const dbItem = dbItems.find((d) => String(d.id) === String(clientItemId));
+      console.log("[DEBUG-CHECKOUT] Article:", clientItemId, "→ DB:", JSON.stringify(dbItem));
 
       if (!dbItem) {
-        console.error("[DEBUG-CHECKOUT] ❌ REJET Article introuvable. menuItemId:", clientItem.menuItemId, "| dbItems IDs disponibles:", dbItems.map(d => d.id));
+        console.error("[DEBUG-CHECKOUT] ❌ REJET Article introuvable. id:", clientItemId, "| dbItems IDs disponibles:", dbItems.map(d => d.id));
         return NextResponse.json({ error: "Un article n'est plus disponible." }, { status: 400 });
       }
 
