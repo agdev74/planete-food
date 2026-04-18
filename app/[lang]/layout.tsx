@@ -5,7 +5,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { CartProvider } from "@/context/CartContext";
 import { UserProvider } from "@/context/UserContext";
 import LayoutClient from "@/components/LayoutClient";
-import ActiveOrderButton from "@/components/ActiveOrderButton";
+import FloatingTracker from "@/components/FloatingTracker";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -86,7 +86,7 @@ export default async function RootLayout({
               <LayoutClient>
                 {children}
               </LayoutClient>
-              <ActiveOrderButton />
+              <FloatingTracker />
 
               {/* Schéma JSON-LD pour le SEO */}
               <script

@@ -25,9 +25,10 @@ interface OrderData {
 
 interface OrderTrackerProps {
   orderId: number;
+  onDelivered?: () => void;
 }
 
-export default function OrderTracker({ orderId }: OrderTrackerProps) {
+export default function OrderTracker({ orderId, onDelivered }: OrderTrackerProps) {
   // ✅ CORRECTION CLIENT : Initialisation du client Supabase à l'intérieur du composant
   const supabase = createClient();
   
@@ -95,7 +96,11 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
   const activeIndex = currentStepIndex === -1 ? 0 : currentStepIndex;
   
   const isDelivered = order.status === "Livrée";
-  const isCancelled = order.status === "Annulée"; 
+  const isCancelled = order.status === "Annulée";
+
+  useEffect(() => {
+    if (isDelivered && onDelivered) onDelivered();
+  }, [isDelivered, onDelivered]);
   
   const showMap = isDelivery && (order.status === "En livraison" || (order.driver_lat && order.driver_lng));
 
@@ -176,7 +181,7 @@ export default function OrderTracker({ orderId }: OrderTrackerProps) {
                           className="text-xs text-brand-primary font-bold mt-1 overflow-hidden"
                         >
                           {step.id === "Payé" ? "En attente de prise en charge." :
-                           step.id === "En préparation" ? "Nos chefs préparent vos sushis..." : 
+                           step.id === "En préparation" ? "Nos chefs préparent votre commande..." :
                            step.id === "Prête" && !isDelivery ? "Votre commande est prête !" : 
                            step.id === "Prête" && isDelivery ? "Le livreur est en route vers le restaurant." : 
                            step.id === "En livraison" ? "Regardez la carte, il arrive !" : 

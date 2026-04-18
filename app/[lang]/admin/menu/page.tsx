@@ -169,9 +169,9 @@ export default function AdminMenu() {
       if (!e.target.files || e.target.files.length === 0) return;
       const file = e.target.files[0];
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${file.name.split('.').pop()}`;
-      const { error: uploadError } = await supabase.storage.from('sushi-images').upload(fileName, file);
+      const { error: uploadError } = await supabase.storage.from('menu-images').upload(fileName, file);
       if (uploadError) throw uploadError;
-      const { data } = supabase.storage.from('sushi-images').getPublicUrl(fileName);
+      const { data } = supabase.storage.from('menu-images').getPublicUrl(fileName);
       setForm(prev => ({ ...prev, image_url: data.publicUrl }));
       showToast("Image mise à jour !");
     } catch (err) {
@@ -336,7 +336,7 @@ export default function AdminMenu() {
                     <tr key={item.id} className={`transition-colors group ${!item.is_available ? 'bg-red-900/5 opacity-60' : 'hover:bg-white/5'}`}>
                       <td className="p-5 flex items-center gap-4">
                         <div className="relative w-12 h-12 shrink-0">
-                          <Image src={item.image_url || "/placeholder-sushi.jpg"} alt={item.name_fr || "Produit"} fill className={`rounded-xl object-cover bg-neutral-800 border border-neutral-800 shadow-lg ${!item.is_available ? 'grayscale' : ''}`} />
+                          <Image src={item.image_url || "/images/logo.png"} alt={item.name_fr || "Produit"} fill className={`rounded-xl object-cover bg-neutral-800 border border-neutral-800 shadow-lg ${!item.is_available ? 'grayscale' : ''}`} />
                         </div>
                         <div>
                           <div className="font-bold text-white">{item.name_fr}</div>

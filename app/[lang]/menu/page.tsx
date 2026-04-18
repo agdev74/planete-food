@@ -16,8 +16,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const titles: Record<string, string> = {
     fr: "Notre Carte | 97 Créations Originales",
-    en: "Our Menu | 97 Original Sushi Creations",
-    es: "Nuestra Carta | 97 Creaciones de Sushi",
+    en: "Our Menu | Original Creations",
+    es: "Nuestra Carta | Creaciones Originales",
   };
 
   const descriptions: Record<string, string> = {

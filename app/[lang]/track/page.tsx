@@ -1,40 +1,38 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import OrderTracker from "@/components/OrderTracker";
 import { Loader2 } from "lucide-react";
 
+const STORAGE_KEY = "planet_food_last_order";
+
 function TrackContent() {
   const searchParams = useSearchParams();
   const urlOrderId = searchParams.get("order_id");
-  
-  // 1. On donne l'ID de l'URL comme valeur de départ. 
-  // Cela évite d'utiliser un setState directement au chargement !
-  const [orderId, setOrderId] = useState<number | null>(urlOrderId ? Number(urlOrderId) : null);
+
+  const [orderId, setOrderId] = useState<number | null>(
+    urlOrderId ? Number(urlOrderId) : null
+  );
 
   useEffect(() => {
-    // 2. On encapsule dans une fonction asynchrone pour éviter l'erreur ESLint
-    const initTracking = async () => {
-      if (urlOrderId) {
-        // L'ID est déjà dans le state, on a juste à le sauvegarder en mémoire
-        localStorage.setItem("pf_active_order", urlOrderId);
-      } else {
-        // Si l'URL est vide, on va fouiller dans la mémoire du téléphone
-        const savedOrderId = localStorage.getItem("pf_active_order");
-        if (savedOrderId) {
-          setOrderId(Number(savedOrderId));
-        }
-      }
-    };
-
-    initTracking();
+    if (urlOrderId) {
+      localStorage.setItem(STORAGE_KEY, urlOrderId);
+    } else {
+      const saved = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem("pf_active_order");
+      if (saved) setOrderId(Number(saved));
+    }
   }, [urlOrderId]);
+
+  const handleDelivered = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("pf_active_order");
+  }, []);
 
   return (
     <div className="container mx-auto">
       {orderId ? (
-        <OrderTracker orderId={orderId} />
+        <OrderTracker orderId={orderId} onDelivered={handleDelivered} />
       ) : (
         <div className="text-center text-gray-500 font-bold uppercase tracking-widest mt-20">
           <Loader2 className="animate-spin mx-auto mb-4" />
@@ -45,11 +43,10 @@ function TrackContent() {
   );
 }
 
-// 3. Next.js demande un "Suspense" autour de tout ce qui lit l'URL en temps réel
 export default function TrackPage() {
   return (
     <div className="min-h-screen bg-black pt-32 pb-20 px-4">
-      <Suspense 
+      <Suspense
         fallback={
           <div className="flex flex-col items-center mt-20 text-brand-primary">
             <Loader2 className="animate-spin mb-4" size={32} />

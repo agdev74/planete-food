@@ -263,7 +263,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               </div>
             ) : isPayment && clientSecret && orderId ? (
               <Elements options={{ clientSecret, appearance: { theme: 'night', variables: { colorPrimary: '#dc2626' } } }} stripe={stripePromise}>
-                <StripeCheckoutForm total={finalPrice} orderId={orderId} onSuccess={() => { clearCart(); setIsPayment(false); setIsSuccess(true); }} onCancel={() => setIsPayment(false)} t={t} />
+                <StripeCheckoutForm total={finalPrice} orderId={orderId} onSuccess={() => { clearCart(); setIsPayment(false); setIsSuccess(true); if (orderId) localStorage.setItem("planet_food_last_order", String(orderId)); }} onCancel={() => setIsPayment(false)} t={t} />
               </Elements>
             ) : (
               <div className="flex-1 flex flex-col overflow-hidden">
