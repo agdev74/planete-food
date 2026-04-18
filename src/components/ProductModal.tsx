@@ -99,7 +99,10 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
   }, [isTacos, tacosSelection.size, tacosSelection.meats]);
 
   useEffect(() => {
+    console.log("[ProductModal] item.restaurant_id =", item.restaurant_id, "| item.id =", item.id);
+
     if (!item.restaurant_id) {
+      console.warn("[ProductModal] Pas de restaurant_id — fetch annulé.");
       setIsLoadingAddons(false);
       return;
     }
@@ -109,6 +112,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
 
     (async () => {
       try {
+        console.log("[ProductModal] Lancement du fetch addons pour restaurant_id:", item.restaurant_id);
         const { data, error } = await supabase
           .from("addons")
           .select("*")
@@ -340,13 +344,16 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
           {isTacos && (
             <div className="mb-6">
               <h4 className="text-neutral-600 text-xs uppercase font-black tracking-widest mb-4">Composition du Tacos</h4>
-              <TacosBuilder
-                addons={fetchedAddons}
-                variants={item.variants}
-                selection={tacosSelection}
-                onChange={setTacosSelection}
-                isLoading={isLoadingAddons}
-              />
+              {isLoadingAddons ? (
+                <p className="text-neutral-400 text-sm py-6 text-center">Chargement des options...</p>
+              ) : (
+                <TacosBuilder
+                  addons={fetchedAddons}
+                  variants={item.variants}
+                  selection={tacosSelection}
+                  onChange={setTacosSelection}
+                />
+              )}
             </div>
           )}
 
