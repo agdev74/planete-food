@@ -137,6 +137,20 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.restaurant_id]);
 
+  useEffect(() => {
+    if (fetchedAddons.length === 0) return;
+    if (tacosSelection.gratin !== null) return;
+
+    const defaultGratin = fetchedAddons.find(
+      (a) => a.category?.toLowerCase() === "gratin" && a.name?.toLowerCase() === "mozzarella"
+    );
+
+    if (defaultGratin) {
+      setTacosSelection((prev) => ({ ...prev, gratin: defaultGratin }));
+      console.log("[TacosBuilder] Mozzarella auto-sélectionnée");
+    }
+  }, [fetchedAddons, tacosSelection.gratin]);
+
   // Unified display price: tacos total (base variant + meat surcharges + options) or pizza/generic (variant + addons)
   const displayPrice = useMemo(() => {
     if (isTacos) {
