@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
-    const validTypes = ["livraison", "a emporter"];
+    const validTypes = ["livraison", "a emporter", "delivery", "pickup", "takeaway", "click & collect"];
     console.log("[DEBUG] ③ normalizedOrderType:", normalizedOrderType);
 
     if (!validTypes.includes(normalizedOrderType)) {
