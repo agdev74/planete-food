@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { m } from "framer-motion"; 
+import { m } from "framer-motion";
 import { X, Minus, Plus, ShoppingCart, Maximize2, Info } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "@/context/LanguageContext";
 import { useCart, MenuItem as ContextMenuItem, type Variant, type Addon } from "@/context/CartContext";
 import TacosBuilder from "@/components/TacosBuilder";
 import type { TacosSelection } from "@/types";
+import { createClient } from "@/utils/supabase/client";
 
 export interface MenuItem extends ContextMenuItem {
   name_fr: string;
@@ -29,13 +30,16 @@ const MEAT_QUOTA: Record<"M" | "L" | "XL", number> = { M: 1, L: 2, XL: 3 };
 export default function ProductModal({ item, onClose }: ProductModalProps) {
   const { lang } = useTranslation();
   const { addToCart } = useCart();
-  
+  const supabase = useMemo(() => createClient(), []);
+
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<Variant | undefined>(
     item.variants?.[0]
   );
   const [selectedAddons, setSelectedAddons] = useState<Addon[]>([]);
   const [tacosSelection, setTacosSelection] = useState<TacosSelection>({ size: null, meats: [], sauces: [], gratin: null, extras: [], friesOnSide: false });
+  const [tacosAddons, setTacosAddons] = useState<Addon[]>([]);
+  const [tacosAddonsLoading, setTacosAddonsLoading] = useState(false);
 
   // Tableau stockant les parfums pour chaque portion sélectionnée
   const [mochiSelections, setMochiSelections] = useState<[string, string][]>([
@@ -76,16 +80,50 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
     return safeNameFr.includes("mochi") || safeName.includes("mochi");
   }, [item.id, item.name_fr, name]);
 
-  const isTacos = useMemo(
-    () => item.addons?.some((a) => a.category === "meat") ?? false,
-    [item.addons]
-  );
+ // ✅ DÉTECTION BLINDÉE (ÉLARGIE) POUR LE TACOS
+  const isTacos = useMemo(() => {
+    // On passe le nom en minuscules pour comparer facilement
+    const safeName = name ? name.toLowerCase() : "";
+    
+    // Si le mot "tacos" est n'importe où dans le nom, c'est gagné !
+    if (safeName.includes("tacos")) return true;
+
+    // Sécurité de secours : on vérifie les catégories des addons
+    return item.addons?.some((a) => a.category === "meat" || a.category === "viande") ?? false;
+  }, [name, item.addons]);
 
   const isTacosValid = useMemo(() => {
     if (!isTacos) return true;
     if (!tacosSelection.size) return false;
     return tacosSelection.meats.length === MEAT_QUOTA[tacosSelection.size];
   }, [isTacos, tacosSelection.size, tacosSelection.meats]);
+
+  useEffect(() => {
+    if (!isTacos || !item.restaurant_id) return;
+
+    let cancelled = false;
+    setTacosAddonsLoading(true);
+
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("addons")
+          .select("id, name, price, category")
+          .eq("restaurant_id", item.restaurant_id)
+          .order("name");
+
+        if (cancelled) return;
+        if (error) console.error("[ProductModal] addons fetch:", error);
+        setTacosAddons(
+          (data ?? []).map((a) => ({ ...a, id: String(a.id) })) as Addon[]
+        );
+      } finally {
+        if (!cancelled) setTacosAddonsLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [isTacos, item.restaurant_id, supabase]);
 
   // Unified display price: tacos total (base variant + meat surcharges + options) or pizza/generic (variant + addons)
   const displayPrice = useMemo(() => {
@@ -291,10 +329,16 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
           )}
 
           {/* TACOS BUILDER (multi-step stepper) */}
-          {isTacos && item.addons && (
+          {isTacos && (
             <div className="mb-6">
               <h4 className="text-neutral-600 text-xs uppercase font-black tracking-widest mb-4">Composition du Tacos</h4>
-              <TacosBuilder addons={item.addons} variants={item.variants} selection={tacosSelection} onChange={setTacosSelection} />
+              <TacosBuilder
+                addons={tacosAddons}
+                variants={item.variants}
+                selection={tacosSelection}
+                onChange={setTacosSelection}
+                isLoading={tacosAddonsLoading}
+              />
             </div>
           )}
 

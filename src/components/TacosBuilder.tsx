@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronLeft, Check, Flame } from "lucide-react";
+import { ChevronRight, ChevronLeft, Check, Flame, Loader2 } from "lucide-react";
 import type { Addon, TacosSelection, Variant } from "@/types";
 
 interface TacosBuilderProps {
@@ -10,13 +10,14 @@ interface TacosBuilderProps {
   variants?: Variant[];
   selection: TacosSelection;
   onChange: (selection: TacosSelection) => void;
+  isLoading?: boolean;
 }
 
 const STEP_LABELS = ["Taille", "Viandes", "Sauces", "Gratiné", "Extras"] as const;
 const MAX_SAUCES = 2;
 const MEAT_QUOTA: Record<"M" | "L" | "XL", number> = { M: 1, L: 2, XL: 3 };
 
-export default function TacosBuilder({ addons, variants, selection, onChange }: TacosBuilderProps) {
+export default function TacosBuilder({ addons, variants, selection, onChange, isLoading = false }: TacosBuilderProps) {
   const [step, setStep] = useState(1);
 
   const meats   = addons.filter((a) => ["meat", "viande"].includes(a.category?.toLowerCase() ?? ""));
@@ -72,6 +73,23 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
   };
 
   const LAST_STEP = 5;
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-10 text-neutral-500">
+        <Loader2 size={28} className="animate-spin text-brand-primary" />
+        <span className="text-xs uppercase font-black tracking-widest">Chargement des options…</span>
+      </div>
+    );
+  }
+
+  if (!isLoading && addons.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-10 text-neutral-600 text-sm italic">
+        Aucune option disponible pour ce restaurant.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">
