@@ -256,9 +256,9 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
             <div className="mb-6">
               <h4 className="text-neutral-600 text-[10px] uppercase font-black tracking-[0.3em] mb-3">Taille</h4>
               <div className="grid grid-cols-4 gap-2">
-                {item.variants.map(v => (
+                {item.variants.map((v, idx) => (
                   <button
-                    key={v.size}
+                    key={v.size || `variant-${idx}`}
                     onClick={() => setSelectedVariant(v)}
                     className={`py-3 rounded-xl border text-xs font-bold transition flex flex-col items-center gap-1 ${
                       selectedVariant?.size === v.size
@@ -287,11 +287,11 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
             <div className="mb-6">
               <h4 className="text-neutral-600 text-[10px] uppercase font-black tracking-[0.3em] mb-3">Garnitures</h4>
               <div className="space-y-2">
-                {item.addons.map(addon => {
+                {item.addons.map((addon, idx) => {
                   const isSelected = selectedAddons.some(a => a.id === addon.id);
                   return (
                     <button
-                      key={addon.id}
+                      key={addon.id || `addon-${idx}`}
                       onClick={() => toggleAddon(addon)}
                       className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition ${
                         isSelected
