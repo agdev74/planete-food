@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { ChevronRight, ChevronLeft, Check, Flame } from "lucide-react";
 import type { Addon, TacosSelection, Variant } from "@/types";
@@ -16,40 +17,31 @@ const MAX_SAUCES = 2;
 const MEAT_QUOTA: Record<"M" | "L" | "XL", number> = { M: 1, L: 2, XL: 3 };
 
 export default function TacosBuilder({ addons, variants, selection, onChange }: TacosBuilderProps) {
-  const meats   = addons.filter((a) => a.category === "meat");
-  const sauces  = addons.filter((a) => a.category === "sauce");
-  const gratins = addons.filter((a) => a.category === "gratin");
-  const extras  = addons.filter((a) => a.category === "extra");
+  const [step, setStep] = useState(1);
+
+  const meats   = addons.filter((a) => ["meat", "viande"].includes(a.category?.toLowerCase() ?? ""));
+  const sauces  = addons.filter((a) => a.category?.toLowerCase() === "sauce");
+  const gratins = addons.filter((a) => a.category?.toLowerCase() === "gratin");
+  const extras  = addons.filter((a) => a.category?.toLowerCase() === "extra");
 
   const quota = selection.size ? MEAT_QUOTA[selection.size] : 0;
 
-  const step = (() => {
-    if (!selection.size) return 0;
-    if (selection.meats.length < quota) return 1;
-    return selection._step ?? 2;
-  })();
-
-  const setStep = (s: number) => onChange({ ...selection, _step: s } as TacosSelection & { _step: number });
-
   const canAdvance = (() => {
-    if (step === 0) return selection.size !== null;
-    if (step === 1) return selection.meats.length === quota;
+    if (step === 1) return selection.size !== null;
+    if (step === 2) return selection.meats.length === quota;
     return true;
   })();
 
   const handleSize = (size: "M" | "L" | "XL") => {
-    const newQuota = MEAT_QUOTA[size];
-    const trimmedMeats = selection.meats.slice(0, newQuota);
-    onChange({ ...selection, size, meats: trimmedMeats, _step: 1 } as TacosSelection & { _step: number });
+    onChange({ ...selection, size, meats: [] });
   };
 
   const handleMeat = (addon: Addon) => {
-    const picked = selection.meats.some((m) => m.id === addon.id);
-    if (picked) {
+    const alreadyPicked = selection.meats.some((m) => m.id === addon.id);
+    if (alreadyPicked) {
       onChange({ ...selection, meats: selection.meats.filter((m) => m.id !== addon.id) });
     } else if (selection.meats.length < quota) {
-      const next = [...selection.meats, addon];
-      onChange({ ...selection, meats: next });
+      onChange({ ...selection, meats: [...selection.meats, addon] });
     }
   };
 
@@ -62,7 +54,13 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
     }
   };
 
-  const handleGratin = (addon: Addon | null) => onChange({ ...selection, gratin: addon });
+  const handleGratin = (addon: Addon) => {
+    if (selection.gratin?.id === addon.id) {
+      onChange({ ...selection, gratin: null });
+    } else {
+      onChange({ ...selection, gratin: addon });
+    }
+  };
 
   const handleExtra = (addon: Addon) => {
     const picked = selection.extras.some((e) => e.id === addon.id);
@@ -73,7 +71,7 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
     }
   };
 
-  const LAST_STEP = 4;
+  const LAST_STEP = 5;
 
   return (
     <div className="space-y-5">
@@ -81,15 +79,15 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
       {/* ── Step indicator ── */}
       <div className="flex items-center justify-center gap-1 flex-wrap">
         {STEP_LABELS.map((label, i) => {
-          const isDone = i < step;
-          const isCurrent = i === step;
-          const isReachable = i <= step || (i === step + 1 && canAdvance);
+          const stepNum = i + 1;
+          const isDone = stepNum < step;
+          const isCurrent = stepNum === step;
           return (
             <div key={i} className="flex items-center gap-1">
               <button
                 type="button"
-                onClick={() => { if (i <= step) setStep(i); }}
-                disabled={!isReachable && !isDone}
+                onClick={() => { if (isDone) setStep(stepNum); }}
+                disabled={!isDone && !isCurrent}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase transition-all ${
                   isCurrent
                     ? "bg-brand-primary text-white shadow-glow"
@@ -100,7 +98,7 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
               >
                 {isDone
                   ? <Check size={10} strokeWidth={3} />
-                  : <span className="w-3 text-center leading-none">{i + 1}</span>
+                  : <span className="w-3 text-center leading-none">{stepNum}</span>
                 }
                 <span className="hidden sm:inline">{label}</span>
               </button>
@@ -123,8 +121,8 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
           className="space-y-2"
         >
 
-          {/* STEP 0 — Taille */}
-          {step === 0 && (
+          {/* STEP 1 — Taille */}
+          {step === 1 && (
             <>
               <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
                 Choix obligatoire
@@ -139,7 +137,7 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
                     onClick={() => handleSize(size)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
                       active
-                        ? "bg-brand-primary/10 border-brand-primary text-white"
+                        ? "bg-brand-primary/10 border-brand-primary text-white shadow-glow"
                         : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
                     }`}
                   >
@@ -160,8 +158,8 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
             </>
           )}
 
-          {/* STEP 1 — Viandes */}
-          {step === 1 && (
+          {/* STEP 2 — Viandes */}
+          {step === 2 && (
             <>
               <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
                 {selection.meats.length}/{quota} viande{quota > 1 ? "s" : ""}
@@ -180,7 +178,7 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
                     disabled={locked}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
                       active
-                        ? "bg-brand-primary/10 border-brand-primary text-white"
+                        ? "bg-brand-primary/10 border-brand-primary text-white shadow-glow"
                         : locked
                         ? "bg-neutral-900/40 border-neutral-800/40 text-neutral-600 cursor-not-allowed"
                         : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
@@ -208,8 +206,8 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
             </>
           )}
 
-          {/* STEP 2 — Sauces */}
-          {step === 2 && (
+          {/* STEP 3 — Sauces */}
+          {step === 3 && (
             <>
               <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
                 {selection.sauces.length}/{MAX_SAUCES} sauces — Optionnel
@@ -225,17 +223,24 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
                     disabled={locked}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
                       active
-                        ? "bg-brand-primary/10 border-brand-primary text-white"
+                        ? "bg-brand-primary/10 border-brand-primary text-white shadow-glow"
                         : locked
                         ? "bg-neutral-900/40 border-neutral-800/40 text-neutral-600 cursor-not-allowed"
                         : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
                     }`}
                   >
                     <span>{sauce.name}</span>
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                      active ? "bg-brand-primary border-brand-primary" : "border-neutral-600"
-                    }`}>
-                      {active && <Check size={10} strokeWidth={3} className="text-white" />}
+                    <div className="flex items-center gap-2">
+                      {sauce.price > 0 && (
+                        <span className={`text-xs ${active ? "text-brand-primary" : "text-neutral-500"}`}>
+                          +{sauce.price.toFixed(2)} CHF
+                        </span>
+                      )}
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                        active ? "bg-brand-primary border-brand-primary" : "border-neutral-600"
+                      }`}>
+                        {active && <Check size={10} strokeWidth={3} className="text-white" />}
+                      </div>
                     </div>
                   </button>
                 );
@@ -243,23 +248,12 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
             </>
           )}
 
-          {/* STEP 3 — Gratiné */}
-          {step === 3 && (
+          {/* STEP 4 — Gratiné */}
+          {step === 4 && (
             <>
               <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
                 Optionnel — 1 choix max
               </p>
-              <button
-                type="button"
-                onClick={() => handleGratin(null)}
-                className={`w-full flex items-center px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
-                  selection.gratin === null
-                    ? "bg-brand-primary/10 border-brand-primary text-white"
-                    : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
-                }`}
-              >
-                Sans gratiné
-              </button>
               {gratins.map((gratin) => {
                 const active = selection.gratin?.id === gratin.id;
                 return (
@@ -269,24 +263,34 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
                     onClick={() => handleGratin(gratin)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
                       active
-                        ? "bg-brand-primary/10 border-brand-primary text-white"
+                        ? "bg-brand-primary/10 border-brand-primary text-white shadow-glow"
                         : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
                     }`}
                   >
                     <span>{gratin.name}</span>
-                    {gratin.price > 0 && (
-                      <span className={`text-xs ${active ? "text-brand-primary" : "text-neutral-500"}`}>
-                        +{gratin.price.toFixed(2)} CHF
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {gratin.price > 0 && (
+                        <span className={`text-xs ${active ? "text-brand-primary" : "text-neutral-500"}`}>
+                          +{gratin.price.toFixed(2)} CHF
+                        </span>
+                      )}
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
+                        active ? "bg-brand-primary border-brand-primary" : "border-neutral-600"
+                      }`}>
+                        {active && <Check size={10} strokeWidth={3} className="text-white" />}
+                      </div>
+                    </div>
                   </button>
                 );
               })}
+              {gratins.length === 0 && (
+                <p className="text-neutral-600 text-sm italic px-1">Aucun gratiné disponible.</p>
+              )}
             </>
           )}
 
-          {/* STEP 4 — Extras + Frites + Récap */}
-          {step === 4 && (
+          {/* STEP 5 — Extras + Frites + Récap */}
+          {step === 5 && (
             <>
               {extras.length > 0 && (
                 <>
@@ -302,7 +306,7 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
                         onClick={() => handleExtra(extra)}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
                           active
-                            ? "bg-brand-primary/10 border-brand-primary text-white"
+                            ? "bg-brand-primary/10 border-brand-primary text-white shadow-glow"
                             : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
                         }`}
                       >
@@ -325,13 +329,13 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
                 </>
               )}
 
-              {/* Frites on the side */}
+              {/* Frites à part */}
               <button
                 type="button"
                 onClick={() => onChange({ ...selection, friesOnSide: !selection.friesOnSide })}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all mt-2 ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${extras.length > 0 ? "mt-2" : ""} ${
                   selection.friesOnSide
-                    ? "bg-brand-primary/10 border-brand-primary text-white"
+                    ? "bg-brand-primary/10 border-brand-primary text-white shadow-glow"
                     : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
                 }`}
               >
@@ -358,7 +362,7 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
                   <p><span className="text-white font-bold">Extras :</span> {selection.extras.map((e) => e.name).join(", ")}</p>
                 )}
                 {selection.friesOnSide && (
-                  <p><span className="text-white font-bold">Frites à part</span></p>
+                  <p><span className="text-white font-bold">+ Frites à part</span></p>
                 )}
               </div>
             </>
@@ -369,10 +373,10 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
 
       {/* ── Navigation ── */}
       <div className="flex gap-3 pt-1">
-        {step > 0 && (
+        {step > 1 && (
           <button
             type="button"
-            onClick={() => setStep(step - 1)}
+            onClick={() => setStep((s) => s - 1)}
             className="flex items-center gap-1.5 px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-xs font-black uppercase text-neutral-300 hover:text-white transition-colors"
           >
             <ChevronLeft size={14} /> Retour
@@ -381,7 +385,7 @@ export default function TacosBuilder({ addons, variants, selection, onChange }: 
         {step < LAST_STEP && (
           <button
             type="button"
-            onClick={() => setStep(step + 1)}
+            onClick={() => setStep((s) => s + 1)}
             disabled={!canAdvance}
             className={`flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all ${
               canAdvance
