@@ -38,8 +38,8 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
   );
   const [selectedAddons, setSelectedAddons] = useState<Addon[]>([]);
   const [tacosSelection, setTacosSelection] = useState<TacosSelection>({ size: null, meats: [], sauces: [], gratin: null, extras: [], friesOnSide: false });
-  const [tacosAddons, setTacosAddons] = useState<Addon[]>([]);
-  const [tacosAddonsLoading, setTacosAddonsLoading] = useState(false);
+  const [fetchedAddons, setFetchedAddons] = useState<Addon[]>([]);
+  const [isLoadingAddons, setIsLoadingAddons] = useState(true);
 
   // Tableau stockant les parfums pour chaque portion sélectionnée
   const [mochiSelections, setMochiSelections] = useState<[string, string][]>([
@@ -99,31 +99,39 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
   }, [isTacos, tacosSelection.size, tacosSelection.meats]);
 
   useEffect(() => {
-    if (!isTacos || !item.restaurant_id) return;
+    if (!item.restaurant_id) {
+      setIsLoadingAddons(false);
+      return;
+    }
 
     let cancelled = false;
-    setTacosAddonsLoading(true);
+    setIsLoadingAddons(true);
 
     (async () => {
       try {
         const { data, error } = await supabase
           .from("addons")
-          .select("id, name, price, category")
-          .eq("restaurant_id", item.restaurant_id)
-          .order("name");
+          .select("*")
+          .eq("restaurant_id", item.restaurant_id);
 
         if (cancelled) return;
-        if (error) console.error("[ProductModal] addons fetch:", error);
-        setTacosAddons(
-          (data ?? []).map((a) => ({ ...a, id: String(a.id) })) as Addon[]
+
+        console.log("Supabase FETCH result:", data);
+        if (error) console.error("Supabase FETCH error:", error);
+
+        setFetchedAddons(
+          (data ?? []).map((a: Record<string, unknown>) => ({ ...a, id: String(a.id) })) as Addon[]
         );
+      } catch (err) {
+        if (!cancelled) console.error("Supabase FETCH error:", err);
       } finally {
-        if (!cancelled) setTacosAddonsLoading(false);
+        if (!cancelled) setIsLoadingAddons(false);
       }
     })();
 
     return () => { cancelled = true; };
-  }, [isTacos, item.restaurant_id, supabase]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item.restaurant_id]);
 
   // Unified display price: tacos total (base variant + meat surcharges + options) or pizza/generic (variant + addons)
   const displayPrice = useMemo(() => {
@@ -333,11 +341,11 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
             <div className="mb-6">
               <h4 className="text-neutral-600 text-xs uppercase font-black tracking-widest mb-4">Composition du Tacos</h4>
               <TacosBuilder
-                addons={tacosAddons}
+                addons={fetchedAddons}
                 variants={item.variants}
                 selection={tacosSelection}
                 onChange={setTacosSelection}
-                isLoading={tacosAddonsLoading}
+                isLoading={isLoadingAddons}
               />
             </div>
           )}
