@@ -3,6 +3,12 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
 import {
+  getRestaurantsAdmin,
+  getKanbanOrdersAdmin,
+  getListOrdersAdmin,
+  updateOrderStatusAdmin,
+} from "@/actions/admin";
+import {
   Package, User, MapPin, Eye, XCircle, Calendar, CheckCircle2,
   AlertCircle, ChefHat, Truck, Loader2, RefreshCw, Clock,
   MessageSquare, Volume2, VolumeX, ShoppingBag, Flame,
@@ -170,65 +176,45 @@ export default function OrdersList() {
     if (audioRef.current) audioRef.current.play().catch(() => {});
   };
 
-  // ── Fetch restaurants once ──────────────────────────────────────────────────
+  // ── Fetch restaurants once (service_role — bypasses RLS) ───────────────────
   useEffect(() => {
-    // Safety: if fetch hangs for any reason, unblock the UI after 5 s
-    const safetyTimer = setTimeout(() => {
-      console.warn("[SAFETY] Restaurant fetch timeout after 5s (commandes) — UI unblocked");
-      setRestaurantsLoaded(true);
-    }, 5000);
-
     (async () => {
       try {
-        console.log("[DIAG] Début fetch restaurants (commandes)…");
-        const { data, error } = await supabase
-          .from("restaurants")
-          .select("id, name")
-          .order("name");
-        if (error) console.error("[DIAG] Erreur fetch restaurants (commandes):", error);
-        console.log("[DIAG] Restaurants chargés (commandes):", data);
-        if (data && data.length > 0) {
-          setRestaurants(data as RestaurantOption[]);
-          setActiveRestaurantId((data as RestaurantOption[])[0].id);
+        const data = await getRestaurantsAdmin();
+        if (data.length > 0) {
+          setRestaurants(data);
+          setActiveRestaurantId(data[0].id);
+        } else {
+          setRestaurants([{ id: 0, name: "Planet Food" }]);
+          setActiveRestaurantId(0);
         }
+      } catch (err) {
+        console.error("[DIAG] getRestaurantsAdmin error:", err);
+        setRestaurants([{ id: 0, name: "Planet Food" }]);
+        setActiveRestaurantId(0);
       } finally {
-        clearTimeout(safetyTimer);
         setRestaurantsLoaded(true);
       }
     })();
-
-    return () => clearTimeout(safetyTimer);
-  }, [supabase]);
+  }, []);
 
   // ── Data fetch functions ────────────────────────────────────────────────────
 
-  // List: global, all statuses — stable (supabase never changes)
+  // List: global, all statuses — service_role bypasses RLS
   const fetchListOrders = useCallback(async (showLoading = false) => {
     if (showLoading) setLoading(true);
-    const { data } = await supabase
-      .from("orders")
-      .select("*")
-      .neq("status", "Paiement en cours")
-      .order("created_at", { ascending: false });
-    if (data) setOrders(data as Order[]);
+    const data = await getListOrdersAdmin();
+    setOrders(data as Order[]);
     setLoading(false);
-  }, [supabase]);
+  }, []);
 
-  // Receives restaurantId as a parameter — stable forever, deps: [supabase] only.
+  // Receives restaurantId as a parameter — stable forever
   const fetchKanbanOrders = useCallback(async (restaurantId: number) => {
     setLoading(true);
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    const { data } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("restaurant_id", restaurantId)
-      .in("status", ["Payé", "En préparation", "Prête"])
-      .gte("created_at", todayStart.toISOString())
-      .order("created_at", { ascending: true });
-    if (data) setOrders(data as Order[]);
+    const data = await getKanbanOrdersAdmin(restaurantId);
+    setOrders(data as Order[]);
     setLoading(false);
-  }, [supabase]);
+  }, []);
 
   // ── Fetch effects ────────────────────────────────────────────────────────────
 
@@ -301,8 +287,8 @@ export default function OrdersList() {
 
   const updateStatus = async (orderId: number, newStatus: string) => {
     if (activeView === "kanban") setUpdatingId(orderId);
-    const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
-    if (error) { console.error("updateStatus:", error); setUpdatingId(null); return; }
+    const ok = await updateOrderStatusAdmin(orderId, newStatus);
+    if (!ok) { setUpdatingId(null); return; }
 
     if (activeView === "kanban") {
       // Optimistic — Realtime echo will be a no-op since state already matches

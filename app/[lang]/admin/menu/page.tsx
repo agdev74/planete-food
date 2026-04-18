@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { getRestaurantsAdmin } from "@/actions/admin";
 import {
   Search, Edit2, Trash2, Plus, X, Upload, Loader2,
   CheckCircle2, AlertCircle, Wand2, Lock,
@@ -80,35 +81,28 @@ export default function AdminMenu() {
     setLoading(false);
   }, [supabase, showToast]);
 
-  // Fetch restaurants once; sets activeRestaurantId which triggers the menu fetch below.
+  // Fetch restaurants via Server Action (service_role — bypasses RLS)
   useEffect(() => {
-    // Safety: unblock UI after 5 s even if Supabase hangs or RLS silently rejects
-    const safetyTimer = setTimeout(() => {
-      console.warn("[SAFETY] Restaurant fetch timeout after 5s (menu) — UI unblocked");
-      setRestaurantsLoaded(true);
-    }, 5000);
-
     (async () => {
       try {
-        console.log("[DIAG] Début fetch restaurants (menu)…");
-        const { data, error } = await supabase
-          .from("restaurants")
-          .select("id, name")
-          .order("name");
-        if (error) console.error("[DIAG] Erreur fetch restaurants (menu):", error);
+        const data = await getRestaurantsAdmin();
         console.log("[DIAG] Restaurants chargés (menu):", data);
-        if (data && data.length > 0) {
-          setRestaurants(data as RestaurantOption[]);
-          setActiveRestaurantId((data as RestaurantOption[])[0].id);
+        if (data.length > 0) {
+          setRestaurants(data);
+          setActiveRestaurantId(data[0].id);
+        } else {
+          setRestaurants([{ id: 0, name: "Planet Food" }]);
+          setActiveRestaurantId(0);
         }
+      } catch (err) {
+        console.error("[DIAG] getRestaurantsAdmin error:", err);
+        setRestaurants([{ id: 0, name: "Planet Food" }]);
+        setActiveRestaurantId(0);
       } finally {
-        clearTimeout(safetyTimer);
         setRestaurantsLoaded(true);
       }
     })();
-
-    return () => clearTimeout(safetyTimer);
-  }, [supabase]);
+  }, []);
 
   // Fetch menu whenever the active restaurant changes. fetchMenu is stable so this
   // only re-runs when activeRestaurantId actually changes — no spurious re-fetches.
