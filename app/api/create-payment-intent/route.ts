@@ -9,10 +9,6 @@ interface CartItem {
   name?: string;
 }
 
-// ✅ SÉCURITÉ #6 : Liste stricte des types de commandes autorisés
-const VALID_ORDER_TYPES = ["Livraison", "À emporter"] as const;
-type OrderType = typeof VALID_ORDER_TYPES[number];
-
 interface RequestBody {
   items: CartItem[];
   couponCode?: string;
@@ -21,7 +17,7 @@ interface RequestBody {
   customerPhone: string;
   pickupDate: string;
   pickupTime: string;
-  orderType: OrderType;
+  orderType: string;
   deliveryAddress?: string;
   deliveryZip?: string | number;
   comments?: string;
@@ -50,13 +46,15 @@ export async function POST(request: Request) {
     const supabaseServer = await createClient();
     const { data: { user } } = await supabaseServer.auth.getUser();
 
-    // --- 🛡️ SÉCURITÉ #6 : VALIDATION DU TYPE DE COMMANDE (WHITELIST) ---
-    if (!VALID_ORDER_TYPES.includes(orderType)) {
+    // --- 🛡️ SÉCURITÉ #6 : VALIDATION DU TYPE DE COMMANDE (insensible casse/accents) ---
+    const normalizedOrderType = orderType.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const validTypes = ["livraison", "a emporter"];
+    if (!validTypes.includes(normalizedOrderType)) {
       return NextResponse.json({ error: "Type de commande invalide." }, { status: 400 });
     }
 
     // --- 🛡️ SÉCURITÉ #6 : VALIDATION ROBUSTE DU NPA (GENÈVE UNIQUEMENT) ---
-    if (orderType === "Livraison") {
+    if (normalizedOrderType === "livraison") {
       // On évite le cast String() aveugle pour empêcher les contournements via objets/tableaux
       const zipStr = typeof deliveryZip === 'string' ? deliveryZip.trim() : 
                      typeof deliveryZip === 'number' ? String(deliveryZip) : '';
