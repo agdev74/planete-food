@@ -1,29 +1,57 @@
 "use client";
 
-import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronLeft, Check } from "lucide-react";
-import type { Addon, TacosSelection } from "@/types";
+import { ChevronRight, ChevronLeft, Check, Flame } from "lucide-react";
+import type { Addon, TacosSelection, Variant } from "@/types";
 
 interface TacosBuilderProps {
   addons: Addon[];
+  variants?: Variant[];
   selection: TacosSelection;
   onChange: (selection: TacosSelection) => void;
 }
 
-const STEP_LABELS = ["Viande", "Sauces", "Gratiné"] as const;
+const STEP_LABELS = ["Taille", "Viandes", "Sauces", "Gratiné", "Extras"] as const;
 const MAX_SAUCES = 2;
+const MEAT_QUOTA: Record<"M" | "L" | "XL", number> = { M: 1, L: 2, XL: 3 };
 
-export default function TacosBuilder({ addons, selection, onChange }: TacosBuilderProps) {
-  const [step, setStep] = useState(0);
-
+export default function TacosBuilder({ addons, variants, selection, onChange }: TacosBuilderProps) {
   const meats   = addons.filter((a) => a.category === "meat");
   const sauces  = addons.filter((a) => a.category === "sauce");
   const gratins = addons.filter((a) => a.category === "gratin");
+  const extras  = addons.filter((a) => a.category === "extra");
 
-  const canAdvance = step === 0 ? selection.meat !== null : true;
+  const quota = selection.size ? MEAT_QUOTA[selection.size] : 0;
 
-  const handleMeat = (addon: Addon) => onChange({ ...selection, meat: addon });
+  const step = (() => {
+    if (!selection.size) return 0;
+    if (selection.meats.length < quota) return 1;
+    return selection._step ?? 2;
+  })();
+
+  const setStep = (s: number) => onChange({ ...selection, _step: s } as TacosSelection & { _step: number });
+
+  const canAdvance = (() => {
+    if (step === 0) return selection.size !== null;
+    if (step === 1) return selection.meats.length === quota;
+    return true;
+  })();
+
+  const handleSize = (size: "M" | "L" | "XL") => {
+    const newQuota = MEAT_QUOTA[size];
+    const trimmedMeats = selection.meats.slice(0, newQuota);
+    onChange({ ...selection, size, meats: trimmedMeats, _step: 1 } as TacosSelection & { _step: number });
+  };
+
+  const handleMeat = (addon: Addon) => {
+    const picked = selection.meats.some((m) => m.id === addon.id);
+    if (picked) {
+      onChange({ ...selection, meats: selection.meats.filter((m) => m.id !== addon.id) });
+    } else if (selection.meats.length < quota) {
+      const next = [...selection.meats, addon];
+      onChange({ ...selection, meats: next });
+    }
+  };
 
   const handleSauce = (addon: Addon) => {
     const picked = selection.sauces.some((s) => s.id === addon.id);
@@ -36,35 +64,52 @@ export default function TacosBuilder({ addons, selection, onChange }: TacosBuild
 
   const handleGratin = (addon: Addon | null) => onChange({ ...selection, gratin: addon });
 
+  const handleExtra = (addon: Addon) => {
+    const picked = selection.extras.some((e) => e.id === addon.id);
+    if (picked) {
+      onChange({ ...selection, extras: selection.extras.filter((e) => e.id !== addon.id) });
+    } else {
+      onChange({ ...selection, extras: [...selection.extras, addon] });
+    }
+  };
+
+  const LAST_STEP = 4;
+
   return (
     <div className="space-y-5">
 
       {/* ── Step indicator ── */}
-      <div className="flex items-center justify-center gap-1">
-        {STEP_LABELS.map((label, i) => (
-          <div key={i} className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => { if (i < step || (i === step + 1 && canAdvance)) setStep(i); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase transition-all ${
-                i === step
-                  ? "bg-brand-primary text-white shadow-glow"
-                  : i < step
-                  ? "bg-brand-primary/20 text-brand-primary cursor-pointer"
-                  : "bg-neutral-800 text-neutral-500 cursor-default"
-              }`}
-            >
-              {i < step
-                ? <Check size={10} strokeWidth={3} />
-                : <span className="w-3 text-center leading-none">{i + 1}</span>
-              }
-              <span className="hidden sm:inline">{label}</span>
-            </button>
-            {i < STEP_LABELS.length - 1 && (
-              <div className={`w-5 h-px transition-colors ${i < step ? "bg-brand-primary" : "bg-neutral-700"}`} />
-            )}
-          </div>
-        ))}
+      <div className="flex items-center justify-center gap-1 flex-wrap">
+        {STEP_LABELS.map((label, i) => {
+          const isDone = i < step;
+          const isCurrent = i === step;
+          const isReachable = i <= step || (i === step + 1 && canAdvance);
+          return (
+            <div key={i} className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => { if (i <= step) setStep(i); }}
+                disabled={!isReachable && !isDone}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black uppercase transition-all ${
+                  isCurrent
+                    ? "bg-brand-primary text-white shadow-glow"
+                    : isDone
+                    ? "bg-brand-primary/20 text-brand-primary cursor-pointer"
+                    : "bg-neutral-800 text-neutral-500 cursor-default"
+                }`}
+              >
+                {isDone
+                  ? <Check size={10} strokeWidth={3} />
+                  : <span className="w-3 text-center leading-none">{i + 1}</span>
+                }
+                <span className="hidden sm:inline">{label}</span>
+              </button>
+              {i < STEP_LABELS.length - 1 && (
+                <div className={`w-4 h-px transition-colors ${isDone ? "bg-brand-primary" : "bg-neutral-700"}`} />
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* ── Step content ── */}
@@ -77,28 +122,36 @@ export default function TacosBuilder({ addons, selection, onChange }: TacosBuild
           transition={{ duration: 0.18 }}
           className="space-y-2"
         >
+
+          {/* STEP 0 — Taille */}
           {step === 0 && (
             <>
               <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
                 Choix obligatoire
               </p>
-              {meats.map((meat) => {
-                const active = selection.meat?.id === meat.id;
+              {(["M", "L", "XL"] as const).map((size) => {
+                const variant = variants?.find((v) => v.size === size);
+                const active = selection.size === size;
                 return (
                   <button
-                    key={meat.id}
+                    key={size}
                     type="button"
-                    onClick={() => handleMeat(meat)}
+                    onClick={() => handleSize(size)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
                       active
                         ? "bg-brand-primary/10 border-brand-primary text-white"
                         : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
                     }`}
                   >
-                    <span>{meat.name}</span>
-                    {meat.price > 0 && (
-                      <span className={`text-xs ${active ? "text-brand-primary" : "text-neutral-500"}`}>
-                        +{meat.price.toFixed(2)} CHF
+                    <div className="flex items-center gap-3">
+                      <span className="font-display text-xl w-8">{size}</span>
+                      <span className="text-xs font-normal text-neutral-400">
+                        {MEAT_QUOTA[size]} viande{MEAT_QUOTA[size] > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                    {variant && (
+                      <span className={`text-xs font-bold ${active ? "text-brand-primary" : "text-neutral-500"}`}>
+                        {variant.price.toFixed(2)} CHF
                       </span>
                     )}
                   </button>
@@ -107,10 +160,59 @@ export default function TacosBuilder({ addons, selection, onChange }: TacosBuild
             </>
           )}
 
+          {/* STEP 1 — Viandes */}
           {step === 1 && (
             <>
               <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
-                {selection.sauces.length}/{MAX_SAUCES} sauces
+                {selection.meats.length}/{quota} viande{quota > 1 ? "s" : ""}
+                {selection.meats.length === quota && (
+                  <span className="ml-2 text-brand-primary">✓ Complet</span>
+                )}
+              </p>
+              {meats.map((meat) => {
+                const active = selection.meats.some((m) => m.id === meat.id);
+                const locked = !active && selection.meats.length >= quota;
+                return (
+                  <button
+                    key={meat.id}
+                    type="button"
+                    onClick={() => handleMeat(meat)}
+                    disabled={locked}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
+                      active
+                        ? "bg-brand-primary/10 border-brand-primary text-white"
+                        : locked
+                        ? "bg-neutral-900/40 border-neutral-800/40 text-neutral-600 cursor-not-allowed"
+                        : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Flame size={14} className={active ? "text-brand-primary" : "text-neutral-600"} />
+                      <span>{meat.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {meat.price > 0 && (
+                        <span className={`text-xs ${active ? "text-brand-primary" : "text-neutral-500"}`}>
+                          +{meat.price.toFixed(2)} CHF
+                        </span>
+                      )}
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                        active ? "bg-brand-primary border-brand-primary" : "border-neutral-600"
+                      }`}>
+                        {active && <Check size={10} strokeWidth={3} className="text-white" />}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </>
+          )}
+
+          {/* STEP 2 — Sauces */}
+          {step === 2 && (
+            <>
+              <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
+                {selection.sauces.length}/{MAX_SAUCES} sauces — Optionnel
               </p>
               {sauces.map((sauce) => {
                 const active = selection.sauces.some((s) => s.id === sauce.id);
@@ -141,10 +243,11 @@ export default function TacosBuilder({ addons, selection, onChange }: TacosBuild
             </>
           )}
 
-          {step === 2 && (
+          {/* STEP 3 — Gratiné */}
+          {step === 3 && (
             <>
               <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
-                Optionnel
+                Optionnel — 1 choix max
               </p>
               <button
                 type="button"
@@ -179,21 +282,88 @@ export default function TacosBuilder({ addons, selection, onChange }: TacosBuild
                   </button>
                 );
               })}
-
-              {/* Recap */}
-              {selection.meat && (
-                <div className="mt-4 p-3 bg-neutral-900/60 rounded-xl border border-neutral-800 text-xs text-neutral-400 space-y-0.5">
-                  <p><span className="text-white font-bold">Viande :</span> {selection.meat.name}</p>
-                  {selection.sauces.length > 0 && (
-                    <p><span className="text-white font-bold">Sauces :</span> {selection.sauces.map(s => s.name).join(", ")}</p>
-                  )}
-                  {selection.gratin && (
-                    <p><span className="text-white font-bold">Gratiné :</span> {selection.gratin.name}</p>
-                  )}
-                </div>
-              )}
             </>
           )}
+
+          {/* STEP 4 — Extras + Frites + Récap */}
+          {step === 4 && (
+            <>
+              {extras.length > 0 && (
+                <>
+                  <p className="text-neutral-500 text-xs uppercase font-black tracking-widest mb-3">
+                    Extras — Optionnel
+                  </p>
+                  {extras.map((extra) => {
+                    const active = selection.extras.some((e) => e.id === extra.id);
+                    return (
+                      <button
+                        key={extra.id}
+                        type="button"
+                        onClick={() => handleExtra(extra)}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
+                          active
+                            ? "bg-brand-primary/10 border-brand-primary text-white"
+                            : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
+                        }`}
+                      >
+                        <span>{extra.name}</span>
+                        <div className="flex items-center gap-2">
+                          {extra.price > 0 && (
+                            <span className={`text-xs ${active ? "text-brand-primary" : "text-neutral-500"}`}>
+                              +{extra.price.toFixed(2)} CHF
+                            </span>
+                          )}
+                          <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                            active ? "bg-brand-primary border-brand-primary" : "border-neutral-600"
+                          }`}>
+                            {active && <Check size={10} strokeWidth={3} className="text-white" />}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </>
+              )}
+
+              {/* Frites on the side */}
+              <button
+                type="button"
+                onClick={() => onChange({ ...selection, friesOnSide: !selection.friesOnSide })}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-bold transition-all mt-2 ${
+                  selection.friesOnSide
+                    ? "bg-brand-primary/10 border-brand-primary text-white"
+                    : "bg-neutral-900 border-neutral-800 text-gray-400 hover:border-neutral-600"
+                }`}
+              >
+                <span>Frites à part</span>
+                <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                  selection.friesOnSide ? "bg-brand-primary border-brand-primary" : "border-neutral-600"
+                }`}>
+                  {selection.friesOnSide && <Check size={10} strokeWidth={3} className="text-white" />}
+                </div>
+              </button>
+
+              {/* Récap */}
+              <div className="mt-4 p-3 bg-neutral-900/60 rounded-xl border border-neutral-800 text-xs text-neutral-400 space-y-1">
+                <p className="text-[10px] uppercase font-black tracking-widest text-neutral-600 mb-2">Récapitulatif</p>
+                <p><span className="text-white font-bold">Taille :</span> {selection.size}</p>
+                <p><span className="text-white font-bold">Viandes :</span> {selection.meats.map((m) => m.name).join(", ")}</p>
+                {selection.sauces.length > 0 && (
+                  <p><span className="text-white font-bold">Sauces :</span> {selection.sauces.map((s) => s.name).join(", ")}</p>
+                )}
+                {selection.gratin && (
+                  <p><span className="text-white font-bold">Gratiné :</span> {selection.gratin.name}</p>
+                )}
+                {selection.extras.length > 0 && (
+                  <p><span className="text-white font-bold">Extras :</span> {selection.extras.map((e) => e.name).join(", ")}</p>
+                )}
+                {selection.friesOnSide && (
+                  <p><span className="text-white font-bold">Frites à part</span></p>
+                )}
+              </div>
+            </>
+          )}
+
         </m.div>
       </AnimatePresence>
 
@@ -202,16 +372,16 @@ export default function TacosBuilder({ addons, selection, onChange }: TacosBuild
         {step > 0 && (
           <button
             type="button"
-            onClick={() => setStep((s) => s - 1)}
+            onClick={() => setStep(step - 1)}
             className="flex items-center gap-1.5 px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-xs font-black uppercase text-neutral-300 hover:text-white transition-colors"
           >
             <ChevronLeft size={14} /> Retour
           </button>
         )}
-        {step < 2 && (
+        {step < LAST_STEP && (
           <button
             type="button"
-            onClick={() => setStep((s) => s + 1)}
+            onClick={() => setStep(step + 1)}
             disabled={!canAdvance}
             className={`flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all ${
               canAdvance

@@ -23,8 +23,8 @@ interface ProductModalProps {
   onClose: () => void;
 }
 
-// ✅ AJOUT DU PARFUM "PASSION"
 const MOCHI_FLAVORS = ["Mangue", "Matcha", "Fleur de cerisier", "Passion"];
+const MEAT_QUOTA: Record<"M" | "L" | "XL", number> = { M: 1, L: 2, XL: 3 };
 
 export default function ProductModal({ item, onClose }: ProductModalProps) {
   const { lang } = useTranslation();
@@ -35,7 +35,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
     item.variants?.[0]
   );
   const [selectedAddons, setSelectedAddons] = useState<Addon[]>([]);
-  const [tacosSelection, setTacosSelection] = useState<TacosSelection>({ meat: null, sauces: [], gratin: null });
+  const [tacosSelection, setTacosSelection] = useState<TacosSelection>({ size: null, meats: [], sauces: [], gratin: null, extras: [], friesOnSide: false });
 
   // Tableau stockant les parfums pour chaque portion sélectionnée
   const [mochiSelections, setMochiSelections] = useState<[string, string][]>([
@@ -81,16 +81,25 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
     [item.addons]
   );
 
-  // Unified display price: tacos total (base + surcharges) or pizza/generic (variant + addons)
+  const isTacosValid = useMemo(() => {
+    if (!isTacos) return true;
+    if (!tacosSelection.size) return false;
+    return tacosSelection.meats.length === MEAT_QUOTA[tacosSelection.size];
+  }, [isTacos, tacosSelection.size, tacosSelection.meats]);
+
+  // Unified display price: tacos total (base variant + meat surcharges + options) or pizza/generic (variant + addons)
   const displayPrice = useMemo(() => {
     if (isTacos) {
-      return item.price
-        + (tacosSelection.meat?.price ?? 0)
+      const sizeVariant = item.variants?.find((v) => v.size === tacosSelection.size);
+      const base = sizeVariant ? sizeVariant.price : item.price;
+      return base
+        + tacosSelection.meats.reduce((s, a) => s + a.price, 0)
         + tacosSelection.sauces.reduce((s, a) => s + a.price, 0)
-        + (tacosSelection.gratin?.price ?? 0);
+        + (tacosSelection.gratin?.price ?? 0)
+        + tacosSelection.extras.reduce((s, a) => s + a.price, 0);
     }
     return effectivePrice + addonsTotal;
-  }, [isTacos, item.price, effectivePrice, addonsTotal, tacosSelection]);
+  }, [isTacos, item.price, item.variants, effectivePrice, addonsTotal, tacosSelection]);
 
   useEffect(() => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
@@ -146,15 +155,22 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
     };
 
     if (isTacos) {
-      if (!tacosSelection.meat) return;
-      const allAddons = [tacosSelection.meat, ...tacosSelection.sauces, tacosSelection.gratin].filter(Boolean) as Addon[];
-      const configKey = allAddons.map((a) => a.id).join("-");
+      if (!isTacosValid || !tacosSelection.size) return;
+      const allAddons = [
+        ...tacosSelection.meats,
+        ...tacosSelection.sauces,
+        tacosSelection.gratin,
+        ...tacosSelection.extras,
+      ].filter(Boolean) as Addon[];
+      const configKey = `${tacosSelection.size}-${allAddons.map((a) => a.id).join("-")}`;
       const label = [
-        tacosSelection.meat.name,
+        `${tacosSelection.size}`,
+        tacosSelection.meats.map((m) => m.name).join("+"),
         tacosSelection.sauces.length > 0 ? tacosSelection.sauces.map((s) => s.name).join("+") : null,
         tacosSelection.gratin?.name,
+        tacosSelection.extras.length > 0 ? tacosSelection.extras.map((e) => e.name).join("+") : null,
+        tacosSelection.friesOnSide ? "Frites à part" : null,
       ].filter(Boolean).join(" | ");
-      // pseudo-variant gives this config a unique cart key and stores the label for CartDrawer
       const pseudoVariant: Variant = { size: configKey, price: displayPrice, label };
       for (let i = 0; i < quantity; i++) {
         addToCart({ ...base, name, price: displayPrice }, { variant: pseudoVariant, addons: allAddons });
@@ -278,7 +294,7 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
           {isTacos && item.addons && (
             <div className="mb-6">
               <h4 className="text-neutral-600 text-xs uppercase font-black tracking-widest mb-4">Composition du Tacos</h4>
-              <TacosBuilder addons={item.addons} selection={tacosSelection} onChange={setTacosSelection} />
+              <TacosBuilder addons={item.addons} variants={item.variants} selection={tacosSelection} onChange={setTacosSelection} />
             </div>
           )}
 
@@ -378,9 +394,9 @@ export default function ProductModal({ item, onClose }: ProductModalProps) {
 
             <button
               onClick={handleAddToCart}
-              disabled={isTacos && !tacosSelection.meat}
+              disabled={isTacos && !isTacosValid}
               className={`w-full text-white font-bold min-h-16 h-16 rounded-2xl uppercase tracking-[0.15em] text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-4 shrink-0 ${
-                isTacos && !tacosSelection.meat
+                isTacos && !isTacosValid
                   ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
                   : "bg-brand-primary hover:bg-violet-700 shadow-glow"
               }`}

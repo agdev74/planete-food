@@ -18,9 +18,12 @@ export interface Addon {
 }
 
 export interface TacosSelection {
-  meat: Addon | null;
+  size: "M" | "L" | "XL" | null;
+  meats: Addon[];
   sauces: Addon[];
   gratin: Addon | null;
+  extras: Addon[];
+  friesOnSide: boolean;
 }
 
 export interface Restaurant {
